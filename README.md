@@ -93,6 +93,42 @@ import { storage, StorageArea } from "browser:async-local-storage|https://somecd
 
 Note that the scope of the default storage area would be per-realm, or more precisely, per module map, since it would be created whenever you imported the module.
 
+## "Upgrading" to IndexedDB
+
+One of the great things about implementing async local storage as a permafill on top of IndexedDB is that, if the developer's code grows beyond the capabilities of a simple key/value store, they can easily transition to the full power of IndexedDB (such as using transactions, indices, or cursors), while reusing their database.
+
+This would require us deciding on a predictable naming scheme, or perhaps exposing an API for translating the name. For example:
+
+```js
+import { storage } from "browser:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-was-a-native-JS-module";
+
+(async () => {
+  await storage.set("mycat", "Tom");
+  await storage.set("mydog", "Joey");
+
+  // If there's a predictable naming scheme:
+  const db = await idbOpen("async-local-storage:default");
+  const tx = db.transaction("async-local-storage", "readwrite");
+  tx.objectStore("async-local-storage").delete("mycat");
+  tx.objectStore("async-local-storage").delete("mydog");
+  await tx.complete;
+  await db.close();
+
+  // If we have multiple StorageAreas per the previous section, their predictable
+  // names would be "async-local-storage:<user-chosen-name>".
+
+  // Alternately, if there's an API to get the info:
+  const { dbName, storeName } = storage.backingDatabase;
+  const db = await idbOpen(dbName);
+  const tx = db.transaction(storeName, "readwrite");
+  tx.objectStore(storeName).add("mycat", "Jerry");
+  tx.objectStore(storeName).add("mydog", "Kelby");
+  await tx.complete;
+  await db.close();
+})();
+```
+
 ## Impact
 
 This feature would be low-effort, medium-reward.
