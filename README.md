@@ -69,7 +69,7 @@ Returns a promise for an array containing all the stored key/value pairs, each a
 
 ### Variations and choices
 
-- We could have keys/values/entries return [async iterators](https://github.com/tc39/proposal-async-iteration). This would work better in situations with potentially many entries.
+- We could have `keys()`/`values()`/`entries()` return [async iterators](https://github.com/tc39/proposal-async-iteration). This would work better in situations with potentially many entries. Alternately, we could add additional methods, e.g. `entriesIter()`, for this case.
 - We could eliminate the difference between an entry with value `undefined` and a missing entry. This would eliminate `has()`, and make `delete()` sugar for `set(x, undefined)`. This might be a good idea since `has()` is somewhat of a footgun in async scenarios, as it encourages race-condition-prone code via a combination of `has()` + `get()` instead of just using `get()` directly.
 - We could have `set()` return a promise for the set value, to increase the similarity with JavaScript `Map`s.
 
