@@ -4,10 +4,10 @@ This document is an explainer for a potential future web platform feature, "asyn
 
 ## Sample code
 
-(Note: the `import` syntax used here presumes this would be implemented as a [permafill](https://github.com/drufball/permafills), and is [still tentative](https://docs.google.com/document/d/1jRQjQP8DmV7RL75u_67ps3SB1sjfa1bFZmbCMfJCvrM/edit?usp=sharing).)
+(Note: the `import` syntax used here presumes this would be implemented as a [layered web API](https://github.com/drufball/layered-apis), and is [still tentative](https://docs.google.com/document/d/1jRQjQP8DmV7RL75u_67ps3SB1sjfa1bFZmbCMfJCvrM/edit?usp=sharing).)
 
 ```js
-import { storage } from "browser:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { storage } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -29,56 +29,54 @@ The well-known alternative is IndexedDB. IndexedDB is, however, quite hard to us
 
 In the face of this, a cottage industry of solutions for "async local storage" have sprung up to wrap IndexedDB. Perhaps the most well-known of these is [localForage](https://localforage.github.io/localForage/), which copies the `localStorage` API directly.
 
-Browser vendors have never been able to justify the resources on specifying and shipping their own async local storage solution, given that IndexedDB exists as as the more powerful lower-level building block. This makes the platform unergonomic, out-of-the-box, for this simple use case. Fortunately, this sort of case is exactly what [permafills](https://github.com/drufball/permafills) are designed to solve!
+Browser vendors have never been able to justify the resources on specifying and shipping their own async local storage solution, given that IndexedDB exists as as the more powerful lower-level building block. This makes the platform unergonomic, out-of-the-box, for this simple use case. It's a travesty that those trying to develop on the web platform have no simple, usable solution for storing key/value data.
 
-## API Surface
+Fortunately, this sort of case is exactly what [layered APIs](https://github.com/drufball/layered-apis) are designed to solve!
 
-The simplest API surface would be as follows. Note that keys and values would be allowed to be any [structured-serializable type](https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects).
+## API
 
-### `set(key, value)`
+### `Map`-like key/value pair API
+
+Note that keys and values would be allowed to be any [structured-serializable type](https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects) (but, see [#2](https://github.com/domenic/async-local-storage/issues/2)).
+
+#### `set(key, value)`
 
 Sets the value of the entry identified by `key` to `value`. Returns a promise that fulfills with `undefined` once this is complete.
 
-### `get(key)`
+#### `get(key)`
 
 Returns a promise for the value of the entry identified by `key`, or `undefined` if no value is present.
 
-### `has(key)`
+#### `has(key)`
 
 Returns a promise for a boolean that indicates whether an entry identified by `key` exists.
 
-### `delete(key)`
+#### `delete(key)`
 
 Removes the entry identified by `key`, if it exists. Once this completes, returns a promise for a boolean that indicates whether or not something existed there (and was thus deleted).
 
-### `clear()`
+#### `clear()`
 
 Clears all entries. Returns a promise for `undefined`.
 
-### `keys()`
+#### `keys()`
 
 Returns a promise for an array containing all the stored keys.
 
-### `values()`
+#### `values()`
 
 Returns a promise for an array containing all the stored values.
 
-### `entries()`
+#### `entries()`
 
 Returns a promise for an array containing all the stored key/value pairs, each as a two-element array.
 
-### Variations and choices
+### `new StorageArea()`: separate storage areas
 
-- We could have `keys()`/`values()`/`entries()` return [async iterators](https://github.com/tc39/proposal-async-iteration). This would work better in situations with potentially many entries. Alternately, we could add additional methods, e.g. `entriesIter()`, for this case.
-- We could eliminate the difference between an entry with value `undefined` and a missing entry. This would eliminate `has()`, and make `delete()` sugar for `set(x, undefined)`. This might be a good idea since `has()` is somewhat of a footgun in async scenarios, as it encourages race-condition-prone code via a combination of `has()` + `get()` instead of just using `get()` directly.
-- We could have `set()` return a promise for the set value, to increase the similarity with JavaScript `Map`s.
-
-### Separate storage areas
-
-With the above API there is no simple way to create an "isolated" storage area for your own use. We could expand the API so that there's still a simple, default storage area, but you can also create your own. Here's one idea:
+We additionally expose a `StorageArea` constructor, which allows you to create an "isolated" storage area that is less likely to collide than using the default one:
 
 ```js
-import { storage, StorageArea } from "browser:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { storage, StorageArea } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -91,43 +89,37 @@ import { storage, StorageArea } from "browser:async-local-storage|https://somecd
 })();
 ```
 
+This sort of API has [precedent in localForage](https://www.npmjs.com/package/localforage#multiple-instances), which is notable since localForage otherwise sticks rather strictly to the `localStorage` API surface.
+
 Note that the scope of the default storage area would be per-realm, or more precisely, per module map, since it would be created whenever you imported the module.
 
-## "Upgrading" to IndexedDB
+### `backingStore`: falling back to IndexedDB
 
-One of the great things about implementing async local storage as a permafill on top of IndexedDB is that, if the developer's code grows beyond the capabilities of a simple key/value store, they can easily transition to the full power of IndexedDB (such as using transactions, indices, or cursors), while reusing their database.
+One of the great things about implementing async local storage as a layered web API on top of IndexedDB is that, if the developer's code grows beyond the capabilities of a simple key/value store, they can easily transition to the full power of IndexedDB (such as using transactions, indices, or cursors), while reusing their database.
 
-This would require us deciding on a predictable naming scheme, or perhaps exposing an API for translating the name. For example:
+To facilitate this, we include an API that allows you to get a `{ database, store }` pair naming the IndexedDB database and store within that database where a given `StorageArea`'s data is being stored:
 
 ```js
-import { storage } from "browser:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { storage } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
 import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-was-a-native-JS-module";
 
 (async () => {
   await storage.set("mycat", "Tom");
   await storage.set("mydog", "Joey");
 
-  // If there's a predictable naming scheme:
-  const db = await idbOpen("async-local-storage:default");
-  const tx = db.transaction("async-local-storage", "readwrite");
-  tx.objectStore("async-local-storage").delete("mycat");
-  tx.objectStore("async-local-storage").delete("mydog");
-  await tx.complete;
-  await db.close();
-
-  // If we have multiple StorageAreas per the previous section, their predictable
-  // names would be "async-local-storage:<user-chosen-name>".
-
-  // Alternately, if there's an API to get the info:
-  const { dbName, storeName } = storage.backingDatabase;
-  const db = await idbOpen(dbName);
-  const tx = db.transaction(storeName, "readwrite");
-  tx.objectStore(storeName).add("mycat", "Jerry");
-  tx.objectStore(storeName).add("mydog", "Kelby");
+  const { database, store } = storage.backingStore;
+  const db = await idbOpen(database);
+  const tx = db.transaction(store, "readwrite");
+  tx.objectStore(store).add("mycat", "Jerry");
+  tx.objectStore(store).add("mydog", "Kelby");
   await tx.complete;
   await db.close();
 })();
 ```
+
+### Open issues and questions
+
+Please see [the issue tracker](https://github.com/domenic/async-local-storage/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Aapi) for open issues on the API surface detailed above.
 
 ## Impact
 
