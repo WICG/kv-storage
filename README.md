@@ -128,4 +128,8 @@ This feature would be low-effort, medium-reward.
 - Developers would be steered away from the perils of `localStorage`, toward this modern, attractive alternative.
 - Applications would no longer need to ship complex IndexedDB logic, or the 9.5 KB localForage library.
 
-localForage is downloaded [~350K times per month](https://www.npmjs.com/package/localforage) via npm. For comparison, Angular is downloaded [~960K times per month](https://www.npmjs.com/package/angular), React [~5.896 million times per month](https://www.npmjs.com/package/react), and Vue [~1.030 million](https://www.npmjs.com/package/vue).
+localForage is downloaded [~350K times per month](https://www.npmjs.com/package/localforage) via npm.
+
+Another notable library in this vein is [idb-keyval](https://www.npmjs.com/package/idb-keyval), which is downloaded ~16K times per month via npm.
+
+For comparison, Angular is downloaded [~960K times per month](https://www.npmjs.com/package/angular), React [~5.896 million times per month](https://www.npmjs.com/package/react), and Vue [~1.030 million](https://www.npmjs.com/package/vue).
