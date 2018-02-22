@@ -9,10 +9,32 @@ Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me, https://
 Abstract: This specification details a layered web API for an asynchronous key value store, in the style of the original {{Window/localStorage}}.
 !Participate: <a href="https://github.com/domenic/async-local-storage">GitHub domenic/async-local-storage</a> (<a href="https://github.com/domenic/async-local-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/async-local-storage/issues?state=open">open issues</a>)
 !Commits: <a href="https://github.com/domenic/async-local-storage/commits">https://github.com/domenic/async-local-storage/commits</a>
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
 </pre>
 
 <pre class="anchors">
 url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
+
+url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure; type: dfn; text: API identifier; spec: LWAPI
+
+urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
+  text: Map; url: sec-map-objects; type: interface
+  text: Construct; url: sec-construct; type: abstract-op
+</pre>
+
+<pre class="biblio">
+{
+  "LWAPI": {
+    "authors": [
+      "Domenic Denicola",
+      "Dru Knox",
+      "Ojan Vafai"
+    ],
+    "href": "https://github.com/drufball/layered-apis/blob/master/README.md",
+    "title": "Layered APIs"
+  }
+}
 </pre>
 
 <style>
@@ -41,7 +63,43 @@ url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; ty
 
 <h2 id="intro">Introduction</h2>
 
+<div class="non-normative">
+
 <em>This section is non-normative.</em>
+
+The {{Window/localStorage}} API is widely used, and loved for its simplicity. However, its synchronous nature leads to <a href="https://hacks.mozilla.org/2012/03/there-is-no-simple-solution-for-local-storage/">terrible performance</a> and cross-window synchronization issues.
+
+This specification proposes a new API, called async local storage, which is intended to provide an analogously simple interface, while being asynchronous. Along the way, it embraces some additional goals:
+
+* <strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. [[INDEXEDDB]] [[LWAPI]]
+
+* <strong>Modernize the API surface.</strong> Modern key/value stores in the platform, such as the {{Cache}} or {{Headers}} APIs, have aligned around the operation names given by JavaScript's {{Map}}. We follow their example. As a bonus, this allows us to avoid the legacy [=named properties=] feature that the {{Storage}} interface uses.
+
+* <strong>Support isolated storage areas.</strong> {{Window/localStorage}} requires careful namespacing of keys to use robustly in a multi-actor environment. Popular libraries meant to replace it, like <a href="https://localforage.github.io/localForage/">localForage</a>, have included a way to create new storage areas beyond the default one.
+
+</div>
+
+<h2 id="module">The <code>async-local-storage</code> layered web API</h2>
+
+This specification defines a new layered web API, whose [=API identifier=] is "<code>async-local-storage</code>" and whose exports are the following:
+
+: <code>StorageArea</code>
+:: The {{StorageArea}} class
+: <code>storage</code>
+:: An instance of the {{StorageArea}} class, created as if by [=Construct=]({{StorageArea}}, « "<code>default</code>" »).
+
+<div class="example" id="example-importing">
+  To get access to these exports, one would use the usual syntax for layered web APIs:
+
+  <xmp highlight="js">
+    import { storage, StorageArea } from
+        "std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js";
+  </xmp>
+</div>
+
+<h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
+
+TODO
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
