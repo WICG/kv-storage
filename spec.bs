@@ -6,7 +6,7 @@ Inline Github Issues: true
 Status: DREAM
 Boilerplate: omit conformance, omit feedback-header
 Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me, https://domenic.me/
-Abstract: This specification details a layered web API for an asynchronous key value store, in the style of the original {{Window/localStorage}}.
+Abstract: This specification details a layered web API for an asynchronous key value store, in the style of the original <span class="non-normative">{{Window/localStorage}}</span>.
 !Participate: <a href="https://github.com/domenic/async-local-storage">GitHub domenic/async-local-storage</a> (<a href="https://github.com/domenic/async-local-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/async-local-storage/issues?state=open">open issues</a>)
 !Commits: <a href="https://github.com/domenic/async-local-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
@@ -88,7 +88,7 @@ This specification defines a new layered web API, whose [=API identifier=] is "<
 : <code>StorageArea</code>
 :: The {{StorageArea}} class
 : <code>storage</code>
-:: An instance of the {{StorageArea}} class, created as if by [=Construct=]({{StorageArea}}, « "<code>default</code>" »).
+:: An instance of the {{StorageArea}} class, created as if by <a abstract-op>Construct</a>({{StorageArea}}, « "<code>default</code>" »).
 
 <div class="example" id="example-importing">
   To get access to these exports, one would use the usual syntax for layered web APIs:
