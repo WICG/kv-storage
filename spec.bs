@@ -1,0 +1,58 @@
+<pre class="metadata">
+Title: Async Local Storage
+Shortname: als
+Repository: domenic/async-local-storage
+Inline Github Issues: true
+Status: DREAM
+Boilerplate: omit conformance, omit feedback-header
+Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me, https://domenic.me/
+Abstract: This specification details a layered web API for an asynchronous key value store, in the style of the original {{Window/localStorage}}.
+!Participate: <a href="https://github.com/domenic/async-local-storage">GitHub domenic/async-local-storage</a> (<a href="https://github.com/domenic/async-local-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/async-local-storage/issues?state=open">open issues</a>)
+!Commits: <a href="https://github.com/domenic/async-local-storage/commits">https://github.com/domenic/async-local-storage/commits</a>
+</pre>
+
+<pre class="anchors">
+url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
+</pre>
+
+<style>
+.selected-text-file-an-issue {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: smaller;
+  padding: 4px 10px;
+  z-index: 4;
+}
+
+/* hide ugly stuff that is moved to the acks */
+[data-fill-with="spec-metadata"] .editor {
+  display: none;
+}
+
+[data-fill-with="copyright"] {
+  display: none;
+}
+</style>
+
+<script src="https://resources.whatwg.org/file-issue.js" async></script>
+
+
+<h2 id="intro">Introduction</h2>
+
+<em>This section is non-normative.</em>
+
+<h2 id="acks" class="no-num">Acknowledgments</h2>
+
+The editor would like to thank
+(nobody yet)
+for their contributions to this specification.
+
+This standard is written by <a href="https://domenic.me/">Domenic Denicola</a> (<a href="https://google.com">Google</a>, <a href="mailto:d@domenic.me">d@domenic.me</a>).
+
+Per <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, to the extent possible under law, the editor has waived all copyright and related or neighboring rights to this work.
+
+<h2 id="conformance" class="no-num">Conformance</h2>
+
+This specification depends on the Infra Standard. [[!INFRA]]

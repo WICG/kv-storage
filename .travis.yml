@@ -1,0 +1,21 @@
+language: generic
+
+script:
+  - make ci
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+deploy:
+  provider: pages
+  local-dir: out
+  committer-from-gh: true
+  skip-cleanup: true
+  keep-history: true
+  github-token: $GH_TOKEN
