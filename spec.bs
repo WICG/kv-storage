@@ -8,7 +8,7 @@ Boilerplate: omit conformance, omit feedback-header
 Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me, https://domenic.me/
 Abstract: This specification details a layered web API for an asynchronous key value store, in the style of the original {{Window/localStorage}}.
 !Participate: <a href="https://github.com/domenic/async-local-storage">GitHub domenic/async-local-storage</a> (<a href="https://github.com/domenic/async-local-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/async-local-storage/issues?state=open">open issues</a>)
-!Commits: <a href="https://github.com/domenic/async-local-storage/commits">https://github.com/domenic/async-local-storage/commits</a>
+!Commits: <a href="https://github.com/domenic/async-local-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 </pre>
