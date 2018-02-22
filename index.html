@@ -1465,7 +1465,7 @@ Parts of this work may be from another specification document.  If so, those par
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
-   <p>This specification details a layered web API for an asynchronous key value store, in the style of the original <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage">localStorage</a></code>.</p>
+   <p>This specification details a layered web API for an asynchronous key value store, in the style of the original <span class="non-normative"><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage">localStorage</a></code></span>.</p>
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
@@ -1527,7 +1527,7 @@ Parts of this work may be from another specification document.  If so, those par
      <p>The <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea">StorageArea</a></code> class</p>
     <dt data-md=""><code>storage</code>
     <dd data-md="">
-     <p>An instance of the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①">StorageArea</a></code> class, created as if by <a data-link-type="dfn" href="https://heycam.github.io/webidl/#construct-a-callback-function" id="ref-for-construct-a-callback-function">Construct</a>(<code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea②">StorageArea</a></code>, « "<code>default</code>" »).</p>
+     <p>An instance of the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①">StorageArea</a></code> class, created as if by <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-construct" id="ref-for-sec-construct">Construct</a>(<code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea②">StorageArea</a></code>, « "<code>default</code>" »).</p>
    </dl>
    <div class="example" id="example-importing">
     <a class="self-link" href="#example-importing"></a> To get access to these exports, one would use the usual syntax for layered web APIs: 
@@ -1732,6 +1732,7 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
     <ul>
+     <li><a href="https://tc39.github.io/ecma262/#sec-construct">Construct</a>
      <li><a href="https://tc39.github.io/ecma262/#sec-map-objects">Map</a>
      <li><a href="https://tc39.github.io/ecma262/#current-realm">current realm</a>
     </ul>
@@ -1759,7 +1760,6 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
-     <li><a href="https://heycam.github.io/webidl/#construct-a-callback-function">construct</a>
      <li><a href="https://heycam.github.io/webidl/#idl-named-properties">named properties</a>
     </ul>
   </ul>
@@ -1768,23 +1768,23 @@ for their contributions to this specification.</p>
   <dl>
    <dt id="biblio-ecmascript">[ECMASCRIPT]
    <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
-   <dt id="biblio-html">[HTML]
-   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-lwapi">[LWAPI]
    <dd>Domenic Denicola; Dru Knox; Ojan Vafai. <a href="https://github.com/drufball/layered-apis/blob/master/README.md">Layered APIs</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/README.md">https://github.com/drufball/layered-apis/blob/master/README.md</a>
-   <dt id="biblio-webidl">[WebIDL]
-   <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-html">[HTML]
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-indexeddb">[INDEXEDDB]
    <dd>Nikunj Mehta; et al. <a href="https://www.w3.org/TR/IndexedDB/">Indexed Database API</a>. 8 January 2015. REC. URL: <a href="https://www.w3.org/TR/IndexedDB/">https://www.w3.org/TR/IndexedDB/</a>
    <dt id="biblio-service-workers-1">[SERVICE-WORKERS-1]
    <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 2 November 2017. WD. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
+   <dt id="biblio-webidl">[WebIDL]
+   <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <aside class="dfn-panel" data-for="async-local-storage">
    <b><a href="#async-local-storage">#async-local-storage</a></b><b>Referenced in:</b>
