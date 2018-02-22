@@ -1207,35 +1207,6 @@ Possible extra rowspan handling
 [data-md] > :last-child {
     margin-bottom: 0;
 }</style>
-<style>/* style-counters */
-
-body {
-    counter-reset: example figure issue;
-}
-.issue {
-    counter-increment: issue;
-}
-.issue:not(.no-marker)::before {
-    content: "Issue " counter(issue);
-}
-
-.example {
-    counter-increment: example;
-}
-.example:not(.no-marker)::before {
-    content: "Example " counter(example);
-}
-.invalid.example:not(.no-marker)::before,
-.illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
-}
-
-figcaption {
-    counter-increment: figure;
-}
-figcaption:not(.no-marker)::before {
-    content: "Figure " counter(figure) " ";
-}</style>
 <style>/* style-selflinks */
 
 .heading, .issue, .note, .example, li, dt {
@@ -1282,6 +1253,35 @@ dfn > a.self-link:hover {
 a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }</style>
+<style>/* style-counters */
+
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
+}
+
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
+
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}</style>
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -1344,6 +1344,101 @@ pre .property::before, pre .property::after {
 [data-link-type=biblio] {
     white-space: pre;
 }</style>
+<style>/* style-dfn-panel */
+
+        .dfn-panel {
+            position: absolute;
+            z-index: 35;
+            height: auto;
+            width: -webkit-fit-content;
+            width: fit-content;
+            max-width: 300px;
+            max-height: 500px;
+            overflow: auto;
+            padding: 0.5em 0.75em;
+            font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+            background: #DDDDDD;
+            color: black;
+            border: outset 0.2em;
+        }
+        .dfn-panel:not(.on) { display: none; }
+        .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+        .dfn-panel > b { display: block; }
+        .dfn-panel a { color: black; }
+        .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+        .dfn-panel > b + b { margin-top: 0.25em; }
+        .dfn-panel ul { padding: 0; }
+        .dfn-panel li { list-style: inside; }
+        .dfn-panel.activated {
+            display: inline-block;
+            position: fixed;
+            left: .5em;
+            bottom: 2em;
+            margin: 0 auto;
+            max-width: calc(100vw - 1.5em - .4em - .5em);
+            max-height: 30vh;
+        }
+
+        .dfn-paneled { cursor: pointer; }
+        </style>
+<style>/* style-syntax-highlighting */
+
+.highlight:not(.idl) { background: hsl(24, 20%, 95%); }
+code.highlight { padding: .1em; border-radius: .3em; }
+pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+.highlight .c { color: #708090 } /* Comment */
+.highlight .k { color: #990055 } /* Keyword */
+.highlight .l { color: #000000 } /* Literal */
+.highlight .n { color: #0077aa } /* Name */
+.highlight .o { color: #999999 } /* Operator */
+.highlight .p { color: #999999 } /* Punctuation */
+.highlight .cm { color: #708090 } /* Comment.Multiline */
+.highlight .cp { color: #708090 } /* Comment.Preproc */
+.highlight .c1 { color: #708090 } /* Comment.Single */
+.highlight .cs { color: #708090 } /* Comment.Special */
+.highlight .kc { color: #990055 } /* Keyword.Constant */
+.highlight .kd { color: #990055 } /* Keyword.Declaration */
+.highlight .kn { color: #990055 } /* Keyword.Namespace */
+.highlight .kp { color: #990055 } /* Keyword.Pseudo */
+.highlight .kr { color: #990055 } /* Keyword.Reserved */
+.highlight .kt { color: #990055 } /* Keyword.Type */
+.highlight .ld { color: #000000 } /* Literal.Date */
+.highlight .m { color: #000000 } /* Literal.Number */
+.highlight .s { color: #a67f59 } /* Literal.String */
+.highlight .na { color: #0077aa } /* Name.Attribute */
+.highlight .nc { color: #0077aa } /* Name.Class */
+.highlight .no { color: #0077aa } /* Name.Constant */
+.highlight .nd { color: #0077aa } /* Name.Decorator */
+.highlight .ni { color: #0077aa } /* Name.Entity */
+.highlight .ne { color: #0077aa } /* Name.Exception */
+.highlight .nf { color: #0077aa } /* Name.Function */
+.highlight .nl { color: #0077aa } /* Name.Label */
+.highlight .nn { color: #0077aa } /* Name.Namespace */
+.highlight .py { color: #0077aa } /* Name.Property */
+.highlight .nt { color: #669900 } /* Name.Tag */
+.highlight .nv { color: #222222 } /* Name.Variable */
+.highlight .ow { color: #999999 } /* Operator.Word */
+.highlight .mb { color: #000000 } /* Literal.Number.Bin */
+.highlight .mf { color: #000000 } /* Literal.Number.Float */
+.highlight .mh { color: #000000 } /* Literal.Number.Hex */
+.highlight .mi { color: #000000 } /* Literal.Number.Integer */
+.highlight .mo { color: #000000 } /* Literal.Number.Oct */
+.highlight .sb { color: #a67f59 } /* Literal.String.Backtick */
+.highlight .sc { color: #a67f59 } /* Literal.String.Char */
+.highlight .sd { color: #a67f59 } /* Literal.String.Doc */
+.highlight .s2 { color: #a67f59 } /* Literal.String.Double */
+.highlight .se { color: #a67f59 } /* Literal.String.Escape */
+.highlight .sh { color: #a67f59 } /* Literal.String.Heredoc */
+.highlight .si { color: #a67f59 } /* Literal.String.Interpol */
+.highlight .sx { color: #a67f59 } /* Literal.String.Other */
+.highlight .sr { color: #a67f59 } /* Literal.String.Regex */
+.highlight .s1 { color: #a67f59 } /* Literal.String.Single */
+.highlight .ss { color: #a67f59 } /* Literal.String.Symbol */
+.highlight .vc { color: #0077aa } /* Name.Variable.Class */
+.highlight .vg { color: #0077aa } /* Name.Variable.Global */
+.highlight .vi { color: #0077aa } /* Name.Variable.Instance */
+.highlight .il { color: #000000 } /* Literal.Number.Integer.Long */
+</style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"></p>
@@ -1356,7 +1451,7 @@ pre .property::before, pre .property::after {
      <dt>Participate:
      <dd><a href="https://github.com/domenic/async-local-storage">GitHub domenic/async-local-storage</a> (<a href="https://github.com/domenic/async-local-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/async-local-storage/issues?state=open">open issues</a>)
      <dt>Commits:
-     <dd><a href="https://github.com/domenic/async-local-storage/commits">https://github.com/domenic/async-local-storage/commits</a>
+     <dd><a href="https://github.com/domenic/async-local-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
     </dl>
    </div>
    <div data-fill-with="warning"></div>
@@ -1377,24 +1472,107 @@ Parts of this work may be from another specification document.  If so, those par
    <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
     <li><a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a>
+    <li><a href="#module"><span class="secno">2</span> <span class="content">The <code>async-local-storage</code> layered web API</span></a>
+    <li>
+     <a href="#storagearea"><span class="secno">3</span> <span class="content">The <code>StorageArea</code> class</span></a>
+     <ol class="toc">
+      <li><a href="#storagearea-constructor"><span class="secno">3.1</span> <span class="content">constructor(<var>name</var>)</span></a>
+      <li><a href="#storagearea-set"><span class="secno">3.2</span> <span class="content">set(<var>key</var>, <var>value</var>)</span></a>
+      <li><a href="#storagearea-get"><span class="secno">3.3</span> <span class="content">get(<var>key</var>)</span></a>
+      <li><a href="#storagearea-has"><span class="secno">3.4</span> <span class="content">has(<var>key</var>)</span></a>
+      <li><a href="#storagearea-delete"><span class="secno">3.5</span> <span class="content">delete(<var>key</var>)</span></a>
+      <li><a href="#storagearea-clear"><span class="secno">3.6</span> <span class="content">clear()</span></a>
+      <li><a href="#storagearea-keys"><span class="secno">3.7</span> <span class="content">keys()</span></a>
+      <li><a href="#storagearea-values"><span class="secno">3.8</span> <span class="content">values()</span></a>
+      <li><a href="#storagearea-entries"><span class="secno">3.9</span> <span class="content">entries()</span></a>
+      <li><a href="#storagearea-backingstore"><span class="secno">3.10</span> <span class="content">get backingStore()</span></a>
+     </ol>
     <li><a href="#acks"><span class="secno"></span> <span class="content">Acknowledgments</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
+      <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
       <li><a href="#index-defined-elsewhere"><span class="secno"></span> <span class="content">Terms defined by reference</span></a>
      </ol>
     <li>
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
    </ol>
   </nav>
   <main>
 <script async="" src="https://resources.whatwg.org/file-issue.js"></script>
    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
-   <p><em>This section is non-normative.</em></p>
+   <div class="non-normative">
+    <p><em>This section is non-normative.</em></p>
+    <p>The <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage①">localStorage</a></code> API is widely used, and loved for its simplicity. However, its synchronous nature leads to <a href="https://hacks.mozilla.org/2012/03/there-is-no-simple-solution-for-local-storage/">terrible performance</a> and cross-window synchronization issues.</p>
+    <p>This specification proposes a new API, called async local storage, which is intended to provide an analogously simple interface, while being asynchronous. Along the way, it embraces some additional goals:</p>
+    <ul>
+     <li data-md="">
+      <p><strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. <a data-link-type="biblio" href="#biblio-indexeddb">[INDEXEDDB]</a> <a data-link-type="biblio" href="#biblio-lwapi">[LWAPI]</a></p>
+     <li data-md="">
+      <p><strong>Modernize the API surface.</strong> Modern key/value stores in the platform, such as the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#cache" id="ref-for-cache">Cache</a></code> or <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#headers" id="ref-for-headers">Headers</a></code> APIs, have aligned around the operation names given by JavaScript’s <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-map-objects" id="ref-for-sec-map-objects">Map</a></code>. We follow their example. As a bonus, this allows us to avoid the legacy <a data-link-type="dfn" href="https://heycam.github.io/webidl/#idl-named-properties" id="ref-for-idl-named-properties">named properties</a> feature that the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#storage-2" id="ref-for-storage-2">Storage</a></code> interface uses.</p>
+     <li data-md="">
+      <p><strong>Support isolated storage areas.</strong> <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage②">localStorage</a></code> requires careful namespacing of keys to use robustly in a multi-actor environment. Popular libraries meant to replace it, like <a href="https://localforage.github.io/localForage/">localForage</a>, have included a way to create new storage areas beyond the default one.</p>
+    </ul>
+   </div>
+   <h2 class="heading settled" data-level="2" id="module"><span class="secno">2. </span><span class="content">The <code>async-local-storage</code> layered web API</span><a class="self-link" href="#module"></a></h2>
+   <p>This specification defines a new layered web API, whose <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure" id="ref-for-part-1-the-infrastructure">API identifier</a> is "<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="async-local-storage"><code>async-local-storage</code></dfn>" and whose exports are the following:</p>
+   <dl>
+    <dt data-md=""><code>StorageArea</code>
+    <dd data-md="">
+     <p>The <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea">StorageArea</a></code> class</p>
+    <dt data-md=""><code>storage</code>
+    <dd data-md="">
+     <p>An instance of the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①">StorageArea</a></code> class, created as if by <a data-link-type="dfn" href="https://heycam.github.io/webidl/#construct-a-callback-function" id="ref-for-construct-a-callback-function">Construct</a>(<code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea②">StorageArea</a></code>, « "<code>default</code>" »).</p>
+   </dl>
+   <div class="example" id="example-importing">
+    <a class="self-link" href="#example-importing"></a> To get access to these exports, one would use the usual syntax for layered web APIs: 
+<pre class="highlight"><span class="kr">import</span> <span class="p">{</span> storage<span class="p">,</span> StorageArea <span class="p">}</span> from
+    <span class="s2">"std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js"</span><span class="p">;</span>
+</pre>
+   </div>
+   <h2 class="heading settled dfn-paneled idl-code" data-dfn-type="interface" data-export="" data-level="3" data-lt="StorageArea" id="storagearea"><span class="secno">3. </span><span class="content">The <code>StorageArea</code> class</span></h2>
+   <p>Upon evaluating the <a data-link-type="dfn" href="#async-local-storage" id="ref-for-async-local-storage"><code>async-local-storage</code></a> layered API module, the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea③">StorageArea</a></code> class must be created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>. The result must be equivalent to evaluating the following JavaScript code, with the exception that the constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block:</p>
+<pre class="highlight"><span class="kr">class</span> StorageArea <span class="p">{</span>
+  constructor<span class="p">(</span>name<span class="p">)</span> <span class="p">{}</span>
+
+  set<span class="p">(</span>key<span class="p">,</span> value<span class="p">)</span> <span class="p">{}</span>
+  get<span class="p">(</span>key<span class="p">)</span> <span class="p">{}</span>
+  has<span class="p">(</span>key<span class="p">)</span> <span class="p">{}</span>
+  <span class="k">delete</span><span class="p">(</span>key<span class="p">)</span> <span class="p">{}</span>
+  clear<span class="p">()</span> <span class="p">{}</span>
+
+  keys<span class="p">()</span> <span class="p">{}</span>
+  values<span class="p">()</span> <span class="p">{}</span>
+  entries<span class="p">()</span> <span class="p">{}</span>
+
+  get backingStore<span class="p">()</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="constructor" data-export="" data-level="3.1" data-lt="constructor(name)" id="storagearea-constructor"><span class="secno">3.1. </span><span class="content">constructor(<var>name</var>)</span><a class="self-link" href="#storagearea-constructor"></a></h3>
+   <p>TODO: use <var>name</var> to create new IDB store</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.2" data-lt="set(key, value)" id="storagearea-set"><span class="secno">3.2. </span><span class="content">set(<var>key</var>, <var>value</var>)</span><a class="self-link" href="#storagearea-set"></a></h3>
+   <p>TODO: set <var>key</var> and <var>value</var> in the IDB store</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.3" data-lt="get(key)" id="storagearea-get"><span class="secno">3.3. </span><span class="content">get(<var>key</var>)</span><a class="self-link" href="#storagearea-get"></a></h3>
+   <p>TODO: get <var>key</var> from the IDB store</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.4" data-lt="has(key)" id="storagearea-has"><span class="secno">3.4. </span><span class="content">has(<var>key</var>)</span><a class="self-link" href="#storagearea-has"></a></h3>
+   <p>TODO: check for the presence of <var>key</var> in the IDB store</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.5" data-lt="delete(key)" id="storagearea-delete"><span class="secno">3.5. </span><span class="content">delete(<var>key</var>)</span><a class="self-link" href="#storagearea-delete"></a></h3>
+   <p>TODO: delete the entry identified by <var>key</var> in the IDB store</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.6" data-lt="clear()" id="storagearea-clear"><span class="secno">3.6. </span><span class="content">clear()</span><a class="self-link" href="#storagearea-clear"></a></h3>
+   <p>TODO: delete all entries</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.7" data-lt="keys()" id="storagearea-keys"><span class="secno">3.7. </span><span class="content">keys()</span><a class="self-link" href="#storagearea-keys"></a></h3>
+   <p>TODO: return all the keys</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.8" data-lt="values()" id="storagearea-values"><span class="secno">3.8. </span><span class="content">values()</span><a class="self-link" href="#storagearea-values"></a></h3>
+   <p>TODO: return all the values</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.9" data-lt="entries()" id="storagearea-entries"><span class="secno">3.9. </span><span class="content">entries()</span><a class="self-link" href="#storagearea-entries"></a></h3>
+   <p>TODO: return all the entries</p>
+   <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="attribute" data-export="" data-level="3.10" data-lt="backingStore" id="storagearea-backingstore"><span class="secno">3.10. </span><span class="content">get backingStore()</span><a class="self-link" href="#storagearea-backingstore"></a></h3>
+   <p>TODO: return all the backing store info</p>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
    <p>The editor would like to thank
 (nobody yet)
@@ -1534,19 +1712,147 @@ for their contributions to this specification.</p>
 })();
 </script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <ul class="index">
+   <li><a href="#async-local-storage">async-local-storage</a><span>, in §2</span>
+   <li><a href="#storagearea-backingstore">backingStore</a><span>, in §3.9</span>
+   <li><a href="#storagearea-clear">clear()</a><span>, in §3.5</span>
+   <li><a href="#storagearea-constructor">constructor(name)</a><span>, in §3</span>
+   <li><a href="#storagearea-delete">delete(key)</a><span>, in §3.4</span>
+   <li><a href="#storagearea-entries">entries()</a><span>, in §3.8</span>
+   <li><a href="#storagearea-get">get(key)</a><span>, in §3.2</span>
+   <li><a href="#storagearea-has">has(key)</a><span>, in §3.3</span>
+   <li><a href="#storagearea-keys">keys()</a><span>, in §3.6</span>
+   <li><a href="#storagearea-set">set(key, value)</a><span>, in §3.1</span>
+   <li><a href="#storagearea">StorageArea</a><span>, in §2</span>
+   <li><a href="#storagearea-values">values()</a><span>, in §3.7</span>
+  </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
+    <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
+    <ul>
+     <li><a href="https://tc39.github.io/ecma262/#sec-map-objects">Map</a>
+     <li><a href="https://tc39.github.io/ecma262/#current-realm">current realm</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[FETCH]</a> defines the following terms:
+    <ul>
+     <li><a href="https://fetch.spec.whatwg.org/#headers">Headers</a>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><a href="https://html.spec.whatwg.org/multipage/webstorage.html#storage-2">Storage</a>
      <li><a href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage">localStorage</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[LWAPI]</a> defines the following terms:
+    <ul>
+     <li><a href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure">api identifier</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[service-workers-1]</a> defines the following terms:
+    <ul>
+     <li><a href="https://w3c.github.io/ServiceWorker/#cache">Cache</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
+    <ul>
+     <li><a href="https://heycam.github.io/webidl/#construct-a-callback-function">construct</a>
+     <li><a href="https://heycam.github.io/webidl/#idl-named-properties">named properties</a>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-ecmascript">[ECMASCRIPT]
+   <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
+   <dt id="biblio-lwapi">[LWAPI]
+   <dd>Domenic Denicola; Dru Knox; Ojan Vafai. <a href="https://github.com/drufball/layered-apis/blob/master/README.md">Layered APIs</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/README.md">https://github.com/drufball/layered-apis/blob/master/README.md</a>
+   <dt id="biblio-webidl">[WebIDL]
+   <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
+  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-fetch">[FETCH]
+   <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-indexeddb">[INDEXEDDB]
+   <dd>Nikunj Mehta; et al. <a href="https://www.w3.org/TR/IndexedDB/">Indexed Database API</a>. 8 January 2015. REC. URL: <a href="https://www.w3.org/TR/IndexedDB/">https://www.w3.org/TR/IndexedDB/</a>
+   <dt id="biblio-service-workers-1">[SERVICE-WORKERS-1]
+   <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 2 November 2017. WD. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
+  </dl>
+  <aside class="dfn-panel" data-for="async-local-storage">
+   <b><a href="#async-local-storage">#async-local-storage</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-async-local-storage">3. The StorageArea class</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="storagearea">
+   <b><a href="#storagearea">#storagearea</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-storagearea">2. The async-local-storage layered web API</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a>
+    <li><a href="#ref-for-storagearea③">3. The StorageArea class</a>
+   </ul>
+  </aside>
+<script>/* script-dfn-panel */
+
+        document.body.addEventListener("click", function(e) {
+            var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
+            // Find the dfn element or panel, if any, that was clicked on.
+            var el = e.target;
+            var target;
+            var hitALink = false;
+            while(el.parentElement) {
+                if(el.tagName == "A") {
+                    // Clicking on a link in a <dfn> shouldn't summon the panel
+                    hitALink = true;
+                }
+                if(el.classList.contains("dfn-paneled")) {
+                    target = "dfn";
+                    break;
+                }
+                if(el.classList.contains("dfn-panel")) {
+                    target = "dfn-panel";
+                    break;
+                }
+                el = el.parentElement;
+            }
+            if(target != "dfn-panel") {
+                // Turn off any currently "on" or "activated" panels.
+                queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
+                    el.classList.remove("on");
+                    el.classList.remove("activated");
+                });
+            }
+            if(target == "dfn" && !hitALink) {
+                // open the panel
+                var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
+                if(dfnPanel) {
+                    console.log(dfnPanel);
+                    dfnPanel.classList.add("on");
+                    var rect = el.getBoundingClientRect();
+                    dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
+                    dfnPanel.style.top = window.scrollY + rect.top + "px";
+                    var panelRect = dfnPanel.getBoundingClientRect();
+                    var panelWidth = panelRect.right - panelRect.left;
+                    if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
+                        // Reposition, because the panel is overflowing
+                        dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
+                    }
+                } else {
+                    console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
+                }
+            } else if(target == "dfn-panel") {
+                // Switch it to "activated" state, which pins it.
+                el.classList.add("activated");
+                el.style.left = null;
+                el.style.top = null;
+            }
+
+        });
+        </script>
