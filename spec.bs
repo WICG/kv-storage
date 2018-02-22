@@ -21,6 +21,7 @@ url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-i
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
   text: Construct; url: sec-construct; type: abstract-op
+  text: current Realm; url: current-realm; type: dfn
 </pre>
 
 <pre class="biblio">
@@ -79,9 +80,10 @@ This specification proposes a new API, called async local storage, which is inte
 
 </div>
 
+
 <h2 id="module">The <code>async-local-storage</code> layered web API</h2>
 
-This specification defines a new layered web API, whose [=API identifier=] is "<code>async-local-storage</code>" and whose exports are the following:
+This specification defines a new layered web API, whose [=API identifier=] is "<dfn><code>async-local-storage</code></dfn>" and whose exports are the following:
 
 : <code>StorageArea</code>
 :: The {{StorageArea}} class
@@ -97,9 +99,69 @@ This specification defines a new layered web API, whose [=API identifier=] is "<
   </xmp>
 </div>
 
+
 <h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
 
-TODO
+Upon evaluating the <a><code>async-local-storage</code></a> layered API module, the {{StorageArea}} class must be created in the [=current Realm=]. The result must be equivalent to evaluating the following JavaScript code, with the exception that the constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block:
+
+<pre highlight="js">
+  class StorageArea {
+    constructor(name) {}
+
+    set(key, value) {}
+    get(key) {}
+    has(key) {}
+    delete(key) {}
+    clear() {}
+
+    keys() {}
+    values() {}
+    entries() {}
+
+    get backingStore() {}
+  }
+</pre>
+
+<h3 id="storagearea-constructor" constructor for="StorageArea">constructor(|name|)</h3>
+
+TODO: use |name| to create new IDB store
+
+<h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
+
+TODO: set |key| and |value| in the IDB store
+
+<h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
+
+TODO: get |key| from the IDB store
+
+<h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
+
+TODO: check for the presence of |key| in the IDB store
+
+<h3 id="storagearea-delete" method for="StorageArea">delete(|key|)</h3>
+
+TODO: delete the entry identified by |key| in the IDB store
+
+<h3 id="storagearea-clear" method for="StorageArea">clear()</h3>
+
+TODO: delete all entries
+
+<h3 id="storagearea-keys" method for="StorageArea">keys()</h3>
+
+TODO: return all the keys
+
+<h3 id="storagearea-values" method for="StorageArea">values()</h3>
+
+TODO: return all the values
+
+<h3 id="storagearea-entries" method for="StorageArea">entries()</h3>
+
+TODO: return all the entries
+
+<h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
+
+TODO: return all the backing store info
+
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
