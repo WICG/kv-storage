@@ -1443,7 +1443,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-02-22">22 February 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-02-23">23 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1457,7 +1457,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 22 February 2018,
+In addition, as of 23 February 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1486,6 +1486,7 @@ Parts of this work may be from another specification document.  If so, those par
       <li><a href="#storagearea-values"><span class="secno">3.8</span> <span class="content">values()</span></a>
       <li><a href="#storagearea-entries"><span class="secno">3.9</span> <span class="content">entries()</span></a>
       <li><a href="#storagearea-backingstore"><span class="secno">3.10</span> <span class="content">get backingStore()</span></a>
+      <li><a href="#supporting"><span class="secno">3.11</span> <span class="content">Supporting operations</span></a>
      </ol>
     <li><a href="#acks"><span class="secno"></span> <span class="content">Acknowledgments</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
@@ -1553,12 +1554,186 @@ Parts of this work may be from another specification document.  If so, those par
   get backingStore<span class="p">()</span> <span class="p">{}</span>
 <span class="p">}</span>
 </pre>
+   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea④">StorageArea</a></code> instance must also contain the following internal slots:</p>
+   <table>
+    <thead>
+     <tr>
+      <th>Internal Slot 
+      <th>Initial Value 
+      <th>Description (<em>non-normative</em>) 
+    <tbody>
+     <tr>
+      <td>[[Connection]] 
+      <td>null 
+      <td>An <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#connection" id="ref-for-connection">IndexedDB connection</a> or null 
+     <tr>
+      <td>[[ConnectionException]] 
+      <td>null 
+      <td>An exception encountered during the connection process or null 
+     <tr>
+      <td>[[StoreName]] 
+      <td>null 
+      <td>A string or null 
+   </table>
    <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="constructor" data-export="" data-level="3.1" data-lt="constructor(name)" id="storagearea-constructor"><span class="secno">3.1. </span><span class="content">constructor(<var>name</var>)</span><a class="self-link" href="#storagearea-constructor"></a></h3>
-   <p>TODO: use <var>name</var> to create new IDB store</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Let <var>storageArea</var> be this <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑤">StorageArea</a></code> object.</p>
+     <li data-md="">
+      <p>Set <var>storageArea</var>’s internal slots to the initial values indicated in <a href="#storagearea" id="ref-for-storagearea⑥">§3 The StorageArea class</a>.</p>
+     <li data-md="">
+      <p>Set <var>storageArea</var>.[[StoreName]] to <var>name</var>.</p>
+     <li data-md="">
+      <p>Let <var>origin</var> be the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a>.</p>
+     <li data-md="">
+      <p>If <var>origin</var> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque" id="ref-for-concept-origin-opaque">opaque origin</a>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
+     <li data-md="">
+      <p>Let <var>request</var> be a new <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#open-request" id="ref-for-open-request">open request</a>.</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+      <ol>
+       <li data-md="">
+        <p class="assertion">Assert: <var>storageArea</var>.[[Connection]] is not null.</p>
+       <li data-md="">
+        <p>Let <var>database</var> be the <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#database" id="ref-for-database">database</a> associated with <var>storageArea</var>.[[Connection]].</p>
+       <li data-md="">
+        <p class="assertion">Assert: <var>database</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#upgrade-transaction" id="ref-for-upgrade-transaction">upgrade transaction</a> is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#active" id="ref-for-active">active</a>.</p>
+       <li data-md="">
+        <p>If an <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store" id="ref-for-object-store">object store</a> <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#name" id="ref-for-name">name</a> <var>name</var> already exists in <var>database</var>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#constrainterror" id="ref-for-constrainterror">ConstraintError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
+       <li data-md="">
+        <p>Let <var>store</var> be a new <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store" id="ref-for-object-store①">object store</a> in <var>database</var>.</p>
+       <li data-md="">
+        <p>Set <var>store</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#name" id="ref-for-name①">name</a> to <var>name</var>.</p>
+      </ol>
+     <li data-md="">
+      <p>Run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>:</p>
+      <ol>
+       <li data-md="">
+        <p>Let <var>result</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#open-a-database" id="ref-for-open-a-database">opening a database</a>, given <var>origin</var>, "<code>async-local-storage</code>", 1, and <var>request</var>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task">Queue a task</a> to run these steps:</p>
+        <ol>
+         <li data-md="">
+          <p>If <var>result</var> is an <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#connection" id="ref-for-connection①">IndexedDB connection</a>, set <var>storageArea</var>.[[Connection]] to <var>result</var>.</p>
+         <li data-md="">
+          <p>Otherwise, set <var>storageArea</var>.[[ConnectionException]] to <var>result</var>.</p>
+        </ol>
+      </ol>
+    </ol>
+   </div>
+   <div class="note" role="note">
+     Modulo issues around tampered-with globals and prototypes, the above is roughly equivalent to the following JavaScript code: 
+<pre class="highlight"><span class="kr">class</span> StorageArea <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="c1"></span>
+  constructor<span class="p">(</span>name<span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span>#storeName <span class="o">=</span> name<span class="p">;</span>
+
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="kr">const</span> openRequest <span class="o">=</span> indexedDB<span class="p">.</span>open<span class="p">(</span><span class="s2">"async-local-storage"</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+      openRequest<span class="p">.</span>onerror <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span>#connectionException <span class="o">=</span> openRequest<span class="p">.</span>error<span class="p">;</span>
+      <span class="p">};</span>
+      openRequest<span class="p">.</span>onupgradeneeded <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+        openRequest<span class="p">.</span>result<span class="p">.</span>createObjectStore<span class="p">(</span>name<span class="p">);</span>
+      <span class="p">};</span>
+      openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span>#connection <span class="o">=</span> openRequest<span class="p">.</span>result<span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span>e<span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span>#connectionException <span class="o">=</span> e<span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// ...</span>
+<span class="c1"></span><span class="p">}</span>
+</pre>
+   </div>
    <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.2" data-lt="set(key, value)" id="storagearea-set"><span class="secno">3.2. </span><span class="content">set(<var>key</var>, <var>value</var>)</span><a class="self-link" href="#storagearea-set"></a></h3>
    <p>TODO: set <var>key</var> and <var>value</var> in the IDB store</p>
    <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.3" data-lt="get(key)" id="storagearea-get"><span class="secno">3.3. </span><span class="content">get(<var>key</var>)</span><a class="self-link" href="#storagearea-get"></a></h3>
-   <p>TODO: get <var>key</var> from the IDB store</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Let <var>storageArea</var> be <b>this</b>.</p>
+     <li data-md="">
+      <p>If <var>storageArea</var> does not have an [[StoreName]] internal slot, or <var>storageArea</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> exception.</p>
+     <li data-md="">
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>.</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">In parallel</a>, wait for either <var>storageArea</var>.[[Connection]] or <var>storageArea</var>.[[ConnectionException]] to become non-null. Then, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task" id="ref-for-queue-a-task①">queue a task</a> to run the following steps:</p>
+      <ol>
+       <li data-md="">
+        <p>If <var>storageArea</var>.[[ConnectionException]] is non-null, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise">reject</a> <var>promise</var> with <var>storageArea</var>.[[ConnectionException]], and abort these steps.</p>
+       <li data-md="">
+        <p>Let <var>connection</var> be <var>storageArea</var>.[[Connection]].</p>
+       <li data-md="">
+        <p class="assertion">Assert: no running <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#upgrade-transaction" id="ref-for-upgrade-transaction①">upgrade transaction</a> is associated with <var>connection</var>.</p>
+       <li data-md="">
+        <p class="assertion">Assert: <var>connection</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-pending-flag" id="ref-for-close-pending-flag">close pending flag</a> is unset.</p>
+       <li data-md="">
+        <p>If <var>connection</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#database" id="ref-for-database①">database</a> does not contain an <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store" id="ref-for-object-store②">object store</a> <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#name" id="ref-for-name②">named</a> <var>storageArea</var>.[[StoreName]], <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#notfounderror" id="ref-for-notfounderror">NotFoundError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code> and abort these steps.</p>
+       <li data-md="">
+        <p>Let <var>store</var> be the single <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store" id="ref-for-object-store③">object store</a> in <var>connection</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#database" id="ref-for-database②">database</a> <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#name" id="ref-for-name③">named</a> <var>storageArea</var>.[[StoreName]].</p>
+       <li data-md="">
+        <p>Let <var>transaction</var> be a newly <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#create" id="ref-for-create">created</a> <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#transaction" id="ref-for-transaction">transaction</a> with <var>connection</var>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbtransactionmode-readonly" id="ref-for-dom-idbtransactionmode-readonly">"readonly"</a></code>, and « <var>store</var> ».</p>
+       <li data-md="">
+        <p>Set <var>transaction</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#cleanup-event-loop" id="ref-for-cleanup-event-loop">cleanup event loop</a> to the current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop" id="ref-for-event-loop">event loop</a>.</p>
+       <li data-md="">
+        <p>Let <var>handle</var> be a new <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store-handle" id="ref-for-object-store-handle">object store handle</a> whose <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store" id="ref-for-object-store④">object store</a> is <var>store</var> and whose <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#transaction" id="ref-for-transaction①">transaction</a> is <var>transaction</var>.</p>
+       <li data-md="">
+        <p>Let <var>range</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key-range" id="ref-for-convert-a-value-to-a-key-range">converting a value to a key range</a> with <var>key</var> and the null disallowed flag set. If this throws an exception, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise②">reject</a> <var>promise</var> with that exception and abort these steps.</p>
+       <li data-md="">
+        <p>Let <var>request</var> be the result of <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#asynchronously-executing-a-request" id="ref-for-asynchronously-executing-a-request">asynchronously executing a request</a> given:</p>
+        <ul>
+         <li data-md="">
+          <p>A source of <var>handle</var></p>
+         <li data-md="">
+          <p>An operation consisting of running the steps to <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#retrieve-a-value-from-an-object-store" id="ref-for-retrieve-a-value-from-an-object-store">retrieve a value from an object store</a> given the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm②">current Realm</a>, <var>store</var>, and <var>range</var>.</p>
+        </ul>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://w3c.github.io/FileAPI/#blob-url-resolve" id="ref-for-blob-url-resolve">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result">result</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise③">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error">error</a>.</p>
+      </ol>
+     <li data-md="">
+      <p>Return <var>promise</var>.</p>
+    </ol>
+   </div>
+   <div class="note" role="note">
+     Modulo issues around tampered-with globals and prototypes, and using a not-shown-here utility <code>waitForConnectionOrConnectionException()</code>, the above is roughly equivalent to the following JavaScript code: 
+<pre class="highlight"><span class="kr">class</span> StorageArea <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="c1"></span>
+  get<span class="p">(</span>key<span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span>#storeName<span class="p">;</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span>e<span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> Promise<span class="p">.</span>reject<span class="p">(</span>e<span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> waitForConnectionOrConnectionException<span class="p">().</span>then<span class="p">(()</span> <span class="p">=></span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span>#connectionException<span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">this</span><span class="p">.</span>#connectionException<span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="k">new</span> Promise<span class="p">((</span>resolve<span class="p">,</span> reject<span class="p">)</span> <span class="p">=></span> <span class="p">{</span>
+        <span class="kr">const</span> transaction <span class="o">=</span> <span class="k">this</span><span class="p">.</span>#connection<span class="p">.</span>transaction<span class="p">(</span><span class="k">this</span><span class="p">.</span>#storeName<span class="p">,</span> <span class="s2">"readonly"</span><span class="p">);</span>
+        <span class="kr">const</span> store <span class="o">=</span> transaction<span class="p">.</span>objectStore<span class="p">(</span><span class="k">this</span><span class="p">.</span>#storeName<span class="p">);</span>
+        <span class="kr">const</span> request <span class="o">=</span> store<span class="p">.</span>get<span class="p">(</span>key<span class="p">);</span>
+
+        request<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> resolve<span class="p">(</span>request<span class="p">.</span>result<span class="p">);</span>
+        request<span class="p">.</span>onerror <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> reject<span class="p">(</span>request<span class="p">.</span>reject<span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="c1">// ...</span>
+<span class="c1"></span><span class="p">}</span>
+</pre>
+   </div>
    <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.4" data-lt="has(key)" id="storagearea-has"><span class="secno">3.4. </span><span class="content">has(<var>key</var>)</span><a class="self-link" href="#storagearea-has"></a></h3>
    <p>TODO: check for the presence of <var>key</var> in the IDB store</p>
    <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.5" data-lt="delete(key)" id="storagearea-delete"><span class="secno">3.5. </span><span class="content">delete(<var>key</var>)</span><a class="self-link" href="#storagearea-delete"></a></h3>
@@ -1573,6 +1748,18 @@ Parts of this work may be from another specification document.  If so, those par
    <p>TODO: return all the entries</p>
    <h3 class="heading settled idl-code" data-dfn-for="StorageArea" data-dfn-type="attribute" data-export="" data-level="3.10" data-lt="backingStore" id="storagearea-backingstore"><span class="secno">3.10. </span><span class="content">get backingStore()</span><a class="self-link" href="#storagearea-backingstore"></a></h3>
    <p>TODO: return all the backing store info</p>
+   <h3 class="heading settled" data-level="3.11" id="supporting"><span class="secno">3.11. </span><span class="content">Supporting operations</span><a class="self-link" href="#supporting"></a></h3>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="add-a-simple-event-listener">add a simple event listener</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> <var>target</var>, an event type string <var>type</var>, and a set of steps <var>steps</var>:</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Let <var>callback</var> be a new <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-callback-function" id="ref-for-dfn-callback-function">callback function</a> whose <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-callback-context" id="ref-for-dfn-callback-context">callback context</a> is the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a> and whose object reference is a new JavaScript function that performs the steps given by <var>steps</var>. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or [[Prototype]]) are unobservable, and can be chosen arbitrarily.</p>
+     <li data-md="">
+      <p>Let <var>listener</var> be a new <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener">event listener</a> whose type is <var>type</var>, callback is <var>callback</var>, capture is false, passive is false, and once is false.</p>
+     <li data-md="">
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> <var>listener</var> to <var>target</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener①">event listeners</a>.</p>
+    </ol>
+   </div>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
    <p>The editor would like to thank
 (nobody yet)
@@ -1714,6 +1901,7 @@ for their contributions to this specification.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
+   <li><a href="#add-a-simple-event-listener">add a simple event listener</a><span>, in §3.11</span>
    <li><a href="#async-local-storage">async-local-storage</a><span>, in §2</span>
    <li><a href="#storagearea-backingstore">backingStore</a><span>, in §3.9</span>
    <li><a href="#storagearea-clear">clear()</a><span>, in §3.5</span>
@@ -1730,6 +1918,12 @@ for their contributions to this specification.</p>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><a href="https://dom.spec.whatwg.org/#eventtarget">EventTarget</a>
+     <li><a href="https://dom.spec.whatwg.org/#concept-event-listener">event listener</a>
+    </ul>
+   <li>
     <a data-link-type="biblio">[ECMASCRIPT]</a> defines the following terms:
     <ul>
      <li><a href="https://tc39.github.io/ecma262/#sec-construct">Construct</a>
@@ -1742,15 +1936,67 @@ for their contributions to this specification.</p>
      <li><a href="https://fetch.spec.whatwg.org/#headers">Headers</a>
     </ul>
    <li>
+    <a data-link-type="biblio">[FileAPI]</a> defines the following terms:
+    <ul>
+     <li><a href="https://w3c.github.io/FileAPI/#blob-url-resolve">resolve</a>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><a href="https://html.spec.whatwg.org/multipage/webstorage.html#storage-2">Storage</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">current settings object</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop">event loop</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">in parallel</a>
      <li><a href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage">localStorage</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque">opaque origin</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">origin</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">queue a task</a>
+     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm">relevant realm</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[INDEXEDDB]</a> defines the following terms:
+    <ul>
+     <li><a href="https://w3c.github.io/IndexedDB/#active">active</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#asynchronously-executing-a-request">asynchronously executing a request</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#cleanup-event-loop">cleanup event loop</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#close-pending-flag">close pending flag</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key-range">convert a value to a key range</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#create">create</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#database">database</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#error">error</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#connection">indexeddb connection</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#name">name</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#object-store">object store</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#object-store">object store <small>(for object store handle)</small></a>
+     <li><a href="https://w3c.github.io/IndexedDB/#object-store-handle">object store handle</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#open-a-database">open a database</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#open-request">open request</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#retrieve-a-value-from-an-object-store">retrieve a value from an object store</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#transaction">transaction</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#upgrade-transaction">upgrade transaction</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[IndexedDB-2]</a> defines the following terms:
+    <ul>
+     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbtransactionmode-readonly">"readonly"</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[INFRA]</a> defines the following terms:
+    <ul>
+     <li><a href="https://infra.spec.whatwg.org/#list-append">append</a>
     </ul>
    <li>
     <a data-link-type="biblio">[LWAPI]</a> defines the following terms:
     <ul>
      <li><a href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure">api identifier</a>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
+    <ul>
+     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">a new promise</a>
+     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with">a promise rejected with</a>
+     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
     </ul>
    <li>
     <a data-link-type="biblio">[service-workers-1]</a> defines the following terms:
@@ -1760,31 +2006,46 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
+     <li><a href="https://heycam.github.io/webidl/#constrainterror">ConstraintError</a>
+     <li><a href="https://heycam.github.io/webidl/#idl-DOMException">DOMException</a>
+     <li><a href="https://heycam.github.io/webidl/#notfounderror">NotFoundError</a>
+     <li><a href="https://heycam.github.io/webidl/#securityerror">SecurityError</a>
+     <li><a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">TypeError</a>
+     <li><a href="https://heycam.github.io/webidl/#dfn-callback-context">callback context</a>
+     <li><a href="https://heycam.github.io/webidl/#dfn-callback-function">callback function</a>
      <li><a href="https://heycam.github.io/webidl/#idl-named-properties">named properties</a>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-ecmascript">[ECMASCRIPT]
    <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
+   <dt id="biblio-fileapi">[FileAPI]
+   <dd>Marijn Kruisselbrink. <a href="https://www.w3.org/TR/FileAPI/">File API</a>. 26 October 2017. WD. URL: <a href="https://www.w3.org/TR/FileAPI/">https://www.w3.org/TR/FileAPI/</a>
+   <dt id="biblio-html">[HTML]
+   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
+   <dt id="biblio-indexeddb">[INDEXEDDB]
+   <dd>Nikunj Mehta; et al. <a href="https://www.w3.org/TR/IndexedDB/">Indexed Database API</a>. 8 January 2015. REC. URL: <a href="https://www.w3.org/TR/IndexedDB/">https://www.w3.org/TR/IndexedDB/</a>
+   <dt id="biblio-indexeddb-2">[IndexedDB-2]
+   <dd>Ali Alabbas; Joshua Bell. <a href="https://www.w3.org/TR/IndexedDB-2/">Indexed Database API 2.0</a>. 30 January 2018. REC. URL: <a href="https://www.w3.org/TR/IndexedDB-2/">https://www.w3.org/TR/IndexedDB-2/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-lwapi">[LWAPI]
    <dd>Domenic Denicola; Dru Knox; Ojan Vafai. <a href="https://github.com/drufball/layered-apis/blob/master/README.md">Layered APIs</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/README.md">https://github.com/drufball/layered-apis/blob/master/README.md</a>
+   <dt id="biblio-promises-guide">[PROMISES-GUIDE]
+   <dd>Domenic Denicola. <a href="https://www.w3.org/2001/tag/doc/promises-guide">Writing Promise-Using Specifications</a>. 16 February 2016. Finding of the W3C TAG. URL: <a href="https://www.w3.org/2001/tag/doc/promises-guide">https://www.w3.org/2001/tag/doc/promises-guide</a>
+   <dt id="biblio-webidl">[WebIDL]
+   <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
-   <dt id="biblio-html">[HTML]
-   <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
-   <dt id="biblio-indexeddb">[INDEXEDDB]
-   <dd>Nikunj Mehta; et al. <a href="https://www.w3.org/TR/IndexedDB/">Indexed Database API</a>. 8 January 2015. REC. URL: <a href="https://www.w3.org/TR/IndexedDB/">https://www.w3.org/TR/IndexedDB/</a>
    <dt id="biblio-service-workers-1">[SERVICE-WORKERS-1]
    <dd>Alex Russell; et al. <a href="https://www.w3.org/TR/service-workers-1/">Service Workers 1</a>. 2 November 2017. WD. URL: <a href="https://www.w3.org/TR/service-workers-1/">https://www.w3.org/TR/service-workers-1/</a>
-   <dt id="biblio-webidl">[WebIDL]
-   <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
   <aside class="dfn-panel" data-for="async-local-storage">
    <b><a href="#async-local-storage">#async-local-storage</a></b><b>Referenced in:</b>
@@ -1796,7 +2057,15 @@ for their contributions to this specification.</p>
    <b><a href="#storagearea">#storagearea</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-storagearea">2. The async-local-storage layered web API</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a>
-    <li><a href="#ref-for-storagearea③">3. The StorageArea class</a>
+    <li><a href="#ref-for-storagearea③">3. The StorageArea class</a> <a href="#ref-for-storagearea④">(2)</a>
+    <li><a href="#ref-for-storagearea⑤">3.1. constructor(name)</a> <a href="#ref-for-storagearea">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="add-a-simple-event-listener">
+   <b><a href="#add-a-simple-event-listener">#add-a-simple-event-listener</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-add-a-simple-event-listener">3.1. constructor(name)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①">3.3. get(key)</a> <a href="#ref-for-add-a-simple-event-listener②">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
