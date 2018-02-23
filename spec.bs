@@ -26,10 +26,21 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
 urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
   text: database
   text: upgrade transaction
-  text: object store;
+  text: object store
   text: open a database
   text: open request
+  text: object store handle
+  text: asynchronously executing a request
+  text: retrieve a value from an object store
+  text: convert a value to a key range
+  text: result; for: request
+  text: error; for: request
+  text: object store; for: object store handle
+  text: transaction; for: object store handle
+  text: close pending flag; for: connection
+  text: create; for: transaction
   text: active; for: transaction
+  text: cleanup event loop; for: transaction
   text: name; for: object store
   text: IndexedDB connection; url: #connection
 </pre>
@@ -149,6 +160,10 @@ Each {{StorageArea}} instance must also contain the following internal slots:
     <td>\[[ConnectionException]]
     <td>null
     <td>An exception encountered during the connection process or null
+  <tr>
+    <td>\[[StoreName]]
+    <td>null
+    <td>A string or null
 </table>
 
 <h3 id="storagearea-constructor" constructor for="StorageArea">constructor(|name|)</h3>
@@ -156,18 +171,17 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 <div class="algorithm">
   1. Let |storageArea| be this {{StorageArea}} object.
   1. Set |storageArea|'s internal slots to the initial values indicated in [[#storagearea]].
+  1. Set |storageArea|.\[[StoreName]] to |name|.
   1. Let |origin| be the [=current settings object=]'s [=environment settings object/origin=].
   1. If |origin| is an [=opaque origin=], throw a "{{SecurityError}}" {{DOMException}}.
   1. Let |request| be a new [=open request=].
-  1. Let |upgrade callback| be a new [=callback function=] whose [=callback context=] is the [=current settings object=] and whose object reference is a new JavaScript function that performs the following steps:
+  1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
     1. Assert: |storageArea|.\[[Connection]] is not null.
     1. Let |database| be the [=database=] associated with |storageArea|.\[[Connection]].
     1. Assert: |database|'s [=upgrade transaction=] is [=transaction/active=].
     1. If an [=object store=] [=object store/name|name=] |name| already exists in |database|, throw a "{{ConstraintError}}" {{DOMException}}.
     1. Let |store| be a new [=object store=] in |database|.
     1. Set |store|'s [=object store/name=] to |name|.
-  1. Let |upgrade listener| be a new [=event listener=] whose type is "<code>upgradeneeded</code>", callback is |upgrade callback|, capture is false, passive is false, and once is false.
-  1. [=list/Append=] |upgrade listener| to |request|'s [=event listeners=].
   1. Run these steps [=in parallel=]:
     1. Let |result| be the result of [=open a database|opening a database=], given |origin|, "<code>async-local-storage</code>", 1, and |request|.
     1. [=Queue a task=] to run these steps:
@@ -180,7 +194,11 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
   <pre highlight="js">
     class StorageArea {
+      // ...
+
       constructor(name) {
+        this.#storeName = name;
+
         try {
           const openRequest = indexedDB.open("async-local-storage", 1);
 
@@ -209,7 +227,63 @@ TODO: set |key| and |value| in the IDB store
 
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
-TODO: get |key| from the IDB store
+<div class="algorithm">
+  1. Let |storageArea| be <b>this</b>.
+  1. If |storageArea| does not have an \[[StoreName]] internal slot, or |storageArea|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. Let |promise| be [=a new promise=].
+  1. [=In parallel=], wait for either |storageArea|.\[[Connection]] or |storageArea|.\[[ConnectionException]] to become non-null. Then, [=queue a task=] to run the following steps:
+    1. If |storageArea|.\[[ConnectionException]] is non-null, [=reject=] |promise| with |storageArea|.\[[ConnectionException]], and abort these steps.
+    1. Let |connection| be |storageArea|.\[[Connection]].
+    1. Assert: no running [=upgrade transaction=] is associated with |connection|.
+    1. Assert: |connection|'s [=connection/close pending flag=] is unset.
+    1. If |connection|'s [=database=] does not contain an [=object store=] [=object store/name|named=] |storageArea|.\[[StoreName]], [=reject=] |promise| with a "{{NotFoundError}}" {{DOMException}} and abort these steps.
+    1. Let |store| be the single [=object store=] in |connection|'s [=database=] [=object store/name|named=] |storageArea|.\[[StoreName]].
+    1. Let |transaction| be a newly [=transaction/created=] [=transaction=] with |connection|, {{"readonly"}}, and « |store| ».
+    1. Set |transaction|'s [=transaction/cleanup event loop=] to the current [=event loop=].
+    1. Let |handle| be a new [=object store handle=] whose [=object store handle/object store=] is |store| and whose [=object store handle/transaction=] is |transaction|.
+    1. Let |range| be the result of [=convert a value to a key range|converting a value to a key range=] with |key| and the null disallowed flag set. If this throws an exception, [=reject=] |promise| with that exception and abort these steps.
+    1. Let |request| be the result of [=asynchronously executing a request=] given:
+      * A source of |handle|
+      * An operation consisting of running the steps to [=retrieve a value from an object store=] given the [=current Realm=], |store|, and |range|.
+    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+  1. Return |promise|.
+</div>
+
+<div class="note">
+  Modulo issues around tampered-with globals and prototypes, and using a not-shown-here utility <code>waitForConnectionOrConnectionException()</code>, the above is roughly equivalent to the following JavaScript code:
+
+  <pre highlight="js">
+    class StorageArea {
+      // ...
+
+      get(key) {
+        try {
+          this.#storeName;
+        } catch (e) {
+          return Promise.reject(e);
+        }
+
+        return waitForConnectionOrConnectionException().then(() => {
+          if (this.#connectionException) {
+            throw this.#connectionException;
+          }
+
+          return new Promise((resolve, reject) => {
+            const transaction = this.#connection.transaction(this.#storeName, "readonly");
+            const store = transaction.objectStore(this.#storeName);
+            const request = store.get(key);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.reject);
+          });
+        });
+      }
+
+      // ...
+    }
+  </pre>
+</div>
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
 
@@ -239,6 +313,15 @@ TODO: return all the entries
 
 TODO: return all the backing store info
 
+<h3 id="supporting">Supporting operations</h3>
+
+To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an event type string |type|, and a set of steps |steps|:
+
+<div class="algorithm">
+  1. Let |callback| be a new [=callback function=] whose [=callback context=] is the [=current settings object=] and whose object reference is a new JavaScript function that performs the steps given by |steps|. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or \[[Prototype]]) are unobservable, and can be chosen arbitrarily.
+  1. Let |listener| be a new [=event listener=] whose type is |type|, callback is |callback|, capture is false, passive is false, and once is false.
+  1. [=list/Append=] |listener| to |target|'s [=event listeners=].
+</div>
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
