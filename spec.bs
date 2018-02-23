@@ -22,6 +22,16 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
   text: Construct; url: sec-construct; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
+
+urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
+  text: database
+  text: upgrade transaction
+  text: object store;
+  text: open a database
+  text: open request
+  text: active; for: transaction
+  text: name; for: object store
+  text: IndexedDB connection; url: #connection
 </pre>
 
 <pre class="biblio">
@@ -122,9 +132,76 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
   }
 </pre>
 
+Each {{StorageArea}} instance must also contain the following internal slots:
+
+<table>
+  <thead>
+    <tr>
+      <th>Internal Slot
+      <th>Initial Value
+      <th>Description (<em>non-normative</em>)
+  </thead>
+  <tr>
+    <td>\[[Connection]]
+    <td>null
+    <td>An [=IndexedDB connection=] or null
+  <tr>
+    <td>\[[ConnectionException]]
+    <td>null
+    <td>An exception encountered during the connection process or null
+</table>
+
 <h3 id="storagearea-constructor" constructor for="StorageArea">constructor(|name|)</h3>
 
-TODO: use |name| to create new IDB store
+<div class="algorithm">
+  1. Let |storageArea| be this {{StorageArea}} object.
+  1. Set |storageArea|'s internal slots to the initial values indicated in [[#storagearea]].
+  1. Let |origin| be the [=current settings object=]'s [=environment settings object/origin=].
+  1. If |origin| is an [=opaque origin=], throw a "{{SecurityError}}" {{DOMException}}.
+  1. Let |request| be a new [=open request=].
+  1. Let |upgrade callback| be a new [=callback function=] whose [=callback context=] is the [=current settings object=] and whose object reference is a new JavaScript function that performs the following steps:
+    1. Assert: |storageArea|.\[[Connection]] is not null.
+    1. Let |database| be the [=database=] associated with |storageArea|.\[[Connection]].
+    1. Assert: |database|'s [=upgrade transaction=] is [=transaction/active=].
+    1. If an [=object store=] [=object store/name|name=] |name| already exists in |database|, throw a "{{ConstraintError}}" {{DOMException}}.
+    1. Let |store| be a new [=object store=] in |database|.
+    1. Set |store|'s [=object store/name=] to |name|.
+  1. Let |upgrade listener| be a new [=event listener=] whose type is "<code>upgradeneeded</code>", callback is |upgrade callback|, capture is false, passive is false, and once is false.
+  1. [=list/Append=] |upgrade listener| to |request|'s [=event listeners=].
+  1. Run these steps [=in parallel=]:
+    1. Let |result| be the result of [=open a database|opening a database=], given |origin|, "<code>async-local-storage</code>", 1, and |request|.
+    1. [=Queue a task=] to run these steps:
+      1. If |result| is an [=IndexedDB connection=], set |storageArea|.\[[Connection]] to |result|.
+      1. Otherwise, set |storageArea|.\[[ConnectionException]] to |result|.
+</div>
+
+<div class="note">
+  Modulo issues around tampered-with globals and prototypes, the above is roughly equivalent to the following JavaScript code:
+
+  <pre highlight="js">
+    class StorageArea {
+      constructor(name) {
+        try {
+          const openRequest = indexedDB.open("async-local-storage", 1);
+
+          openRequest.onerror = () => {
+            this.#connectionException = openRequest.error;
+          };
+          openRequest.onupgradeneeded = () => {
+            openRequest.result.createObjectStore(name);
+          };
+          openRequest.onsuccess = () => {
+            this.#connection = openRequest.result;
+          };
+        } catch (e) {
+          this.#connectionException = e;
+        }
+      }
+
+      // ...
+    }
+  </pre>
+</div>
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
 
