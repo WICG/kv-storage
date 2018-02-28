@@ -10,21 +10,22 @@ export class StorageArea {
   }
 
   set(key, value) {}
-  get(key) {
-    return this.#performDatabaseOperation(database => {
-      throwForKeyRanges(key);
 
-      const transaction = database.transaction("store", "readonly");
-      const store = transaction.objectStore("store");
+  async get(key) {
+    const database = await this.#performDatabaseOperation(database);
+    throwForKeyRanges(key);
 
-      const request = store.get(key);
+    const transaction = database.transaction("store", "readonly");
+    const store = transaction.objectStore("store");
 
-      return new Promise((resolve, reject) => {
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
+    const request = store.get(key);
+
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
     });
   }
+
   has(key) {}
   delete(key) {}
   clear() {}
