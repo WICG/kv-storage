@@ -22,6 +22,9 @@ url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-i
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
   text: ToString; url: sec-tostring; type: abstract-op
+  text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object; type: interface
+  text: CreateDataProperty; url: sec-createdataproperty; type: abstract-op
+  text: ObjectCreate; url: sec-objectcreate; type: abstract-op
   text: Construct; url: sec-construct; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
 
@@ -160,9 +163,9 @@ Each {{StorageArea}} instance must also contain the following internal slots:
       <th>Description (<em>non-normative</em>)
   </thead>
   <tr>
-    <td>\[[Name]]
+    <td>\[[DatabaseName]]
     <td>null
-    <td>A string containing the name of the storage area
+    <td>A string containing the name of the backing IndexedDB database
   <tr>
     <td>\[[DatabasePromise]]
     <td>null
@@ -174,7 +177,8 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 <div class="algorithm">
   1. Let |area| be this {{StorageArea}} object.
   1. Set |area|'s internal slots to the initial values indicated in [[#storagearea]].
-  1. Set |area|.\[[Name]] to <a abstract-op>ToString</a>(|name|).
+  1. Let |nameString| be <a abstract-op>ToString</a>(|name|).
+  1. Set |area|.\[[DatabaseName]] to the concatenation of "<code>async-local-storage:</code>" and |nameString|.
 </div>
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
@@ -243,7 +247,15 @@ TODO: return all the entries
 
 <h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
 
-TODO: return all the backing store info
+<div class="algorithm">
+  1. Let |area| be this object.
+  1. If |area| does not have a \[[DatabaseName]] internal slot, throw a {{TypeError}}.
+  1. Let |info| be <a abstract-op>ObjectCreate</a>({{%ObjectPrototype%}}).
+  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>database</code>", |area|.\[[DatabaseName]]).
+  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>store</code>", "<code>store</code>").
+  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>version</code>", 1).
+  1. Return |info|.
+</div>
 
 <h3 id="supporting">Supporting operations</h3>
 
@@ -259,12 +271,11 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
 
 <div class="algorithm">
   1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
-  1. Assert: |area|.\[[Name]] is a string (and in particular is not null).
+  1. Assert: |area|.\[[DatabaseName]] is a string (and in particular is not null).
   1. If |area|.\[[DatabasePromise]] is null, then:
     1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
     1. TODO: reject if {{WindowOrWorkerGlobalScope/indexedDB}} does not exist (e.g. in a worklet).
-    1. Let |dbName| be the concatenation of "<code>async-local-storage:</code>" and |area|.\[[Name]].
-    1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |dbName| and 1.
+    1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |area|.\[[DatabaseName]] and 1.
     1. If those steps threw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
     1. Otherwise:
       1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].

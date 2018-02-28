@@ -2,11 +2,11 @@
 // globals. Otherwise, though, it should be equivalent to the spec.
 
 export class StorageArea {
-  #name = null;
-  #dbPromise = null;
+  #databaseName = null;
+  #databasePromise = null;
 
   constructor(name) {
-    this.#name = `${name}`;
+    this.#databaseName = "async-local-storage" + `${name}`;
   }
 
   async set(key, value) {
@@ -67,14 +67,20 @@ export class StorageArea {
   values() {}
   entries() {}
 
-  get backingStore() {}
+  get backingStore() {
+    return {
+      database: this.#databaseName,
+      store: "store",
+      version: 1
+    };
+  }
 
   #prepareToPerformDatabaseOperation() {
-    // TypeError is automatic via the immediate usage of this.#dbPromise.
+    // TypeError is automatic via the immediate usage of this.#databasePromise.
 
-    if (this.#dbPromise === null) {
-      this.#dbPromise = new Promise((resolve, reject) => {
-        const request = indexedDB.open("async-local-storage:" + this.#name, 1);
+    if (this.#databasePromise === null) {
+      this.#databasePromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(this.#databaseName, 1);
 
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
@@ -89,7 +95,7 @@ export class StorageArea {
       });
     }
 
-    return this.#dbPromise;
+    return this.#databasePromise;
   }
 }
 

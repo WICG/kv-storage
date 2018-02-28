@@ -97,7 +97,7 @@ Note that the scope of the default storage area would be per-realm, or more prec
 
 One of the great things about implementing async local storage as a layered web API on top of IndexedDB is that, if the developer's code grows beyond the capabilities of a simple key/value store, they can easily transition to the full power of IndexedDB (such as using transactions, indices, or cursors), while reusing their database.
 
-To facilitate this, we include an API that allows you to get a `{ database, store }` pair naming the IndexedDB database and store within that database where a given `StorageArea`'s data is being stored:
+To facilitate this, we include an API that allows you to get a `{ database, store, version }` object identifying the IndexedDB database and store within that database where a given `StorageArea`'s data is being stored:
 
 ```js
 import { storage } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
@@ -107,8 +107,8 @@ import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-
   await storage.set("mycat", "Tom");
   await storage.set("mydog", "Joey");
 
-  const { database, store } = storage.backingStore;
-  const db = await idbOpen(database);
+  const { database, store, version } = storage.backingStore;
+  const db = await idbOpen(database, version);
   const tx = db.transaction(store, "readwrite");
   tx.objectStore(store).add("mycat", "Jerry");
   tx.objectStore(store).add("mydog", "Kelby");
