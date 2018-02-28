@@ -65,7 +65,7 @@ export class StorageArea {
 
   clear() {}
 
-  keys() {
+  async keys() {
     const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
 
     const request = store.getAllKeys(undefined);
@@ -76,7 +76,7 @@ export class StorageArea {
     });
   }
 
-  values() {
+  async values() {
     const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
 
     const request = store.getAll(undefined);
@@ -87,7 +87,7 @@ export class StorageArea {
     });
   }
 
-  entries() {
+  async entries() {
     const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
 
     const keysRequest = store.getAllKeys(undefined);
