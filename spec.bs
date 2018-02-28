@@ -221,7 +221,62 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-clear" method for="StorageArea">clear()</h3>
 
-TODO: delete all entries
+<div class="algorithm">
+  1. Let |area| be this object.
+  1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. If |area|.\[[DatabasePromise]] is not null, return the result of [=transforming=] |area|.\[[DatabasePromise]] by:
+    * A fulfillment handler that performs the following steps, given |database|:
+      1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/close()}} method on |database|.
+      1. Set |area|.\[[DatabasePromise]] to null.
+      1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
+    * A rejection handler that performs the following steps:
+      1. Set |area|.\[[DatabasePromise]] to null.
+      1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
+  1. Otherwise, return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
+</div>
+
+To <dfn lt="deleting the database|delete the database">delete the database</dfn> given a string |name|:
+
+<div class="algorithm">
+  1. Let |promise| be [=a new promise=].
+  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/deleteDatabase()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the argument |name|.
+  1. If those steps threw an exception, catch the exception and [=reject=] |promise| with it.
+  1. Otherwise:
+    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with undefined.
+    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+  1. Return |promise|.
+</div>
+
+<div class="note">
+  This method can be used to recover from corruption of the backing store. For example,
+
+  <pre highlight="js">
+    // This corrupts the "cats" storage area, since StorageAreas assume a version of 1.
+    const openRequest = indexedDB.open("async-local-storage:cats", 100);
+    openRequest.onsuccess = () => {
+      openRequest.onsuccess.close();
+    };
+
+    (async () => {
+      const area = new StorageArea("cats");
+
+      // Due to the corruption, all other methods will reject:
+      try {
+        await area.set("fluffy", new Cat());
+      } catch (e) {
+        // This will be reached and output a "VersionError" DOMException
+        console.error(e);
+      }
+
+      // But clear() will delete the database entirely:
+      await area.clear();
+
+      // Now we can use it again!
+      await area.set("fluffy", new Cat());
+      await area.set("tigger", new Cat());
+    })();
+  </pre>
+</div>
 
 <h3 id="storagearea-keys" method for="StorageArea">keys()</h3>
 

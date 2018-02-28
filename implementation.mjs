@@ -63,7 +63,23 @@ export class StorageArea {
     });
   }
 
-  clear() {}
+  async clear() {
+    if (this.#databasePromise !== null) {
+      return this.#databasePromise.then(
+        database => {
+          database.close();
+          this.#databasePromise = null;
+          return deleteDatabase(this.#databaseName);
+        },
+        () => {
+          this.#databasePromise = null;
+          return deleteDatabase(this.#databaseName);
+        }
+      );
+    }
+
+    return deleteDatabase(this.#databaseName);
+  }
 
   async keys() {
     const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
@@ -203,4 +219,12 @@ function zip(a, b) {
   }
 
   return result;
+}
+
+function deleteDatabase(name) {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.deleteDatabase(name);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
 }
