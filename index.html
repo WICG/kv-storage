@@ -1673,7 +1673,87 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.6" data-lt="clear()" id="storagearea-clear"><span class="secno">3.6. </span><span class="content">clear()</span></h3>
-   <p>TODO: delete all entries</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Let <var>area</var> be this object.</p>
+     <li data-md="">
+      <p>If <var>area</var> does not have an [[DatabasePromise]] internal slot, or <var>area</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> exception.</p>
+     <li data-md="">
+      <p>If <var>area</var>.[[DatabasePromise]] is not null, return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by">transforming</a> <var>area</var>.[[DatabasePromise]] by:</p>
+      <ul>
+       <li data-md="">
+        <p>A fulfillment handler that performs the following steps, given <var>database</var>:</p>
+        <ol>
+         <li data-md="">
+          <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>.</p>
+         <li data-md="">
+          <p>Set <var>area</var>.[[DatabasePromise]] to null.</p>
+         <li data-md="">
+          <p>Return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
+        </ol>
+       <li data-md="">
+        <p>A rejection handler that performs the following steps:</p>
+        <ol>
+         <li data-md="">
+          <p>Set <var>area</var>.[[DatabasePromise]] to null.</p>
+         <li data-md="">
+          <p>Return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database①">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
+        </ol>
+      </ul>
+     <li data-md="">
+      <p>Otherwise, return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database②">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
+    </ol>
+   </div>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="deleting the database|delete the database" data-noexport="" id="deleting-the-database">delete the database</dfn> given a string <var>name</var>:</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
+     <li data-md="">
+      <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory">IDBFactory</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbfactory-deletedatabase" id="ref-for-dom-idbfactory-deletedatabase">deleteDatabase()</a></code> method on the object returned by the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb">indexedDB</a></code> IDL attribute, given the argument <var>name</var>.</p>
+     <li data-md="">
+      <p>If those steps threw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑥">reject</a> <var>promise</var> with it.</p>
+     <li data-md="">
+      <p>Otherwise:</p>
+      <ol>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise④">resolves</a> <var>promise</var> with undefined.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑦">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑥">error</a>.</p>
+      </ol>
+     <li data-md="">
+      <p>Return <var>promise</var>.</p>
+    </ol>
+   </div>
+   <div class="note" role="note">
+     This method can be used to recover from corruption of the backing store. For example, 
+<pre class="highlight"><span class="c1">// This corrupts the "cats" storage area, since StorageAreas assume a version of 1.</span>
+<span class="c1"></span><span class="kr">const</span> openRequest <span class="o">=</span> indexedDB<span class="p">.</span>open<span class="p">(</span><span class="s2">"async-local-storage:cats"</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+  openRequest<span class="p">.</span>onsuccess<span class="p">.</span>close<span class="p">();</span>
+<span class="p">};</span>
+
+<span class="p">(</span>async <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+  <span class="kr">const</span> area <span class="o">=</span> <span class="k">new</span> StorageArea<span class="p">(</span><span class="s2">"cats"</span><span class="p">);</span>
+
+  <span class="c1">// Due to the corruption, all other methods will reject:</span>
+<span class="c1"></span>  <span class="k">try</span> <span class="p">{</span>
+    await area<span class="p">.</span>set<span class="p">(</span><span class="s2">"fluffy"</span><span class="p">,</span> <span class="k">new</span> Cat<span class="p">());</span>
+  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span>e<span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// This will be reached and output a "VersionError" DOMException</span>
+<span class="c1"></span>    console<span class="p">.</span>error<span class="p">(</span>e<span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// But clear() will delete the database entirely:</span>
+<span class="c1"></span>  await area<span class="p">.</span>clear<span class="p">();</span>
+
+  <span class="c1">// Now we can use it again!</span>
+<span class="c1"></span>  await area<span class="p">.</span>set<span class="p">(</span><span class="s2">"fluffy"</span><span class="p">,</span> <span class="k">new</span> Cat<span class="p">());</span>
+  await area<span class="p">.</span>set<span class="p">(</span><span class="s2">"tigger"</span><span class="p">,</span> <span class="k">new</span> Cat<span class="p">());</span>
+<span class="p">})();</span>
+</pre>
+   </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.7" data-lt="keys()" id="storagearea-keys"><span class="secno">3.7. </span><span class="content">keys()</span></h3>
    <div class="algorithm">
     <ol>
@@ -1683,11 +1763,11 @@ Parts of this work may be from another specification document.  If so, those par
        <li data-md="">
         <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore④">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys" id="ref-for-dom-idbobjectstore-getallkeys">getAllKeys()</a></code> method on <var>store</var> given the argument undefined.</p>
        <li data-md="">
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise④">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result②">result</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①②">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑤">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result②">result</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑥">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑥">error</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①③">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑦">error</a>.</p>
        <li data-md="">
         <p>Return <var>promise</var>.</p>
       </ol>
@@ -1702,11 +1782,11 @@ Parts of this work may be from another specification document.  If so, those par
        <li data-md="">
         <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑤">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
        <li data-md="">
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①②">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑤">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result③">result</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①④">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑥">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result③">result</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①③">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑦">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑦">error</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑨">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑧">error</a>.</p>
        <li data-md="">
         <p>Return <var>promise</var>.</p>
       </ol>
@@ -1723,13 +1803,13 @@ Parts of this work may be from another specification document.  If so, those par
        <li data-md="">
         <p>Let <var>valuesRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑦">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall①">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
        <li data-md="">
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑦">a new promise</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①④">Add a simple event listener</a> to <var>keysRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑧">error</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>keysRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⓪">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑨">error</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑨">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑨">error</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑥">resolves</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip">zipping</a> <var>keysRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result④">result</a> and <var>valuesRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑤">result</a>.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">resolves</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip">zipping</a> <var>keysRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result④">result</a> and <var>valuesRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑤">result</a>.</p>
         <p class="note" role="note">If <var>valuesRequest</var> succeeds, then <var>keysRequest</var> will have succeeded already.</p>
        <li data-md="">
         <p>Return <var>promise</var>.</p>
@@ -1742,7 +1822,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md="">
       <p>Let <var>area</var> be this object.</p>
      <li data-md="">
-      <p>If <var>area</var> does not have a [[DatabaseName]] internal slot, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
+      <p>If <var>area</var> does not have a [[DatabaseName]] internal slot, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
      <li data-md="">
       <p>Let <var>info</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object" id="ref-for-sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a></code>).</p>
      <li data-md="">
@@ -1771,53 +1851,53 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>area</var> does not have an [[DatabasePromise]] internal slot, or <var>area</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> exception.</p>
+      <p>If <var>area</var> does not have an [[DatabasePromise]] internal slot, or <var>area</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm①">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm②">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑤">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code> exception.</p>
      <li data-md="">
       <p class="assertion">Assert: <var>area</var>.[[DatabaseName]] is a string (and in particular is not null).</p>
      <li data-md="">
       <p>If <var>area</var>.[[DatabasePromise]] is null, then:</p>
       <ol>
        <li data-md="">
-        <p>Set <var>area</var>.[[DatabasePromise]] to <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑦">a new promise</a>.</p>
+        <p>Set <var>area</var>.[[DatabasePromise]] to <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑧">a new promise</a>.</p>
        <li data-md="">
-        <p>TODO: reject if <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb">indexedDB</a></code> does not exist (e.g. in a worklet).</p>
+        <p>TODO: reject if <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb①">indexedDB</a></code> does not exist (e.g. in a worklet).</p>
        <li data-md="">
-        <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory">IDBFactory</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open" id="ref-for-dom-idbfactory-open">open()</a></code> method on the object returned by the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb①">indexedDB</a></code> IDL attribute, given the arguments <var>area</var>.[[DatabaseName]] and 1.</p>
+        <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory①">IDBFactory</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open" id="ref-for-dom-idbfactory-open">open()</a></code> method on the object returned by the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb②">indexedDB</a></code> IDL attribute, given the arguments <var>area</var>.[[DatabaseName]] and 1.</p>
        <li data-md="">
-        <p>If those steps threw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⓪">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
+        <p>If those steps threw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①②">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
        <li data-md="">
         <p>Otherwise:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that performs the following steps:</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that performs the following steps:</p>
           <ol>
            <li data-md="">
             <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑥">result</a>.</p>
            <li data-md="">
-            <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.[[DatabasePromise]] to null.</p>
+            <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.[[DatabasePromise]] to null.</p>
             <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑧">perform a database operation</a> will attempt to reopen it.</p>
            <li data-md="">
-            <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">Resolve</a> <var>promise</var> with <var>database</var>.</p>
+            <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑧">Resolve</a> <var>promise</var> with <var>database</var>.</p>
           </ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①③">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①①">error</a>.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②②">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
           <ol>
            <li data-md="">
             <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑦">result</a>.</p>
            <li data-md="">
-            <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
+            <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
            <li data-md="">
-            <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①②">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
+            <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
           </ol>
         </ol>
       </ol>
      <li data-md="">
-      <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by">transforming</a> <var>area</var>.[[DatabasePromise]] by a fulfillment handler that performs the following steps, given <var>database</var>:</p>
+      <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by①">transforming</a> <var>area</var>.[[DatabasePromise]] by a fulfillment handler that performs the following steps, given <var>database</var>:</p>
       <ol>
        <li data-md="">
-        <p>Let <var>transaction</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction" id="ref-for-dom-idbdatabase-transaction">transaction()</a></code> method on <var>database</var>, given the arguments "<code>store</code>" and <var>mode</var>.</p>
+        <p>Let <var>transaction</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase③">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction" id="ref-for-dom-idbdatabase-transaction">transaction()</a></code> method on <var>database</var>, given the arguments "<code>store</code>" and <var>mode</var>.</p>
        <li data-md="">
         <p>Let <var>store</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction①">IDBTransaction</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore" id="ref-for-dom-idbtransaction-objectstore">objectStore()</a></code> method on <var>transaction</var>, given the argument "<code>store</code>".</p>
        <li data-md="">
@@ -2011,6 +2091,8 @@ for their contributions to this specification.</p>
    <li><a href="#storagearea-clear">clear()</a><span>, in §3.5</span>
    <li><a href="#storagearea-constructor">constructor(name)</a><span>, in §3</span>
    <li><a href="#storagearea-delete">delete(key)</a><span>, in §3.4</span>
+   <li><a href="#deleting-the-database">delete the database</a><span>, in §3.6</span>
+   <li><a href="#deleting-the-database">deleting the database</a><span>, in §3.6</span>
    <li><a href="#storagearea-entries">entries()</a><span>, in §3.8</span>
    <li><a href="#storagearea-get">get(key)</a><span>, in §3.2</span>
    <li><a href="#storagearea-has">has(key)</a><span>, in §3.3</span>
@@ -2065,10 +2147,12 @@ for their contributions to this specification.</p>
      <li><a href="https://w3c.github.io/IndexedDB/#idbobjectstore">IDBObjectStore</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbtransaction">IDBTransaction</a>
      <li><a href="https://w3c.github.io/IndexedDB/#close-a-database-connection">close a database connection</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close">close()</a>
      <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count">count()</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">createObjectStore(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-delete">delete(query)</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-deletedatabase">deleteDatabase(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for request)</small></a>
      <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for transaction)</small></a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get">get(query)</a>
@@ -2196,6 +2280,12 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-storagearea-clear">3. The StorageArea class</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="deleting-the-database">
+   <b><a href="#deleting-the-database">#deleting-the-database</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-deleting-the-database">3.6. clear()</a> <a href="#ref-for-deleting-the-database①">(2)</a> <a href="#ref-for-deleting-the-database②">(3)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="storagearea-keys">
    <b><a href="#storagearea-keys">#storagearea-keys</a></b><b>Referenced in:</b>
    <ul>
@@ -2227,10 +2317,11 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener③">3.3. get(key)</a> <a href="#ref-for-add-a-simple-event-listener④">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener⑤">3.4. has(key)</a> <a href="#ref-for-add-a-simple-event-listener⑥">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener⑦">3.5. delete(key)</a> <a href="#ref-for-add-a-simple-event-listener⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener⑨">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①②">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①④">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⑦">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(3)</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(4)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.6. clear()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①②">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①④">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑥">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑦">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(3)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑨">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(2)</a> <a href="#ref-for-add-a-simple-event-listener②①">(3)</a> <a href="#ref-for-add-a-simple-event-listener②②">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="performing-a-database-operation">
