@@ -12,6 +12,8 @@ export class StorageArea {
   set(key, value) {}
   get(key) {
     return this.#performDatabaseOperation(database => {
+      throwForKeyRanges(key);
+
       const transaction = database.transaction("store", "readonly");
       const store = transaction.objectStore("store");
 
@@ -58,3 +60,15 @@ export class StorageArea {
 }
 
 export const storage = new StorageArea("default");
+
+function throwForKeyRanges(key) {
+  try {
+    // This will throw when applied to non-key ranges.
+    IDBKeyRange.prototype.includes.call(key, 0);
+  } catch {
+    return;
+  }
+
+  // If we got here, .includes() did not throw when applied to key, so key is a key range.
+  throw new TypeError("Key ranges are not supported as keys in async-local-storage");
+}

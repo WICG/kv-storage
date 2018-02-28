@@ -185,6 +185,7 @@ TODO: set |key| and |value| in the IDB store
 [=Perform a database operation=] on this object that runs the following steps, given |database|:
 
 <div class="algorithm">
+  1. [=Throw for key ranges=] given |key|.
   1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
   1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
   1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |key|.
@@ -251,6 +252,12 @@ To <dfn>perform a database operation</dfn> given a {{StorageArea}} |area| and a 
         1. Perform the steps listeed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
         1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
   1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the steps listed in |steps|.
+</div>
+
+To <dfn>throw for key ranges</dfn> given a value |key|, perform the following steps:
+
+<div class="algorithm">
+  1. If |key| is an {{IDBKeyRange}}, throw a {{TypeError}}.
 </div>
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>
