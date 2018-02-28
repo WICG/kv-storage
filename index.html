@@ -1443,7 +1443,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-02-27">27 February 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-02-28">28 February 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1457,7 +1457,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 27 February 2018,
+In addition, as of 28 February 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1588,7 +1588,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation①">performing a database operation</a> on this object that runs the following steps, given <var>database</var>:</p>
       <ol>
@@ -1615,7 +1615,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange①">IDBKeyRange</a></code>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key①">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror①">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation②">performing a database operation</a> on this object that runs the following steps, given <var>database</var>:</p>
       <ol>
@@ -1642,7 +1642,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange②">IDBKeyRange</a></code>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key②">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror②">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation③">performing a database operation</a> on this object that runs the following steps, given <var>database</var>:</p>
       <ol>
@@ -1679,7 +1679,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md="">
       <p>Let <var>area</var> be this object.</p>
      <li data-md="">
-      <p>If <var>area</var> does not have a [[DatabaseName]] internal slot, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>.</p>
+      <p>If <var>area</var> does not have a [[DatabaseName]] internal slot, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
      <li data-md="">
       <p>Let <var>info</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object" id="ref-for-sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a></code>).</p>
      <li data-md="">
@@ -1708,7 +1708,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>area</var> does not have an [[DatabasePromise]] internal slot, or <var>area</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code> exception.</p>
+      <p>If <var>area</var> does not have an [[DatabasePromise]] internal slot, or <var>area</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> exception.</p>
      <li data-md="">
       <p class="assertion">Assert: <var>area</var>.[[DatabaseName]] is a string (and in particular is not null).</p>
      <li data-md="">
@@ -1744,6 +1744,27 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by">transforming</a> <var>area</var>.[[DatabasePromise]] by a fulfillment handler that performs the steps listed in <var>steps</var>.</p>
     </ol>
+   </div>
+   <p>A value <var>value</var> is <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="allowed-as-a-key">allowed as a key</dfn> if the following steps return true:</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>If <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>value</var>) is Number or String, return true.</p>
+     <li data-md="">
+      <p>If <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-isarray" id="ref-for-sec-isarray">IsArray</a>(<var>value</var>) is true, return true.</p>
+     <li data-md="">
+      <p>If <var>value</var> has a [[DateValue]] internal slot, return true.</p>
+     <li data-md="">
+      <p>If <var>value</var> has a [[ViewedArrayBuffer]] internal slot, return true.</p>
+     <li data-md="">
+      <p>If <var>value</var> has an [[ArrayBufferByteLength]] internal slot, return true.</p>
+     <li data-md="">
+      <p>Return false.</p>
+    </ol>
+   </div>
+   <div class="note" role="note">
+     A value being <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key③">allowed as a key</a> means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a> are a subset of those for which IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key">convert a value to a key</a> algorithm will succeed. 
+    <p>Most notably, using the <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑤">allowed as a key</a> predicate ensures that <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code> objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.</p>
    </div>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
    <p>The editor would like to thank
@@ -1887,6 +1908,7 @@ for their contributions to this specification.</p>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#add-a-simple-event-listener">add a simple event listener</a><span>, in §3.11</span>
+   <li><a href="#allowed-as-a-key">allowed as a key</a><span>, in §3.11</span>
    <li><a href="#async-local-storage">async-local-storage</a><span>, in §2</span>
    <li><a href="#storagearea-backingstore">backingStore</a><span>, in §3.9</span>
    <li><a href="#storagearea-clear">clear()</a><span>, in §3.5</span>
@@ -1916,9 +1938,11 @@ for their contributions to this specification.</p>
      <li><a href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a>
      <li><a href="https://tc39.github.io/ecma262/#sec-construct">Construct</a>
      <li><a href="https://tc39.github.io/ecma262/#sec-createdataproperty">CreateDataProperty</a>
+     <li><a href="https://tc39.github.io/ecma262/#sec-isarray">IsArray</a>
      <li><a href="https://tc39.github.io/ecma262/#sec-map-objects">Map</a>
      <li><a href="https://tc39.github.io/ecma262/#sec-objectcreate">ObjectCreate</a>
      <li><a href="https://tc39.github.io/ecma262/#sec-tostring">ToString</a>
+     <li><a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">Type</a>
      <li><a href="https://tc39.github.io/ecma262/#current-realm">current realm</a>
     </ul>
    <li>
@@ -1937,6 +1961,7 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[INDEXEDDB]</a> defines the following terms:
     <ul>
+     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
      <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for request)</small></a>
      <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for transaction)</small></a>
      <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
@@ -1985,6 +2010,8 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
+     <li><a href="https://heycam.github.io/webidl/#idl-DOMException">DOMException</a>
+     <li><a href="https://heycam.github.io/webidl/#dataerror">DataError</a>
      <li><a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">TypeError</a>
      <li><a href="https://heycam.github.io/webidl/#dfn-callback-context">callback context</a>
      <li><a href="https://heycam.github.io/webidl/#dfn-callback-function">callback function</a>
@@ -2051,6 +2078,15 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-performing-a-database-operation①">3.2. set(key, value)</a>
     <li><a href="#ref-for-performing-a-database-operation②">3.3. get(key)</a>
     <li><a href="#ref-for-performing-a-database-operation③">3.5. delete(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="allowed-as-a-key">
+   <b><a href="#allowed-as-a-key">#allowed-as-a-key</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-allowed-as-a-key">3.2. set(key, value)</a>
+    <li><a href="#ref-for-allowed-as-a-key①">3.3. get(key)</a>
+    <li><a href="#ref-for-allowed-as-a-key②">3.5. delete(key)</a>
+    <li><a href="#ref-for-allowed-as-a-key③">3.11. Supporting operations</a> <a href="#ref-for-allowed-as-a-key④">(2)</a> <a href="#ref-for-allowed-as-a-key⑤">(3)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
