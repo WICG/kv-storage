@@ -11,6 +11,7 @@ Abstract: This specification details a layered web API for an asynchronous key v
 !Commits: <a href="https://github.com/domenic/async-local-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
+Default Biblio Status: current
 </pre>
 
 <pre class="anchors">
@@ -20,6 +21,7 @@ url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-i
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
+  text: ToString; url: sec-tostring; type: abstract-op
   text: Construct; url: sec-construct; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
 
@@ -43,6 +45,10 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
   text: cleanup event loop; for: transaction
   text: name; for: object store
   text: IndexedDB connection; url: #connection
+</pre>
+
+<pre class="link-defaults">
+  spec: promises-guide; type: dfn; text: resolve
 </pre>
 
 <pre class="biblio">
@@ -153,72 +159,21 @@ Each {{StorageArea}} instance must also contain the following internal slots:
       <th>Description (<em>non-normative</em>)
   </thead>
   <tr>
-    <td>\[[Connection]]
+    <td>\[[Name]]
     <td>null
-    <td>An [=IndexedDB connection=] or null
+    <td>A string containing the name of the storage area
   <tr>
-    <td>\[[ConnectionException]]
+    <td>\[[DatabasePromise]]
     <td>null
-    <td>An exception encountered during the connection process or null
-  <tr>
-    <td>\[[StoreName]]
-    <td>null
-    <td>A string or null
+    <td>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=]
 </table>
 
 <h3 id="storagearea-constructor" constructor for="StorageArea">constructor(|name|)</h3>
 
 <div class="algorithm">
-  1. Let |storageArea| be this {{StorageArea}} object.
-  1. Set |storageArea|'s internal slots to the initial values indicated in [[#storagearea]].
-  1. Set |storageArea|.\[[StoreName]] to |name|.
-  1. Let |origin| be the [=current settings object=]'s [=environment settings object/origin=].
-  1. If |origin| is an [=opaque origin=], throw a "{{SecurityError}}" {{DOMException}}.
-  1. Let |request| be a new [=open request=].
-  1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
-    1. Assert: |storageArea|.\[[Connection]] is not null.
-    1. Let |database| be the [=database=] associated with |storageArea|.\[[Connection]].
-    1. Assert: |database|'s [=upgrade transaction=] is [=transaction/active=].
-    1. If an [=object store=] [=object store/name|name=] |name| already exists in |database|, throw a "{{ConstraintError}}" {{DOMException}}.
-    1. Let |store| be a new [=object store=] in |database|.
-    1. Set |store|'s [=object store/name=] to |name|.
-  1. Run these steps [=in parallel=]:
-    1. Let |result| be the result of [=open a database|opening a database=], given |origin|, "<code>async-local-storage</code>", 1, and |request|.
-    1. [=Queue a task=] to run these steps:
-      1. If |result| is an [=IndexedDB connection=], set |storageArea|.\[[Connection]] to |result|.
-      1. Otherwise, set |storageArea|.\[[ConnectionException]] to |result|.
-</div>
-
-<div class="note">
-  Modulo issues around tampered-with globals and prototypes, the above is roughly equivalent to the following JavaScript code:
-
-  <pre highlight="js">
-    class StorageArea {
-      // ...
-
-      constructor(name) {
-        this.#storeName = name;
-
-        try {
-          const openRequest = indexedDB.open("async-local-storage", 1);
-
-          openRequest.onerror = () => {
-            this.#connectionException = openRequest.error;
-          };
-          openRequest.onupgradeneeded = () => {
-            openRequest.result.createObjectStore(name);
-          };
-          openRequest.onsuccess = () => {
-            this.#connection = openRequest.result;
-          };
-        } catch (e) {
-          this.#connectionException = e;
-        }
-      }
-
-      // ...
-    }
-  </pre>
+  1. Let |area| be this {{StorageArea}} object.
+  1. Set |area|'s internal slots to the initial values indicated in [[#storagearea]].
+  1. Set |area|.\[[Name]] to <a abstract-op>ToString</a>(|name|).
 </div>
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
@@ -227,62 +182,16 @@ TODO: set |key| and |value| in the IDB store
 
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
+[=Perform a database operation=] on this object that runs the following steps, given |database|:
+
 <div class="algorithm">
-  1. Let |storageArea| be <b>this</b>.
-  1. If |storageArea| does not have an \[[StoreName]] internal slot, or |storageArea|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
+  1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+  1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |key|.
   1. Let |promise| be [=a new promise=].
-  1. [=In parallel=], wait for either |storageArea|.\[[Connection]] or |storageArea|.\[[ConnectionException]] to become non-null. Then, [=queue a task=] to run the following steps:
-    1. If |storageArea|.\[[ConnectionException]] is non-null, [=reject=] |promise| with |storageArea|.\[[ConnectionException]], and abort these steps.
-    1. Let |connection| be |storageArea|.\[[Connection]].
-    1. Assert: no running [=upgrade transaction=] is associated with |connection|.
-    1. Assert: |connection|'s [=connection/close pending flag=] is unset.
-    1. If |connection|'s [=database=] does not contain an [=object store=] [=object store/name|named=] |storageArea|.\[[StoreName]], [=reject=] |promise| with a "{{NotFoundError}}" {{DOMException}} and abort these steps.
-    1. Let |store| be the single [=object store=] in |connection|'s [=database=] [=object store/name|named=] |storageArea|.\[[StoreName]].
-    1. Let |transaction| be a newly [=transaction/created=] [=transaction=] with |connection|, {{"readonly"}}, and « |store| ».
-    1. Set |transaction|'s [=transaction/cleanup event loop=] to the current [=event loop=].
-    1. Let |handle| be a new [=object store handle=] whose [=object store handle/object store=] is |store| and whose [=object store handle/transaction=] is |transaction|.
-    1. Let |range| be the result of [=convert a value to a key range|converting a value to a key range=] with |key| and the null disallowed flag set. If this throws an exception, [=reject=] |promise| with that exception and abort these steps.
-    1. Let |request| be the result of [=asynchronously executing a request=] given:
-      * A source of |handle|
-      * An operation consisting of running the steps to [=retrieve a value from an object store=] given the [=current Realm=], |store|, and |range|.
-    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
-    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+  1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+  1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
   1. Return |promise|.
-</div>
-
-<div class="note">
-  Modulo issues around tampered-with globals and prototypes, and using a not-shown-here utility <code>waitForConnectionOrConnectionException()</code>, the above is roughly equivalent to the following JavaScript code:
-
-  <pre highlight="js">
-    class StorageArea {
-      // ...
-
-      get(key) {
-        try {
-          this.#storeName;
-        } catch (e) {
-          return Promise.reject(e);
-        }
-
-        return waitForConnectionOrConnectionException().then(() => {
-          if (this.#connectionException) {
-            throw this.#connectionException;
-          }
-
-          return new Promise((resolve, reject) => {
-            const transaction = this.#connection.transaction(this.#storeName, "readonly");
-            const store = transaction.objectStore(this.#storeName);
-            const request = store.get(key);
-
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.reject);
-          });
-        });
-      }
-
-      // ...
-    }
-  </pre>
 </div>
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
@@ -323,10 +232,31 @@ To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an
   1. [=list/Append=] |listener| to |target|'s [=event listeners=].
 </div>
 
+To <dfn>perform a database operation</dfn> given a {{StorageArea}} |area| and a set of steps |steps|:
+
+<div class="algorithm">
+  1. Assert: |area|.\[[Name]] is a string (and in particular is not null).
+  1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. If |area|.\[[DatabasePromise]] is null, then:
+    1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
+    1. TODO: reject if {{WindowOrWorkerGlobalScope/indexedDB}} does not exist (e.g. in a worklet).
+    1. Let |dbName| be the concatenation of "<code>async-local-storage:</code>" and |area|.\[[Name]].
+    1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |dbName| and 1.
+    1. If those steps threw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
+    1. Otherwise:
+      1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+      1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+      1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
+        1. Let |database| be |request|'s [=request/result=].
+        1. Perform the steps listeed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
+        1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
+  1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the steps listed in |steps|.
+</div>
+
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
 The editor would like to thank
-(nobody yet)
+Joshua Bell
 for their contributions to this specification.
 
 This standard is written by <a href="https://domenic.me/">Domenic Denicola</a> (<a href="https://google.com">Google</a>, <a href="mailto:d@domenic.me">d@domenic.me</a>).
