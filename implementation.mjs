@@ -65,9 +65,58 @@ export class StorageArea {
 
   clear() {}
 
-  keys() {}
-  values() {}
-  entries() {}
+  keys() {
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
+
+    const request = store.getAllKeys(undefined);
+
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  values() {
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
+
+    const request = store.getAll(undefined);
+
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  entries() {
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
+
+    const keysRequest = store.getAllKeys(undefined);
+    const valuesRequest = store.getAll(undefined);
+
+    let requestsSuceeded = 0;
+    let keys = null;
+    let values = null;
+
+    return new Promise((resolve, reject) => {
+      keysRequest.onerror = () => reject(keysRequest.error);
+      valuesRequest.onerror = () => reject(valuesRequest.error);
+
+      keysRequest.onsuccess = () => {
+        ++requestsSuceeded;
+        keys = keysRequest.result;
+        if (requestsSuceeded === 2) {
+          resolve(zip(keys, values));
+        }
+      };
+      valuesRequest.onsuccess = () => {
+        ++requestsSuceeded;
+        values = valuesRequest.result;
+        if (requestsSuceeded === 2) {
+          resolve(zipSequences(keys, values));
+        }
+      };
+    });
+  }
 
   get backingStore() {
     return {
@@ -155,4 +204,13 @@ function throwForDisallowedKey(key) {
   if (!isAllowedAsAKey(key)) {
     throw new DOMException("The given value is not allowed as a key", "DataError");
   }
+}
+
+function zip(a, b) {
+  const result = [];
+  for (let i = 0; i < a.length; ++i) {
+    result.push([a[i], b[i]]);
+  }
+
+  return result;
 }

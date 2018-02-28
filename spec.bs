@@ -39,6 +39,7 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
 
 <pre class="link-defaults">
   spec: promises-guide; type: dfn; text: resolve
+  spec:infra; type:dfn; text:list
 </pre>
 
 <pre class="biblio">
@@ -223,15 +224,47 @@ TODO: delete all entries
 
 <h3 id="storagearea-keys" method for="StorageArea">keys()</h3>
 
-TODO: return all the keys
+<div class="algorithm">
+  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
+    1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAllKeys()}} method on |store| given the argument undefined.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+    1. Return |promise|.
+</div>
 
 <h3 id="storagearea-values" method for="StorageArea">values()</h3>
 
-TODO: return all the values
+<div class="algorithm">
+  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
+    1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAll()}} method on |store| given the argument undefined.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+    1. Return |promise|.
+</div>
 
 <h3 id="storagearea-entries" method for="StorageArea">entries()</h3>
 
-TODO: return all the entries
+<div class="algorithm">
+  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
+    1. Let |keysRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAllKeys()}} method on |store| given the argument undefined.
+    1. Let |valuesRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAll()}} method on |store| given the argument undefined.
+    1. Let |requestsSucceeded| be 0.
+    1. Let |keys| and |values| both be null.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |keysRequest| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+    1. [=Add a simple event listener=] to |valuesRequest| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+    1. [=Add a simple event listener=] to |keysRequest| for "<code>success</code>" that performs the following steps:
+      1. Increase |requestsSucceeded| by 1.
+      1. Set |keys| to |keysRequest|'s [=request/result=].
+      1. If |requestsSucceeded| is 2, [=resolve=] |promise| with the result of [=zipping=] |keys| and |values|.
+    1. [=Add a simple event listener=] to |valuesRequest| for "<code>success</code>" that performs the following steps:
+      1. Increase |requestsSucceeded| by 1.
+      1. Set |values| to |valuesRequest|'s [=request/result=].
+      1. If |requestsSucceeded| is 2, [=resolve=] |promise| with the result of [=zipping=] |keys| and |values|.
+    1. Return |promise|.
+</div>
 
 <h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
 
@@ -288,6 +321,15 @@ A value |value| is <dfn>allowed as a key</dfn> if the following steps return tru
   1. If |value| has an \[[ArrayBufferByteLength]] internal slot, return true.
   1. Return false.
 </div>
+
+To <dfn>zip</dfn> two [=lists=] |a| and |b|:
+
+1. Assert: |a|'s [=list/size=] is equal to |b|'s [=list/size=].
+1. Let |result| be a new [=list=].
+1. Let |i| be 0.
+1. While |i| is less than |a|'s [=list/size=]:
+  1. [=list/Append=] « |a|[|i|], |b|[|i|] » to |result|.
+1. Return |result|.
 
 <div class="note">
   A value being [=allowed as a key=] means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are [=allowed as a key=] are a subset of those for which IndexedDB's [=convert a value to a key=] algorithm will succeed.
