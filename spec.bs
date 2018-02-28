@@ -123,19 +123,19 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
 
 <pre highlight="js">
   class StorageArea {
-    constructor(name) {}
+    constructor(name)  { /* <a href="#storagearea-constructor">see below</a> */ }
 
-    set(key, value) {}
-    get(key) {}
-    has(key) {}
-    delete(key) {}
-    clear() {}
+    set(key, value)    { /* <a href="#storagearea-set">see below</a> */ }
+    get(key)           { /* <a href="#storagearea-get">see below</a> */ }
+    has(key)           { /* <a href="#storagearea-has">see below</a> */ }
+    delete(key)        { /* <a href="#storagearea-delete">see below</a> */ }
+    clear()            { /* <a href="#storagearea-clear">see below</a> */ }
 
-    keys() {}
-    values() {}
-    entries() {}
+    keys()             { /* <a href="#storagearea-keys">see below</a> */ }
+    values()           { /* <a href="#storagearea-values">see below</a> */ }
+    entries()          { /* <a href="#storagearea-entries">see below</a> */ }
 
-    get backingStore() {}
+    get backingStore() { /* <a href="#storagearea-backingstore">see below</a> */ }
   }
 </pre>
 
