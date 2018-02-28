@@ -53,7 +53,7 @@ Returns a promise for a boolean that indicates whether an entry identified by `k
 
 #### `delete(key)`
 
-Removes the entry identified by `key`, if it exists. Once this completes, returns a promise for a boolean that indicates whether or not something existed there (and was thus deleted).
+Removes the entry identified by `key`, if it exists. Once this completes, returns a promise for undefined.
 
 #### `clear()`
 

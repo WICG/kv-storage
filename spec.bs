@@ -37,6 +37,7 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
   text: convert a value to a key range
   text: result; for: request
   text: error; for: request
+  text: error; for: transaction
   text: object store; for: object store handle
   text: transaction; for: object store handle
   text: close pending flag; for: connection
@@ -178,7 +179,18 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
 
-TODO: set |key| and |value| in the IDB store
+<div class="algorithm">
+  1. If |key| is an {{IDBKeyRange}}, return [=a promise rejected with=] a {{TypeError}}.
+  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
+    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readwrite</code>".
+    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+    1. Perform the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/put()}} method on |store|, given the arguments |value| and |key|.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |transaction| for "<code>complete</code>" that [=resolves=] |promise| with undefined.
+    1. [=Add a simple event listener=] to |transaction| for "<code>error</code>" that [=rejects=] |promise| with |transaction|'s [=transaction/error=].
+    1. [=Add a simple event listener=] to |transaction| for "<code>abort</code>" that [=rejects=] |promise| with |transaction|'s [=transaction/error=].
+    1. Return |promise|.
+</div>
 
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
@@ -200,7 +212,18 @@ TODO: check for the presence of |key| in the IDB store
 
 <h3 id="storagearea-delete" method for="StorageArea">delete(|key|)</h3>
 
-TODO: delete the entry identified by |key| in the IDB store
+<div class="algorithm">
+  1. If |key| is an {{IDBKeyRange}}, return [=a promise rejected with=] a {{TypeError}}.
+  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
+    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readwrite</code>".
+    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+    1. Perform the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/delete()}} method on |store|, given the argument |key|.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |transaction| for "<code>complete</code>" that [=resolves=] |promise| with undefined.
+    1. [=Add a simple event listener=] to |transaction| for "<code>error</code>" that [=rejects=] |promise| with |transaction|'s [=transaction/error=].
+    1. [=Add a simple event listener=] to |transaction| for "<code>abort</code>" that [=rejects=] |promise| with |transaction|'s [=transaction/error=].
+    1. Return |promise|.
+</div>
 
 <h3 id="storagearea-clear" method for="StorageArea">clear()</h3>
 

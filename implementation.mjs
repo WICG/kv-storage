@@ -9,7 +9,22 @@ export class StorageArea {
     this.#name = `${name}`;
   }
 
-  set(key, value) {}
+  async set(key, value) {
+    throwForKeyRanges(key);
+
+    const database = await this.#prepareToPerformDatabaseOperation();
+
+    const transaction = database.transaction("store", "readwrite");
+    const store = transaction.objectStore("store");
+
+    store.put(value, key);
+
+    return new Promise((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onabort = () => reject(transaction.error);
+      transaction.onerror = () => reject(transaction.error);
+    });
+  }
 
   async get(key) {
     throwForKeyRanges(key);
@@ -28,7 +43,24 @@ export class StorageArea {
   }
 
   has(key) {}
-  delete(key) {}
+
+  async delete(key) {
+    throwForKeyRanges(key);
+
+    const database = await this.#prepareToPerformDatabaseOperation();
+
+    const transaction = database.transaction("store", "readwrite");
+    const store = transaction.objectStore("store");
+
+    store.delete(key);
+
+    return new Promise((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onabort = () => reject(transaction.error);
+      transaction.onerror = () => reject(transaction.error);
+    });
+  }
+
   clear() {}
 
   keys() {}
