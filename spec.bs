@@ -26,29 +26,15 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: CreateDataProperty; url: sec-createdataproperty; type: abstract-op
   text: ObjectCreate; url: sec-objectcreate; type: abstract-op
   text: Construct; url: sec-construct; type: abstract-op
+  text: Type; url: sec-ecmascript-data-types-and-values; type: abstract-op
+  text: IsArray; url: sec-isarray; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
 
 urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
-  text: database
-  text: upgrade transaction
-  text: object store
-  text: open a database
-  text: open request
-  text: object store handle
-  text: asynchronously executing a request
-  text: retrieve a value from an object store
-  text: convert a value to a key range
+  text: convert a value to a key
   text: result; for: request
   text: error; for: request
   text: error; for: transaction
-  text: object store; for: object store handle
-  text: transaction; for: object store handle
-  text: close pending flag; for: connection
-  text: create; for: transaction
-  text: active; for: transaction
-  text: cleanup event loop; for: transaction
-  text: name; for: object store
-  text: IndexedDB connection; url: #connection
 </pre>
 
 <pre class="link-defaults">
@@ -184,7 +170,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
 
 <div class="algorithm">
-  1. If |key| is an {{IDBKeyRange}}, return [=a promise rejected with=] a {{TypeError}}.
+  1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
   1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
     1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readwrite</code>".
     1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
@@ -199,7 +185,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
 <div class="algorithm">
-  1. If |key| is an {{IDBKeyRange}}, return [=a promise rejected with=] a {{TypeError}}.
+  1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
   1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
     1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
     1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
@@ -217,7 +203,7 @@ TODO: check for the presence of |key| in the IDB store
 <h3 id="storagearea-delete" method for="StorageArea">delete(|key|)</h3>
 
 <div class="algorithm">
-  1. If |key| is an {{IDBKeyRange}}, return [=a promise rejected with=] a {{TypeError}}.
+  1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
   1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
     1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readwrite</code>".
     1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
@@ -285,6 +271,23 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
         1. Perform the steps listeed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
         1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
   1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the steps listed in |steps|.
+</div>
+
+A value |value| is <dfn>allowed as a key</dfn> if the following steps return true:
+
+<div class="algorithm">
+  1. If <a abstract-op>Type</a>(|value|) is Number or String, return true.
+  1. If <a abstract-op>IsArray</a>(|value|) is true, return true.
+  1. If |value| has a \[[DateValue]] internal slot, return true.
+  1. If |value| has a \[[ViewedArrayBuffer]] internal slot, return true.
+  1. If |value| has an \[[ArrayBufferByteLength]] internal slot, return true.
+  1. Return false.
+</div>
+
+<div class="note">
+  A value being [=allowed as a key=] means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are [=allowed as a key=] are a subset of those for which IndexedDB's [=convert a value to a key=] algorithm will succeed.
+
+  Most notably, using the [=allowed as a key=] predicate ensures that {{IDBKeyRange}} objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.
 </div>
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>

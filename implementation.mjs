@@ -10,7 +10,7 @@ export class StorageArea {
   }
 
   async set(key, value) {
-    throwForKeyRanges(key);
+    throwForDisallowedKey(key);
 
     const database = await this.#prepareToPerformDatabaseOperation();
 
@@ -27,7 +27,7 @@ export class StorageArea {
   }
 
   async get(key) {
-    throwForKeyRanges(key);
+    throwForDisallowedKey(key);
 
     const database = await this.#prepareToPerformDatabaseOperation();
 
@@ -45,7 +45,7 @@ export class StorageArea {
   has(key) {}
 
   async delete(key) {
-    throwForKeyRanges(key);
+    throwForDisallowedKey(key);
 
     const database = await this.#prepareToPerformDatabaseOperation();
 
@@ -101,14 +101,51 @@ export class StorageArea {
 
 export const storage = new StorageArea("default");
 
-function throwForKeyRanges(key) {
-  try {
-    // This will throw when applied to non-key ranges.
-    IDBKeyRange.prototype.includes.call(key, 0);
-  } catch {
-    return;
+function isAllowedAsAKey(value) {
+  if (typeof value === "number" || typeof value === "string") {
+    return true;
   }
 
-  // If we got here, .includes() did not throw when applied to key, so key is a key range.
-  throw new TypeError("Key ranges are not supported as keys in async-local-storage");
+  if (Array.isArray(value)) {
+    return true;
+  }
+
+  if (isDate(value)) {
+    return true;
+  }
+
+  if (ArrayBuffer.isView(value)) {
+    return true;
+  }
+
+  if (isArrayBuffer(value)) {
+    return true;
+  }
+
+  return false;
+}
+
+function isDate(value) {
+  try {
+    Date.prototype.getTime.call(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const byteLengthGetter = Object.getOwnPropertyDescriptor(ArrayBuffer.prototype, "byteLength").get;
+function isArrayBuffer(value) {
+  try {
+    byteLengthGetter.call(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function throwForDisallowedKey(key) {
+  if (!isAllowedAsAKey(key)) {
+    throw new DOMException("The given value is not allowed as a key", "DataError");
+  }
 }
