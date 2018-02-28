@@ -182,17 +182,16 @@ TODO: set |key| and |value| in the IDB store
 
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
-[=Perform a database operation=] on this object that runs the following steps, given |database|:
-
 <div class="algorithm">
-  1. [=Throw for key ranges=] given |key|.
-  1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
-  1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
-  1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |key|.
-  1. Let |promise| be [=a new promise=].
-  1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
-  1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
-  1. Return |promise|.
+  1. If |key| is an {{IDBKeyRange}}, return [=a promise rejected with=] a {{TypeError}}.
+  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
+    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
+    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+    1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |key|.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+    1. Return |promise|.
 </div>
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
@@ -233,7 +232,7 @@ To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an
   1. [=list/Append=] |listener| to |target|'s [=event listeners=].
 </div>
 
-To <dfn>perform a database operation</dfn> given a {{StorageArea}} |area| and a set of steps |steps|:
+To <dfn lt="performing a database operation|perform a database operation">perform a database operation</dfn> given a {{StorageArea}} |area| and a set of steps |steps|:
 
 <div class="algorithm">
   1. Assert: |area|.\[[Name]] is a string (and in particular is not null).
@@ -252,12 +251,6 @@ To <dfn>perform a database operation</dfn> given a {{StorageArea}} |area| and a 
         1. Perform the steps listeed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
         1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
   1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the steps listed in |steps|.
-</div>
-
-To <dfn>throw for key ranges</dfn> given a value |key|, perform the following steps:
-
-<div class="algorithm">
-  1. If |key| is an {{IDBKeyRange}}, throw a {{TypeError}}.
 </div>
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>

@@ -12,8 +12,9 @@ export class StorageArea {
   set(key, value) {}
 
   async get(key) {
-    const database = await this.#performDatabaseOperation(database);
     throwForKeyRanges(key);
+
+    const database = await this.#prepareToPerformDatabaseOperation();
 
     const transaction = database.transaction("store", "readonly");
     const store = transaction.objectStore("store");
@@ -36,7 +37,7 @@ export class StorageArea {
 
   get backingStore() {}
 
-  #performDatabaseOperation(steps) {
+  #prepareToPerformDatabaseOperation() {
     // TypeError is automatic via the immediate usage of this.#dbPromise.
 
     if (this.#dbPromise === null) {
@@ -56,7 +57,7 @@ export class StorageArea {
       });
     }
 
-    return this.#dbPromise.then(steps);
+    return this.#dbPromise;
   }
 }
 
