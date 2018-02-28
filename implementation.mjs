@@ -93,27 +93,12 @@ export class StorageArea {
     const keysRequest = store.getAllKeys(undefined);
     const valuesRequest = store.getAll(undefined);
 
-    let requestsSuceeded = 0;
-    let keys = null;
-    let values = null;
-
     return new Promise((resolve, reject) => {
       keysRequest.onerror = () => reject(keysRequest.error);
       valuesRequest.onerror = () => reject(valuesRequest.error);
 
-      keysRequest.onsuccess = () => {
-        ++requestsSuceeded;
-        keys = keysRequest.result;
-        if (requestsSuceeded === 2) {
-          resolve(zip(keys, values));
-        }
-      };
       valuesRequest.onsuccess = () => {
-        ++requestsSuceeded;
-        values = valuesRequest.result;
-        if (requestsSuceeded === 2) {
-          resolve(zipSequences(keys, values));
-        }
+        resolve(zip(keysRequest.result, valuesRequest.result));
       };
     });
   }

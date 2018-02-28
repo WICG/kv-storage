@@ -250,19 +250,12 @@ TODO: delete all entries
   1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
     1. Let |keysRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAllKeys()}} method on |store| given the argument undefined.
     1. Let |valuesRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAll()}} method on |store| given the argument undefined.
-    1. Let |requestsSucceeded| be 0.
-    1. Let |keys| and |values| both be null.
     1. Let |promise| be [=a new promise=].
     1. [=Add a simple event listener=] to |keysRequest| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
     1. [=Add a simple event listener=] to |valuesRequest| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
-    1. [=Add a simple event listener=] to |keysRequest| for "<code>success</code>" that performs the following steps:
-      1. Increase |requestsSucceeded| by 1.
-      1. Set |keys| to |keysRequest|'s [=request/result=].
-      1. If |requestsSucceeded| is 2, [=resolve=] |promise| with the result of [=zipping=] |keys| and |values|.
-    1. [=Add a simple event listener=] to |valuesRequest| for "<code>success</code>" that performs the following steps:
-      1. Increase |requestsSucceeded| by 1.
-      1. Set |values| to |valuesRequest|'s [=request/result=].
-      1. If |requestsSucceeded| is 2, [=resolve=] |promise| with the result of [=zipping=] |keys| and |values|.
+    1. [=Add a simple event listener=] to |valuesRequest| for "<code>success</code>" that [=resolves=] |promise| with the result of [=zipping=] |keysRequest|'s [=request/result=] and |valuesRequest|'s [=request/result=].
+
+       <p class="note">If |valuesRequest| succeeds, then |keysRequest| will have succeeded already.</p>
     1. Return |promise|.
 </div>
 
