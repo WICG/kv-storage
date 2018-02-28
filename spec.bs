@@ -258,8 +258,8 @@ To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an
 To <dfn lt="performing a database operation|perform a database operation">perform a database operation</dfn> given a {{StorageArea}} |area| and a set of steps |steps|:
 
 <div class="algorithm">
-  1. Assert: |area|.\[[Name]] is a string (and in particular is not null).
   1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. Assert: |area|.\[[Name]] is a string (and in particular is not null).
   1. If |area|.\[[DatabasePromise]] is null, then:
     1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
     1. TODO: reject if {{WindowOrWorkerGlobalScope/indexedDB}} does not exist (e.g. in a worklet).
