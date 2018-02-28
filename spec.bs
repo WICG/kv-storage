@@ -315,6 +315,12 @@ A value |value| is <dfn>allowed as a key</dfn> if the following steps return tru
   1. Return false.
 </div>
 
+<div class="note">
+  A value being [=allowed as a key=] means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are [=allowed as a key=] are a subset of those for which IndexedDB's [=convert a value to a key=] algorithm will succeed.
+
+  Most notably, using the [=allowed as a key=] predicate ensures that {{IDBKeyRange}} objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.
+</div>
+
 To <dfn>zip</dfn> two [=lists=] |a| and |b|:
 
 1. Assert: |a|'s [=list/size=] is equal to |b|'s [=list/size=].
@@ -323,12 +329,6 @@ To <dfn>zip</dfn> two [=lists=] |a| and |b|:
 1. While |i| is less than |a|'s [=list/size=]:
   1. [=list/Append=] « |a|[|i|], |b|[|i|] » to |result|.
 1. Return |result|.
-
-<div class="note">
-  A value being [=allowed as a key=] means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are [=allowed as a key=] are a subset of those for which IndexedDB's [=convert a value to a key=] algorithm will succeed.
-
-  Most notably, using the [=allowed as a key=] predicate ensures that {{IDBKeyRange}} objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.
-</div>
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
