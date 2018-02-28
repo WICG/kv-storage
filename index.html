@@ -1723,35 +1723,14 @@ Parts of this work may be from another specification document.  If so, those par
        <li data-md="">
         <p>Let <var>valuesRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑦">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall①">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
        <li data-md="">
-        <p>Let <var>requestsSucceeded</var> be 0.</p>
-       <li data-md="">
-        <p>Let <var>keys</var> and <var>values</var> both be null.</p>
-       <li data-md="">
         <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
        <li data-md="">
         <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①④">Add a simple event listener</a> to <var>keysRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑧">error</a>.</p>
        <li data-md="">
         <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑨">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑨">error</a>.</p>
        <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>keysRequest</var> for "<code>success</code>" that performs the following steps:</p>
-        <ol>
-         <li data-md="">
-          <p>Increase <var>requestsSucceeded</var> by 1.</p>
-         <li data-md="">
-          <p>Set <var>keys</var> to <var>keysRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result④">result</a>.</p>
-         <li data-md="">
-          <p>If <var>requestsSucceeded</var> is 2, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑥">resolve</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip">zipping</a> <var>keys</var> and <var>values</var>.</p>
-        </ol>
-       <li data-md="">
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>success</code>" that performs the following steps:</p>
-        <ol>
-         <li data-md="">
-          <p>Increase <var>requestsSucceeded</var> by 1.</p>
-         <li data-md="">
-          <p>Set <var>values</var> to <var>valuesRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑤">result</a>.</p>
-         <li data-md="">
-          <p>If <var>requestsSucceeded</var> is 2, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">resolve</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip①">zipping</a> <var>keys</var> and <var>values</var>.</p>
-        </ol>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑥">resolves</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip">zipping</a> <var>keysRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result④">result</a> and <var>valuesRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑤">result</a>.</p>
+        <p class="note" role="note">If <var>valuesRequest</var> succeeds, then <var>keysRequest</var> will have succeeded already.</p>
        <li data-md="">
         <p>Return <var>promise</var>.</p>
       </ol>
@@ -1810,11 +1789,11 @@ Parts of this work may be from another specification document.  If so, those par
         <p>Otherwise:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑧">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑥">result</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑥">result</a>.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
           <ol>
            <li data-md="">
             <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑦">result</a>.</p>
@@ -2240,8 +2219,8 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener⑦">3.5. delete(key)</a> <a href="#ref-for-add-a-simple-event-listener⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener⑨">(3)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①②">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①④">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(3)</a> <a href="#ref-for-add-a-simple-event-listener①⑦">(4)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⑧">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(2)</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(3)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①④">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(3)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑦">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="performing-a-database-operation">
@@ -2270,7 +2249,7 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="zip">
    <b><a href="#zip">#zip</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-zip">3.9. entries()</a> <a href="#ref-for-zip①">(2)</a>
+    <li><a href="#ref-for-zip">3.9. entries()</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
