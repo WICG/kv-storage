@@ -1513,7 +1513,7 @@ Parts of this work may be from another specification document.  If so, those par
     <p>This specification proposes a new API, called async local storage, which is intended to provide an analogously simple interface, while being asynchronous. Along the way, it embraces some additional goals:</p>
     <ul>
      <li data-md="">
-      <p><strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. <a data-link-type="biblio" href="#biblio-indexeddb">[INDEXEDDB]</a> <a data-link-type="biblio" href="#biblio-lwapi">[LWAPI]</a></p>
+      <p><strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. <a data-link-type="biblio" href="#biblio-indexeddb-2">[INDEXEDDB-2]</a> <a data-link-type="biblio" href="#biblio-lwapi">[LWAPI]</a></p>
      <li data-md="">
       <p><strong>Modernize the API surface.</strong> Modern key/value stores in the platform, such as the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#cache" id="ref-for-cache">Cache</a></code> or <code class="idl"><a data-link-type="idl" href="https://fetch.spec.whatwg.org/#headers" id="ref-for-headers">Headers</a></code> APIs, have aligned around the operation names given by JavaScript’s <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-map-objects" id="ref-for-sec-map-objects">Map</a></code>. We follow their example. As a bonus, this allows us to avoid the legacy <a data-link-type="dfn" href="https://heycam.github.io/webidl/#idl-named-properties" id="ref-for-idl-named-properties">named properties</a> feature that the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#storage-2" id="ref-for-storage-2">Storage</a></code> interface uses.</p>
      <li data-md="">
@@ -1675,11 +1675,88 @@ Parts of this work may be from another specification document.  If so, those par
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.6" data-lt="clear()" id="storagearea-clear"><span class="secno">3.6. </span><span class="content">clear()</span></h3>
    <p>TODO: delete all entries</p>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.7" data-lt="keys()" id="storagearea-keys"><span class="secno">3.7. </span><span class="content">keys()</span></h3>
-   <p>TODO: return all the keys</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑤">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
+      <ol>
+       <li data-md="">
+        <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore④">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys" id="ref-for-dom-idbobjectstore-getallkeys">getAllKeys()</a></code> method on <var>store</var> given the argument undefined.</p>
+       <li data-md="">
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise④">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result②">result</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑥">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑥">error</a>.</p>
+       <li data-md="">
+        <p>Return <var>promise</var>.</p>
+      </ol>
+    </ol>
+   </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.8" data-lt="values()" id="storagearea-values"><span class="secno">3.8. </span><span class="content">values()</span></h3>
-   <p>TODO: return all the values</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑥">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
+      <ol>
+       <li data-md="">
+        <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑤">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
+       <li data-md="">
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①②">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑤">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result③">result</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①③">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑦">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑦">error</a>.</p>
+       <li data-md="">
+        <p>Return <var>promise</var>.</p>
+      </ol>
+    </ol>
+   </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.9" data-lt="entries()" id="storagearea-entries"><span class="secno">3.9. </span><span class="content">entries()</span></h3>
-   <p>TODO: return all the entries</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑦">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
+      <ol>
+       <li data-md="">
+        <p>Let <var>keysRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑥">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys" id="ref-for-dom-idbobjectstore-getallkeys①">getAllKeys()</a></code> method on <var>store</var> given the argument undefined.</p>
+       <li data-md="">
+        <p>Let <var>valuesRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑦">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall①">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
+       <li data-md="">
+        <p>Let <var>requestsSucceeded</var> be 0.</p>
+       <li data-md="">
+        <p>Let <var>keys</var> and <var>values</var> both be null.</p>
+       <li data-md="">
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①④">Add a simple event listener</a> to <var>keysRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑧">error</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑨">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑨">error</a>.</p>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>keysRequest</var> for "<code>success</code>" that performs the following steps:</p>
+        <ol>
+         <li data-md="">
+          <p>Increase <var>requestsSucceeded</var> by 1.</p>
+         <li data-md="">
+          <p>Set <var>keys</var> to <var>keysRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result④">result</a>.</p>
+         <li data-md="">
+          <p>If <var>requestsSucceeded</var> is 2, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑥">resolve</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip">zipping</a> <var>keys</var> and <var>values</var>.</p>
+        </ol>
+       <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>success</code>" that performs the following steps:</p>
+        <ol>
+         <li data-md="">
+          <p>Increase <var>requestsSucceeded</var> by 1.</p>
+         <li data-md="">
+          <p>Set <var>values</var> to <var>valuesRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑤">result</a>.</p>
+         <li data-md="">
+          <p>If <var>requestsSucceeded</var> is 2, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">resolve</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip①">zipping</a> <var>keys</var> and <var>values</var>.</p>
+        </ol>
+       <li data-md="">
+        <p>Return <var>promise</var>.</p>
+      </ol>
+    </ol>
+   </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="attribute" data-export="" data-level="3.10" data-lt="backingStore" id="storagearea-backingstore"><span class="secno">3.10. </span><span class="content">get backingStore()</span></h3>
    <div class="algorithm">
     <ol>
@@ -1711,7 +1788,7 @@ Parts of this work may be from another specification document.  If so, those par
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> <var>listener</var> to <var>target</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener①">event listeners</a>.</p>
     </ol>
    </div>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport="" id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore④">IDBObjectStore</a></code> <var>store</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport="" id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑧">IDBObjectStore</a></code> <var>store</var>:</p>
    <div class="algorithm">
     <ol>
      <li data-md="">
@@ -1722,29 +1799,29 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If <var>area</var>.[[DatabasePromise]] is null, then:</p>
       <ol>
        <li data-md="">
-        <p>Set <var>area</var>.[[DatabasePromise]] to <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
+        <p>Set <var>area</var>.[[DatabasePromise]] to <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑦">a new promise</a>.</p>
        <li data-md="">
         <p>TODO: reject if <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb">indexedDB</a></code> does not exist (e.g. in a worklet).</p>
        <li data-md="">
         <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory">IDBFactory</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open" id="ref-for-dom-idbfactory-open">open()</a></code> method on the object returned by the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb①">indexedDB</a></code> IDL attribute, given the arguments <var>area</var>.[[DatabaseName]] and 1.</p>
        <li data-md="">
-        <p>If those steps threw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑥">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
+        <p>If those steps threw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⓪">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
        <li data-md="">
         <p>Otherwise:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise④">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result②">result</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑧">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑥">result</a>.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑦">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error⑥">error</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①②">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
           <ol>
            <li data-md="">
-            <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result③">result</a>.</p>
+            <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑦">result</a>.</p>
            <li data-md="">
             <p>Perform the steps listeed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
            <li data-md="">
-            <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
+            <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①②">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
           </ol>
         </ol>
       </ol>
@@ -1777,6 +1854,23 @@ Parts of this work may be from another specification document.  If so, those par
       <p>Return false.</p>
     </ol>
    </div>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="zip">zip</dfn> two <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">lists</a> <var>a</var> and <var>b</var>:</p>
+   <ol>
+    <li data-md="">
+     <p class="assertion">Assert: <var>a</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is equal to <var>b</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a>.</p>
+    <li data-md="">
+     <p>Let <var>result</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a>.</p>
+    <li data-md="">
+     <p>Let <var>i</var> be 0.</p>
+    <li data-md="">
+     <p>While <var>i</var> is less than <var>a</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size②">size</a>:</p>
+     <ol>
+      <li data-md="">
+       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①">Append</a> « <var>a</var>[<var>i</var>], <var>b</var>[<var>i</var>] » to <var>result</var>.</p>
+     </ol>
+    <li data-md="">
+     <p>Return <var>result</var>.</p>
+   </ol>
    <div class="note" role="note">
      A value being <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a> means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑤">allowed as a key</a> are a subset of those for which IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key">convert a value to a key</a> algorithm will succeed. 
     <p>Most notably, using the <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑥">allowed as a key</a> predicate ensures that <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code> objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.</p>
@@ -1938,6 +2032,7 @@ for their contributions to this specification.</p>
    <li><a href="#storagearea-set">set(key, value)</a><span>, in §3.1</span>
    <li><a href="#storagearea">StorageArea</a><span>, in §2</span>
    <li><a href="#storagearea-values">values()</a><span>, in §3.7</span>
+   <li><a href="#zip">zip</a><span>, in §3.11</span>
   </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
@@ -1974,35 +2069,35 @@ for their contributions to this specification.</p>
      <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm">relevant realm</a>
     </ul>
    <li>
-    <a data-link-type="biblio">[INDEXEDDB]</a> defines the following terms:
-    <ul>
-     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for request)</small></a>
-     <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for transaction)</small></a>
-     <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[IndexedDB-2]</a> defines the following terms:
+    <a data-link-type="biblio">[INDEXEDDB-2]</a> defines the following terms:
     <ul>
      <li><a href="https://w3c.github.io/IndexedDB/#idbdatabase">IDBDatabase</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbfactory">IDBFactory</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbkeyrange">IDBKeyRange</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbobjectstore">IDBObjectStore</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbtransaction">IDBTransaction</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count">count()</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">createObjectStore(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-delete">delete(query)</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for request)</small></a>
+     <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for transaction)</small></a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get">get(query)</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall">getAll()</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys">getAllKeys()</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb">indexedDB</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore">objectStore(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open">open(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-put">put(value)</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">transaction(storeNames, mode)</a>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
      <li><a href="https://infra.spec.whatwg.org/#list-append">append</a>
+     <li><a href="https://infra.spec.whatwg.org/#list">list</a>
+     <li><a href="https://infra.spec.whatwg.org/#list-size">size</a>
     </ul>
    <li>
     <a data-link-type="biblio">[LWAPI]</a> defines the following terms:
@@ -2043,9 +2138,7 @@ for their contributions to this specification.</p>
    <dd><a href="https://tc39.github.io/ecma262/">ECMAScript Language Specification</a>. URL: <a href="https://tc39.github.io/ecma262/">https://tc39.github.io/ecma262/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
-   <dt id="biblio-indexeddb">[INDEXEDDB]
-   <dd>Nikunj Mehta; et al. <a href="http://dvcs.w3.org/hg/IndexedDB/raw-file/tip/Overview.html">Indexed Database API</a>. URL: <a href="http://dvcs.w3.org/hg/IndexedDB/raw-file/tip/Overview.html">http://dvcs.w3.org/hg/IndexedDB/raw-file/tip/Overview.html</a>
-   <dt id="biblio-indexeddb-2">[IndexedDB-2]
+   <dt id="biblio-indexeddb-2">[INDEXEDDB-2]
    <dd>Ali Alabbas; Joshua Bell. <a href="https://w3c.github.io/IndexedDB/">Indexed Database API 2.0</a>. URL: <a href="https://w3c.github.io/IndexedDB/">https://w3c.github.io/IndexedDB/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
@@ -2145,7 +2238,10 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener③">3.3. get(key)</a> <a href="#ref-for-add-a-simple-event-listener④">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener⑤">3.4. has(key)</a> <a href="#ref-for-add-a-simple-event-listener⑥">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener⑦">3.5. delete(key)</a> <a href="#ref-for-add-a-simple-event-listener⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener⑨">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a> <a href="#ref-for-add-a-simple-event-listener①②">(3)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①②">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①④">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(3)</a> <a href="#ref-for-add-a-simple-event-listener①⑦">(4)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑧">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(2)</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="performing-a-database-operation">
@@ -2156,6 +2252,9 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-performing-a-database-operation②">3.3. get(key)</a>
     <li><a href="#ref-for-performing-a-database-operation③">3.4. has(key)</a>
     <li><a href="#ref-for-performing-a-database-operation④">3.5. delete(key)</a>
+    <li><a href="#ref-for-performing-a-database-operation⑤">3.7. keys()</a>
+    <li><a href="#ref-for-performing-a-database-operation⑥">3.8. values()</a>
+    <li><a href="#ref-for-performing-a-database-operation⑦">3.9. entries()</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="allowed-as-a-key">
@@ -2166,6 +2265,12 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-allowed-as-a-key②">3.4. has(key)</a>
     <li><a href="#ref-for-allowed-as-a-key③">3.5. delete(key)</a>
     <li><a href="#ref-for-allowed-as-a-key④">3.11. Supporting operations</a> <a href="#ref-for-allowed-as-a-key⑤">(2)</a> <a href="#ref-for-allowed-as-a-key⑥">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="zip">
+   <b><a href="#zip">#zip</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-zip">3.9. entries()</a> <a href="#ref-for-zip①">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
