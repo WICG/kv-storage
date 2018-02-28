@@ -118,7 +118,12 @@ export class StorageArea {
       this.#databasePromise = new Promise((resolve, reject) => {
         const request = indexedDB.open(this.#databaseName, 1);
 
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => {
+          const database = request.result;
+          database.onclose = () => this.#databasePromise = null;
+          resolve(database);
+        };
+
         request.onerror = () => reject(request.error);
 
         request.onupgradeneeded = () => {

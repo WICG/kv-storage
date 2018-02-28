@@ -32,6 +32,7 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
 
 urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: convert a value to a key
+  text: close a database connection
   text: result; for: request
   text: error; for: request
   text: error; for: transaction
@@ -292,11 +293,15 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
     1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |area|.\[[DatabaseName]] and 1.
     1. If those steps threw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
     1. Otherwise:
-      1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
+      1. [=Add a simple event listener=] to |request| for "<code>success</code>" that performs the following steps:
+        1. Let |database| be |request|'s [=request/result=].
+        1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.\[[DatabasePromise]] to null.
+          <p class="note">This means that if the database is [=close a database connection|closed abnormally=], future invocations of [=perform a database operation=] will attempt to reopen it.</p>
+        1. [=Resolve=] |promise| with |database|.
       1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
       1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
         1. Let |database| be |request|'s [=request/result=].
-        1. Perform the steps listeed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
+        1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
         1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
   1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the following steps, given |database|:
     1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and |mode|.
