@@ -12,10 +12,7 @@ export class StorageArea {
   async set(key, value) {
     throwForDisallowedKey(key);
 
-    const database = await this.#prepareToPerformDatabaseOperation();
-
-    const transaction = database.transaction("store", "readwrite");
-    const store = transaction.objectStore("store");
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readwrite");
 
     store.put(value, key);
 
@@ -29,10 +26,7 @@ export class StorageArea {
   async get(key) {
     throwForDisallowedKey(key);
 
-    const database = await this.#prepareToPerformDatabaseOperation();
-
-    const transaction = database.transaction("store", "readonly");
-    const store = transaction.objectStore("store");
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
 
     const request = store.get(key);
 
@@ -45,10 +39,7 @@ export class StorageArea {
   async has(key) {
     throwForDisallowedKey(key);
 
-    const database = await this.#prepareToPerformDatabaseOperation();
-
-    const transaction = database.transaction("store", "readonly");
-    const store = transaction.objectStore("store");
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readonly");
 
     const request = store.count(key);
 
@@ -61,10 +52,7 @@ export class StorageArea {
   async delete(key) {
     throwForDisallowedKey(key);
 
-    const database = await this.#prepareToPerformDatabaseOperation();
-
-    const transaction = database.transaction("store", "readwrite");
-    const store = transaction.objectStore("store");
+    const { transaction, store } = await this.#prepareToPerformDatabaseOperation("readwrite");
 
     store.delete(key);
 
@@ -89,7 +77,7 @@ export class StorageArea {
     };
   }
 
-  #prepareToPerformDatabaseOperation() {
+  #prepareToPerformDatabaseOperation(mode) {
     // TypeError is automatic via the immediate usage of this.#databasePromise.
 
     if (this.#databasePromise === null) {
@@ -109,7 +97,12 @@ export class StorageArea {
       });
     }
 
-    return this.#databasePromise;
+    return this.#databasePromise.then(() => {
+      const transaction = database.transaction("store", mode);
+      const store = transaction.objectStore("store");
+
+      return { transaction, store };
+    });
   }
 }
 

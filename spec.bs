@@ -171,9 +171,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
-  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
-    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readwrite</code>".
-    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+  1. Return the result of [=performing a database operation=] given this object, "<code>readwrite</code>", and the following steps operating on |transaction| and |store|:
     1. Perform the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/put()}} method on |store|, given the arguments |value| and |key|.
     1. Let |promise| be [=a new promise=].
     1. [=Add a simple event listener=] to |transaction| for "<code>complete</code>" that [=resolves=] |promise| with undefined.
@@ -186,9 +184,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
-  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
-    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
-    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
     1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |key|.
     1. Let |promise| be [=a new promise=].
     1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with |request|'s [=request/result=].
@@ -200,9 +196,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
-  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
-    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readonly</code>".
-    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
     1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/count()}} method on |store|, given the argument |key|.
     1. Let |promise| be [=a new promise=].
     1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with false if |request|'s [=request/result=] is 0, and with true otherwise.
@@ -214,9 +208,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
-  1. Return the result of [=performing a database operation=] on this object that runs the following steps, given |database|:
-    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and "<code>readwrite</code>".
-    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+  1. Return the result of [=performing a database operation=] given this object, "<code>readwrite</code>", and the following steps operating on |transaction| and |store|:
     1. Perform the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/delete()}} method on |store|, given the argument |key|.
     1. Let |promise| be [=a new promise=].
     1. [=Add a simple event listener=] to |transaction| for "<code>complete</code>" that [=resolves=] |promise| with undefined.
@@ -263,7 +255,7 @@ To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an
   1. [=list/Append=] |listener| to |target|'s [=event listeners=].
 </div>
 
-To <dfn lt="performing a database operation|perform a database operation">perform a database operation</dfn> given a {{StorageArea}} |area| and a set of steps |steps|:
+To <dfn lt="performing a database operation|perform a database operation">perform a database operation</dfn> given a {{StorageArea}} |area|, a mode string |mode|, and a set of steps |steps| that operate on an {{IDBTransaction}} |transaction| and an {{IDBObjectStore}} |store|:
 
 <div class="algorithm">
   1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
@@ -280,7 +272,10 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
         1. Let |database| be |request|'s [=request/result=].
         1. Perform the steps listeed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
         1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
-  1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the steps listed in |steps|.
+  1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the following steps, given |database|:
+    1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and |mode|.
+    1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
+    1. Return the result of performing |steps|, passing along |transaction| and |store|.
 </div>
 
 A value |value| is <dfn>allowed as a key</dfn> if the following steps return true:
