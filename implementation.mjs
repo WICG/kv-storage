@@ -42,7 +42,21 @@ export class StorageArea {
     });
   }
 
-  has(key) {}
+  async has(key) {
+    throwForDisallowedKey(key);
+
+    const database = await this.#prepareToPerformDatabaseOperation();
+
+    const transaction = database.transaction("store", "readonly");
+    const store = transaction.objectStore("store");
+
+    const request = store.count(key);
+
+    return new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result === 0 ? false : true);
+      request.onerror = () => reject(request.error);
+    });
+  }
 
   async delete(key) {
     throwForDisallowedKey(key);
