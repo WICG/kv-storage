@@ -1589,6 +1589,8 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
+      <p><a data-link-type="dfn" href="#throw-for-key-ranges" id="ref-for-throw-for-key-ranges">Throw for key ranges</a> given <var>key</var>.</p>
+     <li data-md="">
       <p>Let <var>transaction</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction" id="ref-for-dom-idbdatabase-transaction">transaction()</a></code> method on <var>database</var>, given the arguments "<code>store</code>" and "<code>readonly</code>".</p>
      <li data-md="">
       <p>Let <var>store</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore" id="ref-for-dom-idbtransaction-objectstore">objectStore()</a></code> method on <var>transaction</var>, given the argument "<code>store</code>".</p>
@@ -1671,6 +1673,13 @@ Parts of this work may be from another specification document.  If so, those par
       </ol>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by">transforming</a> <var>area</var>.[[DatabasePromise]] by a fulfillment handler that performs the steps listed in <var>steps</var>.</p>
+    </ol>
+   </div>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="throw-for-key-ranges">throw for key ranges</dfn> given a value <var>key</var>, perform the following steps:</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md="">
+      <p>If <var>key</var> is an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
     </ol>
    </div>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
@@ -1827,6 +1836,7 @@ for their contributions to this specification.</p>
    <li><a href="#perform-a-database-operation">perform a database operation</a><span>, in §3.11</span>
    <li><a href="#storagearea-set">set(key, value)</a><span>, in §3.1</span>
    <li><a href="#storagearea">StorageArea</a><span>, in §2</span>
+   <li><a href="#throw-for-key-ranges">throw for key ranges</a><span>, in §3.11</span>
    <li><a href="#storagearea-values">values()</a><span>, in §3.7</span>
   </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -1869,6 +1879,7 @@ for their contributions to this specification.</p>
     <ul>
      <li><a href="https://w3c.github.io/IndexedDB/#idbdatabase">IDBDatabase</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbfactory">IDBFactory</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#idbkeyrange">IDBKeyRange</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbobjectstore">IDBObjectStore</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbtransaction">IDBTransaction</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">createObjectStore(name)</a>
@@ -1967,6 +1978,12 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-perform-a-database-operation">3. The StorageArea class</a>
     <li><a href="#ref-for-perform-a-database-operation①">3.3. get(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="throw-for-key-ranges">
+   <b><a href="#throw-for-key-ranges">#throw-for-key-ranges</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-throw-for-key-ranges">3.3. get(key)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
