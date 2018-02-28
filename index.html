@@ -1789,16 +1789,25 @@ Parts of this work may be from another specification document.  If so, those par
         <p>Otherwise:</p>
         <ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑥">result</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that performs the following steps:</p>
+          <ol>
+           <li data-md="">
+            <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑥">result</a>.</p>
+           <li data-md="">
+            <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.[[DatabasePromise]] to null.</p>
+            <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑧">perform a database operation</a> will attempt to reopen it.</p>
+           <li data-md="">
+            <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">Resolve</a> <var>promise</var> with <var>database</var>.</p>
+          </ol>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①⓪">error</a>.</p>
          <li data-md="">
-          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+          <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
           <ol>
            <li data-md="">
             <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑦">result</a>.</p>
            <li data-md="">
-            <p>Perform the steps listeed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
+            <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
            <li data-md="">
             <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①②">reject</a> <var>area</var>.[[DatabasePromise]] with it.</p>
           </ol>
@@ -1833,6 +1842,10 @@ Parts of this work may be from another specification document.  If so, those par
       <p>Return false.</p>
     </ol>
    </div>
+   <div class="note" role="note">
+     A value being <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a> means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑤">allowed as a key</a> are a subset of those for which IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key">convert a value to a key</a> algorithm will succeed. 
+    <p>Most notably, using the <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑥">allowed as a key</a> predicate ensures that <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code> objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.</p>
+   </div>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="zip">zip</dfn> two <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">lists</a> <var>a</var> and <var>b</var>:</p>
    <ol>
     <li data-md="">
@@ -1850,10 +1863,6 @@ Parts of this work may be from another specification document.  If so, those par
     <li data-md="">
      <p>Return <var>result</var>.</p>
    </ol>
-   <div class="note" role="note">
-     A value being <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a> means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑤">allowed as a key</a> are a subset of those for which IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key">convert a value to a key</a> algorithm will succeed. 
-    <p>Most notably, using the <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑥">allowed as a key</a> predicate ensures that <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code> objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the async local storage API.</p>
-   </div>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
    <p>The editor would like to thank
 Joshua Bell
@@ -2055,6 +2064,7 @@ for their contributions to this specification.</p>
      <li><a href="https://w3c.github.io/IndexedDB/#idbkeyrange">IDBKeyRange</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbobjectstore">IDBObjectStore</a>
      <li><a href="https://w3c.github.io/IndexedDB/#idbtransaction">IDBTransaction</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#close-a-database-connection">close a database connection</a>
      <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count">count()</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">createObjectStore(name)</a>
@@ -2220,7 +2230,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①②">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①④">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⑦">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(3)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑦">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(3)</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="performing-a-database-operation">
@@ -2234,6 +2244,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-performing-a-database-operation⑤">3.7. keys()</a>
     <li><a href="#ref-for-performing-a-database-operation⑥">3.8. values()</a>
     <li><a href="#ref-for-performing-a-database-operation⑦">3.9. entries()</a>
+    <li><a href="#ref-for-performing-a-database-operation⑧">3.11. Supporting operations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="allowed-as-a-key">
