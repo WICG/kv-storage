@@ -30,7 +30,7 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: IsArray; url: sec-isarray; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
 
-urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB; type: dfn
+urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: convert a value to a key
   text: result; for: request
   text: error; for: request
@@ -90,7 +90,7 @@ The {{Window/localStorage}} API is widely used, and loved for its simplicity. Ho
 
 This specification proposes a new API, called async local storage, which is intended to provide an analogously simple interface, while being asynchronous. Along the way, it embraces some additional goals:
 
-* <strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. [[INDEXEDDB]] [[LWAPI]]
+* <strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. [[INDEXEDDB-2]] [[LWAPI]]
 
 * <strong>Modernize the API surface.</strong> Modern key/value stores in the platform, such as the {{Cache}} or {{Headers}} APIs, have aligned around the operation names given by JavaScript's {{Map}}. We follow their example. As a bonus, this allows us to avoid the legacy [=named properties=] feature that the {{Storage}} interface uses.
 
