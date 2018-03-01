@@ -36,6 +36,9 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: result; for: request
   text: error; for: request
   text: error; for: transaction
+
+urlPrefix: https://heycam.github.io/webidl/; spec: WEBIDL; type: dfn
+  text: include
 </pre>
 
 <pre class="link-defaults">
@@ -342,26 +345,30 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
 <div class="algorithm">
   1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
   1. Assert: |area|.\[[DatabaseName]] is a string (and in particular is not null).
-  1. If |area|.\[[DatabasePromise]] is null, then:
-    1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
-    1. TODO: reject if {{WindowOrWorkerGlobalScope/indexedDB}} does not exist (e.g. in a worklet).
-    1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |area|.\[[DatabaseName]] and 1.
-    1. If those steps threw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
-    1. Otherwise:
-      1. [=Add a simple event listener=] to |request| for "<code>success</code>" that performs the following steps:
-        1. Let |database| be |request|'s [=request/result=].
-        1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.\[[DatabasePromise]] to null.
-          <p class="note">This means that if the database is [=close a database connection|closed abnormally=], future invocations of [=perform a database operation=] will attempt to reopen it.</p>
-        1. [=Resolve=] |promise| with |database|.
-      1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
-      1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
-        1. Let |database| be |request|'s [=request/result=].
-        1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
-        1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
+  1. If |area|.\[[DatabasePromise]] is null, [=initialize the database promise=] for |area|.
   1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the following steps, given |database|:
     1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and |mode|.
     1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
     1. Return the result of performing |steps|, passing along |transaction| and |store|.
+</div>
+
+To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
+
+<div class="algorithm">
+  1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
+  1. If the [=current global object=] does not [=include=] {{WindowOrWorkerGlobalScope}}, [=reject=] |area|.\[[DatabasePromise]] with a {{TypeError}}, and return.
+  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |area|.\[[DatabaseName]] and 1.
+  1. If those steps threw an exception, catch the exception, [=reject=] |area|.\[[DatabasePromise]] with it, and return.
+  1. [=Add a simple event listener=] to |request| for "<code>success</code>" that performs the following steps:
+    1. Let |database| be |request|'s [=request/result=].
+    1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.\[[DatabasePromise]] to null.
+      <p class="note">This means that if the database is [=close a database connection|closed abnormally=], future invocations of [=perform a database operation=] will attempt to reopen it.</p>
+    1. [=Resolve=] |promise| with |database|.
+  1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+  1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
+    1. Let |database| be |request|'s [=request/result=].
+    1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
+    1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
 </div>
 
 A value |value| is <dfn>allowed as a key</dfn> if the following steps return true:

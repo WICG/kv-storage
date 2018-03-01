@@ -132,7 +132,7 @@ export class StorageArea {
 
     if (this.#databasePromise === null) {
       this.#databasePromise = new Promise((resolve, reject) => {
-        const request = indexedDB.open(this.#databaseName, 1);
+        const request = self.indexedDB.open(this.#databaseName, 1);
 
         request.onsuccess = () => {
           const database = request.result;
@@ -223,7 +223,7 @@ function zip(a, b) {
 
 function deleteDatabase(name) {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.deleteDatabase(name);
+    const request = self.indexedDB.deleteDatabase(name);
     request.onsuccess = () => resolve();
     request.onerror = () => reject(request.error);
   });
