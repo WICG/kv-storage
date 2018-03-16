@@ -124,6 +124,10 @@ This specification defines a new layered web API, whose [=API identifier=] is "<
   </xmp>
 </div>
 
+Additionally, evaluating the layered API's module must run the following steps:
+
+1. If the [=current settings object=] is not [$Is an environment settings object contextually secure?|contextually secure$], throw a "{{SecurityError}}" {{DOMException}}.
+
 <div class="note">
   This specification currently fails to fulfill the mandate of layered web APIs being built on top of existing web platform features in two ways:
 
