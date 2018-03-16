@@ -30,6 +30,9 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: IsArray; url: sec-isarray; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
 
+urlPrefix: https://tc39.github.io/Function-prototype-toString-revision/#; spec: FN-TOSTRING
+  text: HostHasSourceTextAvailable; url: proposal-sec-hosthassourcetextavailable; type: abstract-op
+
 urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: convert a value to a key
   text: close a database connection
@@ -121,10 +124,24 @@ This specification defines a new layered web API, whose [=API identifier=] is "<
   </xmp>
 </div>
 
+<div class="note">
+  This specification currently fails to fulfill the mandate of layered web APIs being built on top of existing web platform features in two ways:
+
+  * By <a href="#fn-tostring-censorship">requiring censorship</a> of the output of <code>Function.prototype.toString()</code> for the functions produced. See <a href="https://github.com/drufball/layered-apis/issues/7">drufball/layered-apis#7</a>.
+  * By directly invoking the algorithms of various IDL operations and attributes, instead of going through the global, potentially-overridable JavaScript APIs. (E.g., in various algorithm steps that say "performing the steps listed in the description of", or the [=allowed as a key=] algorithm which uses <a abstract-op>IsArray</a> directly instead of going through <code>Array.isArray()</code>.) See <a href="https://github.com/drufball/layered-apis/issues/6">drufball/layered-apis#6</a>.
+
+  We hope we can resolve this conflict; please refer to the above-linked issue threads for more discussion.
+</div>
+
 
 <h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
 
-Upon evaluating the <a><code>async-local-storage</code></a> layered API module, the {{StorageArea}} class must be created in the [=current Realm=]. The result must be equivalent to evaluating the following JavaScript code, with the exception that the constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block:
+Upon evaluating the <a><code>async-local-storage</code></a> layered API module, the {{StorageArea}} class must be created in the [=current Realm=]. The result must be equivalent to evaluating the following JavaScript code, with the following two exceptions:
+
+<ul>
+  <li><p>The constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block.</p></li>
+  <li id="fn-tostring-censorship"><p><a abstract-op>HostHasSourceTextAvailable</a> must return false for all function objects (i.e. the constructor, methods, and getters) created.</p></li>
+</ul>
 
 <pre highlight="js">
   class StorageArea {
