@@ -21,6 +21,7 @@ url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-i
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
+  text: Date; url: sec-date-objects; type: interface
   text: ToString; url: sec-tostring; type: abstract-op
   text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object; type: interface
   text: CreateDataProperty; url: sec-createdataproperty; type: abstract-op
@@ -29,6 +30,7 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Type; url: sec-ecmascript-data-types-and-values; type: abstract-op
   text: IsArray; url: sec-isarray; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
+  text: typed array; url: sec-typedarray-objects; type: dfn
 
 urlPrefix: https://tc39.github.io/Function-prototype-toString-revision/#; spec: FN-TOSTRING
   text: HostHasSourceTextAvailable; url: proposal-sec-hosthassourcetextavailable; type: abstract-op
@@ -39,6 +41,7 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: result; for: request
   text: error; for: request
   text: error; for: transaction
+  text: ascending; for: key; url: #greater-than
 
 urlPrefix: https://heycam.github.io/webidl/; spec: WEBIDL; type: dfn
   text: include
@@ -81,6 +84,36 @@ urlPrefix: https://heycam.github.io/webidl/; spec: WEBIDL; type: dfn
 
 [data-fill-with="copyright"] {
   display: none;
+}
+
+/* domintro from https://resources.whatwg.org/standard.css */
+dl.domintro {
+  position: relative;
+  color: green;
+  background: #DDFFDD;
+  margin: 2.5em 0 2em 0;
+  padding: 1.5em 1em 0.5em 2em;
+}
+
+dl.domintro dt, dl.domintro dt * {
+  color: black;
+  font-size: inherit;
+}
+dl.domintro dd {
+  margin: 0.5em 0 1em 2em; padding: 0;
+}
+dl.domintro dd p {
+  margin: 0.5em 0;
+}
+dl.domintro::before {
+  content: 'For web developers (non-normative)';
+  background: green;
+  color: white;
+  padding: 0.15em 0.25em;
+  font-style: normal;
+  position: absolute;
+  top: -0.8em;
+  left: -0.8em;
 }
 </style>
 
@@ -184,7 +217,15 @@ Each {{StorageArea}} instance must also contain the following internal slots:
     <td>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=]
 </table>
 
-<h3 id="storagearea-constructor" constructor for="StorageArea">constructor(|name|)</h3>
+<h3 id="storagearea-constructor" constructor for="StorageArea" lt="constructor(name)">constructor(|name|)</h3>
+
+<dl class="domintro">
+  <dt><code>|storage| = new {{StorageArea/constructor(name)|StorageArea}}(|name|)</code>
+  <dd>
+    <p>Creates a new {{StorageArea}} that provides an async key/value store view onto an IndexedDB database named <code>`async-local-storage:${name}`</code>.
+
+    <p>This does not actually open or create the database yet; that is done lazily when other methods are called. This means that all other methods can reject with database-related exceptions in failure cases.
+</dl>
 
 <div class="algorithm">
   1. Let |area| be this {{StorageArea}} object.
@@ -194,6 +235,18 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 </div>
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
+
+<dl class="domintro">
+  <dt><code>await |storage|.{{StorageArea/set()|set}}(|key|, |value|)</code>
+  <dd>
+    <p>Asynchronously stores the given |value| so that it can later be retrieved by the given |key|.
+
+    <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a numbers, strings, arrays, {{Date}}, {{ArrayBuffer}}, {{DataView}}, [=typed array=], or an array of these. Invalid keys will cause the returned promise to reject with a "{{DataError}}" {{DOMException}}.
+
+    <p>Values can be any value that can be [$StructuredSerializeForStorage|structured-serialized for storage$]. Un-serializable values will cause a "{{DataCloneError}}" {{DOMException}}.
+
+    <p>The returned promise will fulfill with undefined on success.
+</dl>
 
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
@@ -208,6 +261,16 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
+<dl class="domintro">
+  <dt><code>|value| = await |storage|.{{StorageArea/get()|get}}(|key|)</code>
+  <dd>
+    <p>Asynchronously retrieves the value stored at the given |key|, or undefined if there is no value stored at |key|.
+
+    <p>Values retrieved will be [$StructuredDeserialize|structured-deserialized$] from their original form.
+
+    <p>Note: since you can store the value undefined, the fulfillment value of undefined is ambiguous between being not present and being present with the value undefined. If you need to distinguish these cases, you can use {{StorageArea/has()}}, but beware of the race conditions <a href="#has-race-conditions">noted there</a>.
+</dl>
+
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
   1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
@@ -219,6 +282,36 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 </div>
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
+
+<dl class="domintro">
+  <dt><code><var ignore>isPresent</var> = await |storage|.{{StorageArea/has()|has}}(|key|)</code>
+  <dd>
+    <p>Asynchronously determines whether a value is stored at the given |key|, returning a promise fulfilled with either true or false.
+</dl>
+
+<div class="example" id="has-race-conditions">
+  <strong>Warning!</strong> Using this method in combination with {{StorageArea/get()}} is generally a bad idea. For example, the following code might look correct, but it is actually prone to race conditions:
+
+  <xmp highlight="js">
+    if (await storage.has("my-key")) {
+      const val = await storage.get("my-key");
+      // ... use val
+    }
+  </xmp>
+
+  The problem is that, because the {{StorageArea/has()}} call is asynchronous, the value stored at <code>"my-key"</code> might have been deleted between the {{StorageArea/has()}} promise fulfilling and the {{StorageArea/get()}} call being initiated.
+
+  In this case, the code would be better written as
+
+  <xmp highlight="js">
+    const val = await storage.get("my-key");
+    if (val !== undefined) {
+      // ... use val
+    }
+  </xmp>
+
+  We are discussing whether this points toward removing {{StorageArea/has()}}, and the distinction between present-with-value-undefined and not-present, in <a href="https://github.com/domenic/async-local-storage/issues/3">#3</a>.
+</div>
 
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
@@ -232,6 +325,14 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-delete" method for="StorageArea">delete(|key|)</h3>
 
+<dl class="domintro">
+  <dt><code>await |storage|.{{StorageArea/delete()|delete}}(|key|)</code>
+  <dd>
+    <p>Asynchronously deletes the entry at the given |key|.
+
+    <p>The returned promise will fulfill with undefined on success.
+</dl>
+
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
   1. Return the result of [=performing a database operation=] given this object, "<code>readwrite</code>", and the following steps operating on |transaction| and |store|:
@@ -244,6 +345,16 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 </div>
 
 <h3 id="storagearea-clear" method for="StorageArea">clear()</h3>
+
+<dl class="domintro">
+  <dt><code>await |storage|.{{StorageArea/clear()|clear}}()</code>
+  <dd>
+    <p>Asynchronously deletes all entries in this storage area.
+
+    <p>This is done by actually deleting the underlying IndexedDB database. As such, it always can be used as a fail-safe to get a clean slate, <a href="#clear-recover-from-corruption">as shown below</a>.
+
+    <p>The returned promise will fulfill with undefined on success.
+</dl>
 
 <div class="algorithm">
   1. Let |area| be this object.
@@ -271,10 +382,10 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   1. Return |promise|.
 </div>
 
-<div class="note">
+<div class="example" id="clear-recover-from-corruption">
   This method can be used to recover from corruption of the backing store. For example,
 
-  <pre highlight="js">
+  <xmp highlight="js">
     // This corrupts the "cats" storage area, since StorageAreas assume a version of 1.
     const openRequest = indexedDB.open("async-local-storage:cats", 100);
     openRequest.onsuccess = () => {
@@ -299,10 +410,18 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
       await area.set("fluffy", new Cat());
       await area.set("tigger", new Cat());
     })();
-  </pre>
+  </xmp>
 </div>
 
 <h3 id="storagearea-keys" method for="StorageArea">keys()</h3>
+
+<dl class="domintro">
+  <dt><code><var ignore>keys</var> = await |storage|.{{StorageArea/keys()|keys}}()</code>
+  <dd>
+    <p>Asynchronously retrieves an array containing the keys of all entries in this storage area.
+
+    <p>Keys will be returned in [=key/ascending=] order; roughly, segregated by type, and then sorted within each type. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
+</dl>
 
 <div class="algorithm">
   1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
@@ -315,6 +434,14 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <h3 id="storagearea-values" method for="StorageArea">values()</h3>
 
+<dl class="domintro">
+  <dt><code><var ignore>values</var> = await |storage|.{{StorageArea/values()|values}}()</code>
+  <dd>
+    <p>Asynchronously retrieves an array containing the values of all entries in this storage area.
+
+    <p>Values will be ordered as corresponding to their keys; see {{StorageArea/keys()}}. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
+</dl>
+
 <div class="algorithm">
   1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
     1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getAll()}} method on |store| given the argument undefined.
@@ -325,6 +452,14 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 </div>
 
 <h3 id="storagearea-entries" method for="StorageArea">entries()</h3>
+
+<dl class="domintro">
+  <dt><code><var ignore>entries</var> = await |storage|.{{StorageArea/entries()|entries}}()</code>
+  <dd>
+    <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
+
+    <p>Entries will be ordered as corresponding to their keys; see {{StorageArea/keys()}}. Each key and value will be [$StructuredDeserialize|structured-deserialized$] from its original form.
+</dl>
 
 <div class="algorithm">
   1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
@@ -340,6 +475,18 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 </div>
 
 <h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
+
+<dl class="domintro">
+  <dt><code>{ |database|, |store|, |version| } = |storage|.{{StorageArea/backingStore}}</code>
+  <dd>
+    <p>Asynchronously retrieves an an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area:
+
+    * |database| will be a string equal to "<code>async-local-storage:</code>" concatenated with the database name passed to the constructor. (For the default storage area, it will be "<code>async-local-storage:default</code>".)
+    * |store| will be the string "<code>store</code>".
+    * |version| will be the number 1.
+
+    <p>It is good practice to use the {{StorageArea/backingStore}} property to retrieve this information, instead of memorizing the above factoids.
+</dl>
 
 <div class="algorithm">
   1. Let |area| be this object.
