@@ -1536,6 +1536,11 @@ Parts of this work may be from another specification document.  If so, those par
     <span class="s2">"std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js"</span><span class="p">;</span>
 </pre>
    </div>
+   <p>Additionally, evaluating the layered API’s module must run the following steps:</p>
+   <ol>
+    <li data-md="">
+     <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a> is not <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-secure-contexts/#settings-object" id="ref-for-settings-object">contextually secure</a>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
+   </ol>
    <div class="note" role="note">
      This specification currently fails to fulfill the mandate of layered web APIs being built on top of existing web platform features in two ways: 
     <ul>
@@ -1605,7 +1610,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key①">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key①">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation①">performing a database operation</a> given this object, "<code>readwrite</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1628,7 +1633,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key②">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror①">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key②">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror①">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation②">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1649,7 +1654,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key③">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror②">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key③">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror②">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException③">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation③">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1670,7 +1675,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror③">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException③">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror③">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException④">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation④">performing a database operation</a> given this object, "<code>readwrite</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1857,7 +1862,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>Let <var>callback</var> be a new <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-callback-function" id="ref-for-dfn-callback-function">callback function</a> whose <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-callback-context" id="ref-for-dfn-callback-context">callback context</a> is the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a> and whose object reference is a new JavaScript function that performs the steps given by <var>steps</var>. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or [[Prototype]]) are unobservable, and can be chosen arbitrarily.</p>
+      <p>Let <var>callback</var> be a new <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-callback-function" id="ref-for-dfn-callback-function">callback function</a> whose <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-callback-context" id="ref-for-dfn-callback-context">callback context</a> is the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a> and whose object reference is a new JavaScript function that performs the steps given by <var>steps</var>. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or [[Prototype]]) are unobservable, and can be chosen arbitrarily.</p>
      <li data-md="">
       <p>Let <var>listener</var> be a new <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener">event listener</a> whose type is <var>type</var>, callback is <var>callback</var>, capture is false, passive is false, and once is false.</p>
      <li data-md="">
@@ -2211,6 +2216,11 @@ for their contributions to this specification.</p>
      <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by">transforming</a>
     </ul>
    <li>
+    <a data-link-type="biblio">[secure-contexts]</a> defines the following terms:
+    <ul>
+     <li><a href="https://w3c.github.io/webappsec-secure-contexts/#settings-object">Is an environment settings object contextually secure?</a>
+    </ul>
+   <li>
     <a data-link-type="biblio">[service-workers-2]</a> defines the following terms:
     <ul>
      <li><a href="https://w3c.github.io/ServiceWorker/#cache">Cache</a>
@@ -2220,6 +2230,7 @@ for their contributions to this specification.</p>
     <ul>
      <li><a href="https://heycam.github.io/webidl/#idl-DOMException">DOMException</a>
      <li><a href="https://heycam.github.io/webidl/#dataerror">DataError</a>
+     <li><a href="https://heycam.github.io/webidl/#securityerror">SecurityError</a>
      <li><a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">TypeError</a>
      <li><a href="https://heycam.github.io/webidl/#dfn-callback-context">callback context</a>
      <li><a href="https://heycam.github.io/webidl/#dfn-callback-function">callback function</a>
@@ -2244,6 +2255,8 @@ for their contributions to this specification.</p>
    <dd>Domenic Denicola; Dru Knox; Ojan Vafai. <a href="https://github.com/drufball/layered-apis/blob/master/README.md">Layered APIs</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/README.md">https://github.com/drufball/layered-apis/blob/master/README.md</a>
    <dt id="biblio-promises-guide">[PROMISES-GUIDE]
    <dd>Domenic Denicola. <a href="https://www.w3.org/2001/tag/doc/promises-guide">Writing Promise-Using Specifications</a>. 16 February 2016. Finding of the W3C TAG. URL: <a href="https://www.w3.org/2001/tag/doc/promises-guide">https://www.w3.org/2001/tag/doc/promises-guide</a>
+   <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
+   <dd>Mike West. <a href="https://w3c.github.io/webappsec-secure-contexts/">Secure Contexts</a>. URL: <a href="https://w3c.github.io/webappsec-secure-contexts/">https://w3c.github.io/webappsec-secure-contexts/</a>
    <dt id="biblio-webidl">[WebIDL]
    <dd>Cameron McCormack; Boris Zbarsky; Tobie Langel. <a href="https://heycam.github.io/webidl/">Web IDL</a>. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
