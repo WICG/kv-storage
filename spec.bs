@@ -380,7 +380,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
   <dd>
     <p>Asynchronously deletes all entries in this storage area.
 
-    <p>This is done by actually deleting the underlying IndexedDB database. As such, it always can be used as a fail-safe to get a clean slate, <a href="#clear-recover-from-corruption">as shown below</a>.
+    <p>This is done by actually deleting the underlying IndexedDB database. As such, it always can be used as a fail-safe to get a clean slate, <a href="#clear-recover-from-changes">as shown below</a>.
 
     <p>The returned promise will fulfill with undefined on success.
 </dl>
@@ -411,11 +411,12 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   1. Return |promise|.
 </div>
 
-<div class="example" id="clear-recover-from-corruption">
-  This method can be used to recover from corruption of the backing store. For example,
+<div class="example" id="clear-recover-from-changes">
+  This method can be used to recover from unexpected modifications to the backing store. For example,
 
   <xmp highlight="js">
-    // This corrupts the "cats" storage area, since StorageAreas assume a version of 1.
+    // This upgrade to version 100 breaks the "cats" storage area: since StorageAreas
+    // assume a version of 1, "cats" can no longer be used with async local storage.
     const openRequest = indexedDB.open("async-local-storage:cats", 100);
     openRequest.onsuccess = () => {
       openRequest.onsuccess.close();
@@ -424,7 +425,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
     (async () => {
       const area = new StorageArea("cats");
 
-      // Due to the corruption, all other methods will reject:
+      // Due to the above upgrade, all other methods will reject:
       try {
         await area.set("fluffy", new Cat());
       } catch (e) {
