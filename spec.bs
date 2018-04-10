@@ -270,7 +270,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
   <dd>
     <p>Asynchronously stores the given |value| so that it can later be retrieved by the given |key|.
 
-    <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a numbers, strings, arrays, {{Date}}, {{ArrayBuffer}}, {{DataView}}, [=typed array=], or an array of these. Invalid keys will cause the returned promise to reject with a "{{DataError}}" {{DOMException}}.
+    <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a number, string, array, {{Date}}, {{ArrayBuffer}}, {{DataView}}, [=typed array=], or an array of these. Invalid keys will cause the returned promise to reject with a "{{DataError}}" {{DOMException}}.
 
     <p>Values can be any value that can be [$StructuredSerializeForStorage|structured-serialized for storage$]. Un-serializable values will cause a "{{DataCloneError}}" {{DOMException}}.
 
