@@ -531,6 +531,8 @@ To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
     1. Let |database| be |request|'s [=request/result=].
     1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.\[[DatabasePromise]] to null.
       <p class="note">This means that if the database is [=close a database connection|closed abnormally=], future invocations of [=perform a database operation=] will attempt to reopen it.</p>
+    1. [=Add a simple event listener=] to |database| for "<code>versionchange</code>" that performs the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/close()}} method on |database|, and then sets |area|.\[[DatabasePromise]] to null.
+       <p class="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the {{StorageArea/clear()}} method), to succeed. Without this, if two {{StorageArea}} instances were both open referencing the same underlying database, {{StorageArea/clear()}} would hang, as it only closes the connection maintained by the {{StorageArea}} it is invoked on.</p>
     1. [=Resolve=] |promise| with |database|.
   1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
   1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
