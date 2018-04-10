@@ -1176,7 +1176,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 5b45077b788760e1550b54d00b3180bc0731f7ba" name="generator">
+  <meta content="Bikeshed version 4ed3ee986a8d1722dd7c6bb819b1a2484c3cfb47" name="generator">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1473,7 +1473,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-03-16">16 March 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-04-10">10 April 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1487,7 +1487,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 16 March 2018,
+In addition, as of 10 April 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1549,6 +1549,30 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md="">
       <p><strong>Support isolated storage areas.</strong> <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage②">localStorage</a></code> requires careful namespacing of keys to use robustly in a multi-actor environment. Popular libraries meant to replace it, like <a href="https://localforage.github.io/localForage/">localForage</a>, have included a way to create new storage areas beyond the default one.</p>
     </ul>
+    <div class="example" id="example-from-html-spec">
+     <a class="self-link" href="#example-from-html-spec"></a> A conversion of <a href="https://html.spec.whatwg.org/multipage/webstorage.html#introduction-15">the HTML Standard’s <code>localStorage</code> example</a> to use async local storage might look like the following: 
+<pre class="highlight"><span class="p">&lt;</span><span class="nt">p</span><span class="p">></span>
+  You have viewed this page
+  <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">"count"</span><span class="p">></span>an untold number of<span class="p">&lt;/</span><span class="nt">span</span><span class="p">></span>
+  time(s).
+<span class="p">&lt;/</span><span class="nt">p</span><span class="p">></span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">"module"</span><span class="p">></span>
+  <span class="kr">import</span> <span class="p">{</span> storage <span class="p">}</span> from
+      <span class="s2">"std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js"</span><span class="p">;</span>
+
+  <span class="p">(</span>async <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+    <span class="kd">let</span> pageLoadCount <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"pageLoadCount"</span><span class="p">)</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="o">++</span>pageLoadCount<span class="p">;</span>
+
+    document<span class="p">.</span>querySelector<span class="p">(</span><span class="s2">"#count"</span><span class="p">).</span>textContent <span class="o">=</span> pageLoadCount<span class="p">;</span>
+
+    await storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"pageLoadCount"</span><span class="p">,</span> pageLoadCount<span class="p">);</span>
+  <span class="p">})();</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">></span>
+</pre>
+     <p>As a side note, observe how, in contrast to the original example which performs up to five storage operations, our example only performs two. Also, it updates the UI as soon as possible, instead of delaying the UI update until we’ve set the new page load count.</p>
+     <p>The async local storage API design can take some credit for this, as by forcing us to explicitly state our <code>await</code> points, it makes it more obvious that we’re performing a potentially-expensive storage operation.</p>
+    </div>
    </div>
    <h2 class="heading settled" data-level="2" id="module"><span class="secno">2. </span><span class="content">The <code>async-local-storage</code> layered web API</span><a class="self-link" href="#module"></a></h2>
    <p>This specification defines a new layered web API, whose <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure" id="ref-for-part-1-the-infrastructure">API identifier</a> is "<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="async-local-storage"><code>async-local-storage</code></dfn>" and whose exports are the following:</p>
@@ -1647,7 +1671,7 @@ Parts of this work may be from another specification document.  If so, those par
     <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-set" id="ref-for-storagearea-set①">set</a></code>(<var>key</var>, <var>value</var>)</code> 
     <dd>
      <p>Asynchronously stores the given <var>value</var> so that it can later be retrieved by the given <var>key</var>. </p>
-     <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a numbers, strings, arrays, <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-date-objects" id="ref-for-sec-date-objects">Date</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer">ArrayBuffer</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DataView" id="ref-for-idl-DataView">DataView</a></code>, <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-typedarray-objects" id="ref-for-sec-typedarray-objects">typed array</a>, or an array of these. Invalid keys will cause the returned promise to reject with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>. </p>
+     <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a number, string, array, <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-date-objects" id="ref-for-sec-date-objects">Date</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer">ArrayBuffer</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DataView" id="ref-for-idl-DataView">DataView</a></code>, <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-typedarray-objects" id="ref-for-sec-typedarray-objects">typed array</a>, or an array of these. Invalid keys will cause the returned promise to reject with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>. </p>
      <p>Values can be any value that can be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage" id="ref-for-structuredserializeforstorage">structured-serialized for storage</a>. Un-serializable values will cause a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#datacloneerror" id="ref-for-datacloneerror">DataCloneError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>. </p>
      <p>The returned promise will fulfill with undefined on success. </p>
    </dl>
@@ -1777,7 +1801,7 @@ Parts of this work may be from another specification document.  If so, those par
     <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear</a></code>()</code> 
     <dd>
      <p>Asynchronously deletes all entries in this storage area. </p>
-     <p>This is done by actually deleting the underlying IndexedDB database. As such, it always can be used as a fail-safe to get a clean slate, <a href="#clear-recover-from-corruption">as shown below</a>. </p>
+     <p>This is done by actually deleting the underlying IndexedDB database. As such, it always can be used as a fail-safe to get a clean slate, <a href="#clear-recover-from-changes">as shown below</a>. </p>
      <p>The returned promise will fulfill with undefined on success. </p>
    </dl>
    <div class="algorithm">
@@ -1833,9 +1857,10 @@ Parts of this work may be from another specification document.  If so, those par
       <p>Return <var>promise</var>.</p>
     </ol>
    </div>
-   <div class="example" id="clear-recover-from-corruption">
-    <a class="self-link" href="#clear-recover-from-corruption"></a> This method can be used to recover from corruption of the backing store. For example, 
-<pre class="highlight"><span class="c1">// This corrupts the "cats" storage area, since StorageAreas assume a version of 1.</span>
+   <div class="example" id="clear-recover-from-changes">
+    <a class="self-link" href="#clear-recover-from-changes"></a> This method can be used to recover from unexpected modifications to the backing store. For example, 
+<pre class="highlight"><span class="c1">// This upgrade to version 100 breaks the "cats" storage area: since StorageAreas</span>
+<span class="c1">// assume a version of 1, "cats" can no longer be used with async local storage.</span>
 <span class="c1"></span><span class="kr">const</span> openRequest <span class="o">=</span> indexedDB<span class="p">.</span>open<span class="p">(</span><span class="s2">"async-local-storage:cats"</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
 openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
   openRequest<span class="p">.</span>onsuccess<span class="p">.</span>close<span class="p">();</span>
@@ -1844,7 +1869,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
 <span class="p">(</span>async <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
   <span class="kr">const</span> area <span class="o">=</span> <span class="k">new</span> StorageArea<span class="p">(</span><span class="s2">"cats"</span><span class="p">);</span>
 
-  <span class="c1">// Due to the corruption, all other methods will reject:</span>
+  <span class="c1">// Due to the above upgrade, all other methods will reject:</span>
 <span class="c1"></span>  <span class="k">try</span> <span class="p">{</span>
     await area<span class="p">.</span>set<span class="p">(</span><span class="s2">"fluffy"</span><span class="p">,</span> <span class="k">new</span> Cat<span class="p">());</span>
   <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span>e<span class="p">)</span> <span class="p">{</span>
@@ -2314,7 +2339,7 @@ for their contributions to this specification.</p>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open">open(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-put">put(value)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">transaction(storeNames, mode)</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">transaction(storeNames)</a>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
