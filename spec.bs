@@ -196,7 +196,7 @@ Additionally, evaluating the layered API's module must run the following steps:
 
 1. If the [=current settings object=] is not [$Is an environment settings object contextually secure?|contextually secure$], throw a "{{SecurityError}}" {{DOMException}}.
 
-<div class="note">
+<div class="advisement">
   This specification currently fails to fulfill the mandate of layered web APIs being built on top of existing web platform features in two ways:
 
   * By <a href="#fn-tostring-censorship">requiring censorship</a> of the output of <code>Function.prototype.toString()</code> for the functions produced. See <a href="https://github.com/drufball/layered-apis/issues/7">drufball/layered-apis#7</a>.
