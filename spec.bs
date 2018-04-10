@@ -403,7 +403,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <div class="algorithm">
   1. Let |promise| be [=a new promise=].
-  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/deleteDatabase()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the argument |name|.
+  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/deleteDatabase()}} method on the <a>current <code>IDBFactory</code></a>, given the argument |name|.
   1. If those steps threw an exception, catch the exception and [=reject=] |promise| with it.
   1. Otherwise:
     1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with undefined.
@@ -533,9 +533,16 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an event type string |type|, and a set of steps |steps|:
 
 <div class="algorithm">
-  1. Let |callback| be a new [=callback function=] whose [=callback context=] is the [=current settings object=] and whose object reference is a new JavaScript function that performs the steps given by |steps|. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or \[[Prototype]]) are unobservable, and can be chosen arbitrarily.
+  1. Let |callback| be a new [=callback function=] whose [=callback context=] is the [=current settings object=] and whose object reference is a new JavaScript function object, created in the [=current realm=], that performs the steps given by |steps|. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or \[[Prototype]]) are unobservable, and can be chosen arbitrarily.
   1. Let |listener| be a new [=event listener=] whose type is |type|, callback is |callback|, capture is false, passive is false, and once is false.
   1. [=list/Append=] |listener| to |target|'s [=event listeners=].
+</div>
+
+The <dfn>current <code>IDBFactory</code></dfn> is the {{IDBFactory}} instance returned by the following steps:
+
+<div class="algorithm">
+  1. Assert: the [=current global object=] [=includes=] {{WindowOrWorkerGlobalScope}}.
+  1. Return the result of performing the steps listed in the description of the getter for {{WindowOrWorkerGlobalScope}}'s {{WindowOrWorkerGlobalScope/indexedDB}} attribute on the [=current global object=].
 </div>
 
 To <dfn lt="performing a database operation|perform a database operation">perform a database operation</dfn> given a {{StorageArea}} |area|, a mode string |mode|, and a set of steps |steps| that operate on an {{IDBTransaction}} |transaction| and an {{IDBObjectStore}} |store|:
@@ -555,7 +562,7 @@ To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
 <div class="algorithm">
   1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
   1. If the [=current global object=] does not [=include=] {{WindowOrWorkerGlobalScope}}, [=reject=] |area|.\[[DatabasePromise]] with a {{TypeError}}, and return.
-  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the object returned by the {{WindowOrWorkerGlobalScope/indexedDB}} IDL attribute, given the arguments |area|.\[[DatabaseName]] and 1.
+  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the <a>current <code>IDBFactory</code></a>, given the arguments |area|.\[[DatabaseName]] and 1.
   1. If those steps threw an exception, catch the exception, [=reject=] |area|.\[[DatabasePromise]] with it, and return.
   1. [=Add a simple event listener=] to |request| for "<code>success</code>" that performs the following steps:
     1. Let |database| be |request|'s [=request/result=].
