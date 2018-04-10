@@ -43,13 +43,19 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: error; for: transaction
   text: ascending; for: key; url: #greater-than
 
-urlPrefix: https://heycam.github.io/webidl/; spec: WEBIDL; type: dfn
-  text: include
+# Remove once https://github.com/whatwg/dom/pull/632 is merged
+urlPrefix: https://dom.spec.whatwg.org/#event-listener-; spec: DOM; type: dfn; for: event listener
+  text: type
+  text: callback
+  text: capture
+  text: passive
+  text: once
+  text: removed
 </pre>
 
 <pre class="link-defaults">
   spec: promises-guide; type: dfn; text: resolve
-  spec:infra; type:dfn; text:list
+  spec: infra; type: dfn; text: list
 </pre>
 
 <pre class="biblio">
@@ -533,9 +539,10 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an event type string |type|, and a set of steps |steps|:
 
 <div class="algorithm">
-  1. Let |callback| be a new [=callback function=] whose [=callback context=] is the [=current settings object=] and whose object reference is a new JavaScript function object, created in the [=current realm=], that performs the steps given by |steps|. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or \[[Prototype]]) are unobservable, and can be chosen arbitrarily.
-  1. Let |listener| be a new [=event listener=] whose type is |type|, callback is |callback|, capture is false, passive is false, and once is false.
-  1. [=list/Append=] |listener| to |target|'s [=event listeners=].
+  1. Let |jsCallback| be a new JavaScript function object, created in the [=current realm=], that performs the steps given by |steps|. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or \[[Prototype]]) are unobservable, and can be chosen arbitrarily.
+  1. Let |idlCallback| be the result of [=converted to an IDL value|converting=] |jsCallback| to an {{EventListener}}.
+  1. Let |listener| be a new [=event listener=] whose [=event listener/type=] is |type|, [=event listener/callback=] is |idlCallback|, [=event listener/capture=] is false, [=event listener/passive=] is false, [=event listener/once=] is false, and [=event listener/removed=] is false.
+  1. [=add an event listener|Add=] |listener| to |target|.
 </div>
 
 The <dfn>current <code>IDBFactory</code></dfn> is the {{IDBFactory}} instance returned by the following steps:
