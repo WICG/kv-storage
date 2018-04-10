@@ -136,6 +136,35 @@ This specification proposes a new API, called async local storage, which is inte
 
 * <strong>Support isolated storage areas.</strong> {{Window/localStorage}} requires careful namespacing of keys to use robustly in a multi-actor environment. Popular libraries meant to replace it, like <a href="https://localforage.github.io/localForage/">localForage</a>, have included a way to create new storage areas beyond the default one.
 
+<div class="example" id="example-from-html-spec">
+  A conversion of <a href="https://html.spec.whatwg.org/multipage/webstorage.html#introduction-15">the HTML Standard's <code>localStorage</code> example</a> to use async local storage might look like the following:
+
+  <xmp highlight="html">
+    <p>
+      You have viewed this page
+      <span id="count">an untold number of</span>
+      time(s).
+    </p>
+    <script type="module">
+      import { storage } from
+          "std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js";
+
+      (async () => {
+        let pageLoadCount = await storage.get("pageLoadCount") || 0;
+        ++pageLoadCount;
+
+        document.querySelector("#count").textContent = pageLoadCount;
+
+        await storage.set("pageLoadCount", pageLoadCount);
+      })();
+    </script>
+  </xmp>
+
+  As a side note, observe how, in contrast to the original example which performs up to five storage operations, our example only performs two. Also, it updates the UI as soon as possible, instead of delaying the UI update until we've set the new page load count.
+
+  The async local storage API design can take some credit for this, as by forcing us to explicitly state our <code>await</code> points, it makes it more obvious that we're performing a potentially-expensive storage operation.
+</div>
+
 </div>
 
 
