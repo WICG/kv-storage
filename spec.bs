@@ -365,6 +365,16 @@ An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} i
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
 
+<div class="algorithm">
+  1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
+  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
+    1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/count()}} method on |store|, given the argument |key|.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with false if |request|'s [=request/result=] is 0, and with true otherwise.
+    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
+    1. Return |promise|.
+</div>
+
 <dl class="domintro non-normative">
   <dt><code><var ignore>isPresent</var> = await |storage|.{{StorageArea/has()|has}}(|key|)</code>
   <dd>
@@ -407,16 +417,6 @@ An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} i
   </xmp>
 
   We are discussing whether this points toward removing {{StorageArea/has()}}, and the distinction between present-with-value-undefined and not-present, in <a href="https://github.com/domenic/async-local-storage/issues/3">#3</a>.
-</div>
-
-<div class="algorithm">
-  1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
-  1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
-    1. Let |request| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/count()}} method on |store|, given the argument |key|.
-    1. Let |promise| be [=a new promise=].
-    1. [=Add a simple event listener=] to |request| for "<code>success</code>" that [=resolves=] |promise| with false if |request|'s [=request/result=] is 0, and with true otherwise.
-    1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
-    1. Return |promise|.
 </div>
 
 <h3 id="storagearea-delete" method for="StorageArea">delete(|key|)</h3>
