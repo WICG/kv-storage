@@ -6,7 +6,7 @@ Inline Github Issues: true
 Status: DREAM
 Boilerplate: omit conformance, omit feedback-header
 Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me, https://domenic.me/
-Abstract: This specification details a layered web API for an asynchronous key value store, in the style of the original <span class="non-normative">{{Window/localStorage}}</span>.
+Abstract: This specification details a layered API for an asynchronous key value store, in the style of the original <span class="non-normative">{{Window/localStorage}}</span>.
 !Participate: <a href="https://github.com/domenic/async-local-storage">GitHub domenic/async-local-storage</a> (<a href="https://github.com/domenic/async-local-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/async-local-storage/issues?state=open">open issues</a>)
 !Commits: <a href="https://github.com/domenic/async-local-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
@@ -17,7 +17,7 @@ Default Biblio Status: current
 <pre class="anchors">
 url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
 
-url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure; type: dfn; text: API identifier; spec: LWAPI
+url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure; type: dfn; text: API identifier; spec: LAPI
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
@@ -51,7 +51,7 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
 
 <pre class="biblio">
 {
-  "LWAPI": {
+  "LAPI": {
     "authors": [
       "Domenic Denicola",
       "Dru Knox",
@@ -131,7 +131,7 @@ The {{Window/localStorage}} API is widely used, and loved for its simplicity. Ho
 
 This specification proposes a new API, called async local storage, which is intended to provide an analogously simple interface, while being asynchronous. Along the way, it embraces some additional goals:
 
-* <strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered web APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. [[INDEXEDDB-2]] [[LWAPI]]
+* <strong>Layer on top of Indexed Database.</strong> This both fulfills the mandate of layered APIs to build on top of existing platform features, and allows an upgrade path to full IndexedDB usage if a web developer outgrows the async local storage interface. [[INDEXEDDB-2]] [[LAPI]]
 
 * <strong>Modernize the API surface.</strong> Modern key/value stores in the platform, such as the {{Cache}} or {{Headers}} APIs, have aligned around the operation names given by JavaScript's {{Map}}. We follow their example. As a bonus, this allows us to avoid the legacy [=named properties=] feature that the {{Storage}} interface uses.
 
@@ -169,7 +169,7 @@ This specification proposes a new API, called async local storage, which is inte
 </div>
 
 
-<h2 id="module">The <code>async-local-storage</code> layered web API</h2>
+<h2 id="module">The <code>async-local-storage</code> layered API</h2>
 
 <dl class="domintro non-normative" id="module-domintro">
   <dt><code>import * as |als| from "std:async-local-storage|https://example.com/als-polyfill.js"</code>
@@ -190,7 +190,7 @@ This specification proposes a new API, called async local storage, which is inte
   </dd>
 </dl>
 
-This specification defines a new layered web API, whose [=API identifier=] is "<dfn><code>async-local-storage</code></dfn>" and whose exports are the following:
+This specification defines a new layered API, whose [=API identifier=] is "<dfn><code>async-local-storage</code></dfn>" and whose exports are the following:
 
 : <dfn for="std:async-local-storage"><code>storage</code></dfn>
 :: An instance of the {{StorageArea}} class, created as if by <a abstract-op>Construct</a>({{StorageArea}}, « "<code>default</code>" »).
@@ -211,7 +211,7 @@ Additionally, evaluating the layered API's module must run the following steps:
 1. If the [=current settings object=] is not [$Is an environment settings object contextually secure?|contextually secure$], throw a "{{SecurityError}}" {{DOMException}}.
 
 <div class="advisement">
-  This specification currently fails to fulfill the mandate of layered web APIs being built on top of existing web platform features in two ways:
+  This specification currently fails to fulfill the mandate of layered APIs being built on top of existing web platform features in two ways:
 
   * By <a href="#fn-tostring-censorship">requiring censorship</a> of the output of <code>Function.prototype.toString()</code> for the functions produced. See <a href="https://github.com/drufball/layered-apis/issues/7">drufball/layered-apis#7</a>.
   * By directly invoking the algorithms of various IDL operations and attributes, instead of going through the global, potentially-overridable JavaScript APIs. (E.g., in various algorithm steps that say "performing the steps listed in the description of", or the [=allowed as a key=] algorithm which uses <a abstract-op>IsArray</a> directly instead of going through <code>Array.isArray()</code>.) See <a href="https://github.com/drufball/layered-apis/issues/6">drufball/layered-apis#6</a>.
@@ -259,7 +259,7 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
 
     * Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. Our brand checks (included in each method's description manually) are same-realm-only.
 
-    * It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered web API in JavaScript. (But not impossible.)
+    * It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered API in JavaScript. (But not impossible.)
 
     * The generic nature of Web IDL means that it is best implemented using code generation. However, implementers currently do not have a Web IDL bindings generator that produces JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create a JavaScript-producing Web IDL bindings generator. Furthermore, the generated JavaScript would end up being quite large; see <a href="https://gist.github.com/domenic/1f57ecc0720b3861b58192a67e296e9b">an example</a>. <!-- TODO: maybe make an actual generated StorageArea example -->
 
