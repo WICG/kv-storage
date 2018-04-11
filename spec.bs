@@ -359,14 +359,9 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 <div class="algorithm">
   1. Let |area| be this object.
   1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
-  1. If |area|.\[[DatabasePromise]] is not null, return the result of [=transforming=] |area|.\[[DatabasePromise]] by:
-    * A fulfillment handler that performs the following steps, given |database|:
-      1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/close()}} method on |database|.
-      1. Set |area|.\[[DatabasePromise]] to null.
-      1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
-    * A rejection handler that performs the following steps:
-      1. Set |area|.\[[DatabasePromise]] to null.
-      1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
+  1. If |area|.\[[DatabasePromise]] is not null, return the result of [=transforming=] |area|.\[[DatabasePromise]] by fulfillment and rejection handlers that both perform the following steps:
+    1. Set |area|.\[[DatabasePromise]] to null.
+    1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
   1. Otherwise, return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
 </div>
 
