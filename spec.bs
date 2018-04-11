@@ -42,15 +42,6 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: error; for: request
   text: error; for: transaction
   text: ascending; for: key; url: #greater-than
-
-# Remove once https://github.com/whatwg/dom/pull/632 is merged
-urlPrefix: https://dom.spec.whatwg.org/#event-listener-; spec: DOM; type: dfn; for: event listener
-  text: type
-  text: callback
-  text: capture
-  text: passive
-  text: once
-  text: removed
 </pre>
 
 <pre class="link-defaults">
@@ -584,8 +575,7 @@ To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an
 <div class="algorithm">
   1. Let |jsCallback| be a new JavaScript function object, created in the [=current realm=], that performs the steps given by |steps|. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or \[[Prototype]]) are unobservable, and can be chosen arbitrarily.
   1. Let |idlCallback| be the result of [=converted to an IDL value|converting=] |jsCallback| to an {{EventListener}}.
-  1. Let |listener| be a new [=event listener=] whose [=event listener/type=] is |type|, [=event listener/callback=] is |idlCallback|, [=event listener/capture=] is false, [=event listener/passive=] is false, [=event listener/once=] is false, and [=event listener/removed=] is false.
-  1. [=add an event listener|Add=] |listener| to |target|.
+  1. Perform the steps listed in the description of {{EventTarget}}'s {{EventTarget/addEventListener()}} method on |target| given the arguments |type| and |idlCallback|.
 </div>
 
 The <dfn>current <code>IDBFactory</code></dfn> is the {{IDBFactory}} instance returned by the following steps:
