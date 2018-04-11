@@ -42,6 +42,7 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: result; for: request
   text: error; for: request
   text: error; for: transaction
+  text: transaction; url: #transaction-concept
   text: ascending; for: key; url: #greater-than
 </pre>
 
@@ -603,6 +604,52 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>store</code>", "<code>store</code>").
   1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>version</code>", 1).
   1. Return |info|.
+</div>
+
+<div class="example" id="example-backingstore">
+  Consider a checklist application, which tracks the Pokémon a user has collected. It might use <code>[=std:async-local-storage/storage=]</code> like so:
+
+  <xmp highlight="js">
+    bulbasaur.onchange = () => storage.set("bulbasaur", bulbasaur.checked);
+    ivysaur.onchange = () => storage.set("ivysaur", ivysaur.checked);
+    venusaur.onchange = () => storage.set("venusaur", venusaur.checked);
+    // ...
+  </xmp>
+
+  (Hopefully the developer quickly realizes that the above will be hard to maintain, and refactors the code into a loop. But in the meantime, their repetitive code makes for a good example, so let's take advantage of that.)
+
+  The developer now realizes they want to add an evolution feature, e.g. for when the user transforms their Bulbasaur into an Ivysaur. They might first implement this like so:
+
+  <xmp highlight="js">
+    bulbasaurEvolve.onclick = async () => {
+      await storage.set("bulbasaur", false);
+      await storage.set("ivysaur", true);
+    };
+  </xmp>
+
+  However, our developer starts getting bug reports from their users: if the users happen to open up the checklist app in a second tab while they're evolving in the first tab, the second tab will sometimes see that their Bulbasaur has disappeared, without ever turning into an Ivysaur! A Pokémon has gone missing!
+
+  The solution here is to step beyond the comfort zone of async local storage, and start using the full power of IndexedDB: in particular, its [=transactions=] feature. The {{StorageArea/backingStore}} getter is the gateway to this world:
+
+  <xmp highlight="js">
+    const { database, store, version } = storage.backingStore;
+    const request = indexedDB.open(database, version);
+    request.onsuccess = () => {
+      const db = request.result;
+
+      bulbasaurEvolve.onclick = () => {
+        const transaction = db.transaction(store, "readwrite");
+        const store = transaction.objectStore(store);
+
+        store.put("bulbasaur", false);
+        store.put("ivysaur", true);
+
+        db.close();
+      };
+    };
+  </xmp>
+
+  Satisfied with his web app's Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)
 </div>
 
 <h3 id="supporting">Supporting operations</h3>
