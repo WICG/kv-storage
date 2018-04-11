@@ -1738,7 +1738,7 @@ Parts of this work may be from another specification document.  If so, those par
     <dd>
      <p>Asynchronously retrieves the value stored at the given <var>key</var>, or undefined if there is no value stored at <var>key</var>. </p>
      <p>Values retrieved will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize">structured-deserialized</a> from their original form. </p>
-     <p>Note: since you can store the value undefined, the fulfillment value of undefined is ambiguous between being not present and being present with the value undefined. If you need to distinguish these cases, you can use <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has⑤">has()</a></code>, but beware of the race conditions <a href="#has-race-conditions">noted there</a>. </p>
+     <p>Note: since you can store the value undefined, the fulfillment value of undefined is ambiguous between being not present and being present with the value undefined. If you need to distinguish these cases, you can use <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has⑥">has()</a></code>, but beware of the race conditions <a href="#example-has-race-conditions">noted there</a>. </p>
    </dl>
    <div class="algorithm">
     <ol>
@@ -1761,27 +1761,6 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.4" data-lt="has(key)" id="storagearea-has"><span class="secno">3.4. </span><span class="content">has(<var>key</var>)</span></h3>
-   <dl class="domintro non-normative">
-    <dt><code><var>isPresent</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has①">has</a></code>(<var>key</var>)</code> 
-    <dd>
-     <p>Asynchronously determines whether a value is stored at the given <var>key</var>, returning a promise fulfilled with either true or false. </p>
-   </dl>
-   <div class="example" id="has-race-conditions">
-    <a class="self-link" href="#has-race-conditions"></a> <strong>Warning!</strong> Using this method in combination with <code class="idl"><a data-link-type="idl" href="#storagearea-get" id="ref-for-storagearea-get①">get()</a></code> is generally a bad idea. For example, the following code might look correct, but it is actually prone to race conditions: 
-<pre class="highlight"><span class="k">if</span> <span class="p">(</span>await storage<span class="p">.</span>has<span class="p">(</span><span class="s2">"my-key"</span><span class="p">))</span> <span class="p">{</span>
-  <span class="kr">const</span> val <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"my-key"</span><span class="p">);</span>
-  <span class="c1">// ... use val</span>
-<span class="c1"></span><span class="p">}</span>
-</pre>
-    <p>The problem is that, because the <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has②">has()</a></code> call is asynchronous, the value stored at <code>"my-key"</code> might have been deleted between the <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has③">has()</a></code> promise fulfilling and the <code class="idl"><a data-link-type="idl" href="#storagearea-get" id="ref-for-storagearea-get②">get()</a></code> call being initiated.</p>
-    <p>In this case, the code would be better written as</p>
-<pre class="highlight"><span class="kr">const</span> val <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"my-key"</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span>val <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// ... use val</span>
-<span class="c1"></span><span class="p">}</span>
-</pre>
-    <p>We are discussing whether this points toward removing <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has④">has()</a></code>, and the distinction between present-with-value-undefined and not-present, in <a href="https://github.com/domenic/async-local-storage/issues/3">#3</a>.</p>
-   </div>
    <div class="algorithm">
     <ol>
      <li data-md="">
@@ -1801,6 +1780,38 @@ Parts of this work may be from another specification document.  If so, those par
         <p>Return <var>promise</var>.</p>
       </ol>
     </ol>
+   </div>
+   <dl class="domintro non-normative">
+    <dt><code><var>isPresent</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has①">has</a></code>(<var>key</var>)</code> 
+    <dd>
+     <p>Asynchronously determines whether a value is stored at the given <var>key</var>, returning a promise fulfilled with either true or false. </p>
+   </dl>
+   <div class="example" id="example-has-flag">
+    <a class="self-link" href="#example-has-flag"></a> <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has②">has()</a></code> is commonly used for storing "flags". The boolean condition of present/not-present is often simpler than actually storing a boolean. 
+<pre class="highlight">await storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"userIsHappyAndKnowsIt"</span><span class="p">);</span> <span class="c1">// second argument is implicitly undefined</span>
+<span class="c1"></span>
+<span class="c1">// ... later ...</span>
+<span class="c1"></span>
+<span class="k">if</span> <span class="p">(</span>await storage<span class="p">.</span>has<span class="p">(</span><span class="s2">"userIsHappyAndKnowsIt"</span><span class="p">))</span> <span class="p">{</span>
+  clapTheirHands<span class="p">();</span>
+<span class="p">}</span>
+</pre>
+   </div>
+   <div class="example" id="example-has-race-conditions">
+    <a class="self-link" href="#example-has-race-conditions"></a> <strong>Warning!</strong> Using this method in combination with <code class="idl"><a data-link-type="idl" href="#storagearea-get" id="ref-for-storagearea-get①">get()</a></code> is generally a bad idea. For example, the following code might look correct, but it is actually prone to race conditions: 
+<pre class="highlight"><span class="k">if</span> <span class="p">(</span>await storage<span class="p">.</span>has<span class="p">(</span><span class="s2">"my-key"</span><span class="p">))</span> <span class="p">{</span>
+  <span class="kr">const</span> val <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"my-key"</span><span class="p">);</span>
+  <span class="c1">// ... use val</span>
+<span class="c1"></span><span class="p">}</span>
+</pre>
+    <p>The problem is that, because the <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has③">has()</a></code> call is asynchronous, the value stored at <code>"my-key"</code> might have been deleted between the <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has④">has()</a></code> promise fulfilling and the <code class="idl"><a data-link-type="idl" href="#storagearea-get" id="ref-for-storagearea-get②">get()</a></code> call being initiated.</p>
+    <p>In this case, the code would be better written as</p>
+<pre class="highlight"><span class="kr">const</span> val <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"my-key"</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span>val <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ... use val</span>
+<span class="c1"></span><span class="p">}</span>
+</pre>
+    <p>We are discussing whether this points toward removing <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has⑤">has()</a></code>, and the distinction between present-with-value-undefined and not-present, in <a href="https://github.com/domenic/async-local-storage/issues/3">#3</a>.</p>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.5" data-lt="delete(key)" id="storagearea-delete"><span class="secno">3.5. </span><span class="content">delete(<var>key</var>)</span></h3>
    <dl class="domintro non-normative">
@@ -1987,9 +1998,21 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
       </ol>
     </ol>
    </div>
+   <div class="example" id="example-entries-to-server">
+    <a class="self-link" href="#example-entries-to-server"></a> Assuming you knew that that you only stored JSON-compatible types in <code><a data-link-type="dfn" href="#stdasync-local-storage-storage" id="ref-for-stdasync-local-storage-storage①">storage</a></code>, you could use the following code to send all locally-stored entries to a server: 
+<pre class="highlight"><span class="kr">const</span> entries <span class="o">=</span> JSON<span class="p">.</span>stringify<span class="p">(</span>await storage<span class="p">.</span>entries<span class="p">());</span>
+fetch<span class="p">(</span><span class="s2">"/storage-receiver"</span><span class="p">,</span> <span class="p">{</span>
+  method<span class="o">:</span> <span class="s2">"POST"</span><span class="p">,</span>
+  body<span class="o">:</span> entries<span class="p">,</span>
+  headers<span class="o">:</span> <span class="p">{</span>
+    <span class="s2">"Content-Type"</span><span class="o">:</span> <span class="s2">"application/json"</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+   </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="attribute" data-export="" data-level="3.10" data-lt="backingStore" id="storagearea-backingstore"><span class="secno">3.10. </span><span class="content">get backingStore()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code>{ <var>database</var>, <var>store</var>, <var>version</var> } = <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore②">backingStore</a></code></code> 
+    <dt><code>{ <var>database</var>, <var>store</var>, <var>version</var> } = <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore③">backingStore</a></code></code> 
     <dd>
      <p>Asynchronously retrieves an an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area: </p>
      <ul>
@@ -2019,6 +2042,40 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
      <li data-md="">
       <p>Return <var>info</var>.</p>
     </ol>
+   </div>
+   <div class="example" id="example-backingstore">
+    <a class="self-link" href="#example-backingstore"></a> Consider a checklist application, which tracks the Pokémon a user has collected. It might use <code><a data-link-type="dfn" href="#stdasync-local-storage-storage" id="ref-for-stdasync-local-storage-storage②">storage</a></code> like so: 
+<pre class="highlight">bulbasaur<span class="p">.</span>onchange <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"bulbasaur"</span><span class="p">,</span> bulbasaur<span class="p">.</span>checked<span class="p">);</span>
+ivysaur<span class="p">.</span>onchange <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"ivysaur"</span><span class="p">,</span> ivysaur<span class="p">.</span>checked<span class="p">);</span>
+venusaur<span class="p">.</span>onchange <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"venusaur"</span><span class="p">,</span> venusaur<span class="p">.</span>checked<span class="p">);</span>
+<span class="c1">// ...</span>
+</pre>
+    <p>(Hopefully the developer quickly realizes that the above will be hard to maintain, and refactors the code into a loop. But in the meantime, their repetitive code makes for a good example, so let’s take advantage of that.)</p>
+    <p>The developer now realizes they want to add an evolution feature, e.g. for when the user transforms their Bulbasaur into an Ivysaur. They might first implement this like so:</p>
+<pre class="highlight">bulbasaurEvolve<span class="p">.</span>onclick <span class="o">=</span> async <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+  await storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"bulbasaur"</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+  await storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"ivysaur"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="p">};</span>
+</pre>
+    <p>However, our developer starts getting bug reports from their users: if the users happen to open up the checklist app in a second tab while they’re evolving in the first tab, the second tab will sometimes see that their Bulbasaur has disappeared, without ever turning into an Ivysaur! A Pokémon has gone missing!</p>
+    <p>The solution here is to step beyond the comfort zone of async local storage, and start using the full power of IndexedDB: in particular, its <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#transaction-concept" id="ref-for-transaction-concept">transactions</a> feature. The <code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore②">backingStore</a></code> getter is the gateway to this world:</p>
+<pre class="highlight"><span class="kr">const</span> <span class="p">{</span> database<span class="p">,</span> store<span class="p">,</span> version <span class="p">}</span> <span class="o">=</span> storage<span class="p">.</span>backingStore<span class="p">;</span>
+<span class="kr">const</span> request <span class="o">=</span> indexedDB<span class="p">.</span>open<span class="p">(</span>database<span class="p">,</span> version<span class="p">);</span>
+request<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+  <span class="kr">const</span> db <span class="o">=</span> request<span class="p">.</span>result<span class="p">;</span>
+
+  bulbasaurEvolve<span class="p">.</span>onclick <span class="o">=</span> <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
+    <span class="kr">const</span> transaction <span class="o">=</span> db<span class="p">.</span>transaction<span class="p">(</span>store<span class="p">,</span> <span class="s2">"readwrite"</span><span class="p">);</span>
+    <span class="kr">const</span> store <span class="o">=</span> transaction<span class="p">.</span>objectStore<span class="p">(</span>store<span class="p">);</span>
+
+    store<span class="p">.</span>put<span class="p">(</span><span class="s2">"bulbasaur"</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+    store<span class="p">.</span>put<span class="p">(</span><span class="s2">"ivysaur"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+    db<span class="p">.</span>close<span class="p">();</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre>
+    <p>Satisfied with his web app’s Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)</p>
    </div>
    <h3 class="heading settled" data-level="3.11" id="supporting"><span class="secno">3.11. </span><span class="content">Supporting operations</span><a class="self-link" href="#supporting"></a></h3>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="add-a-simple-event-listener">add a simple event listener</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> <var>target</var>, an event type string <var>type</var>, and a set of steps <var>steps</var>:</p>
@@ -2382,6 +2439,7 @@ for their contributions to this specification.</p>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open">open(name)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-put">put(value)</a>
      <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#transaction-concept">transaction</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">transaction(storeNames)</a>
     </ul>
    <li>
@@ -2472,6 +2530,8 @@ for their contributions to this specification.</p>
    <b><a href="#stdasync-local-storage-storage">#stdasync-local-storage-storage</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-stdasync-local-storage-storage">2. The async-local-storage layered API</a>
+    <li><a href="#ref-for-stdasync-local-storage-storage①">3.9. entries()</a>
+    <li><a href="#ref-for-stdasync-local-storage-storage②">3.10. get backingStore()</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="stdasync-local-storage-storagearea">
@@ -2525,7 +2585,7 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-has">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-has">3.3. get(key)</a>
-    <li><a href="#ref-for-storagearea-has①">3.4. has(key)</a> <a href="#ref-for-storagearea-has②">(2)</a> <a href="#ref-for-storagearea-has③">(3)</a> <a href="#ref-for-storagearea-has④">(4)</a>
+    <li><a href="#ref-for-storagearea-has①">3.4. has(key)</a> <a href="#ref-for-storagearea-has②">(2)</a> <a href="#ref-for-storagearea-has③">(3)</a> <a href="#ref-for-storagearea-has④">(4)</a> <a href="#ref-for-storagearea-has⑤">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-delete">
@@ -2576,7 +2636,7 @@ for their contributions to this specification.</p>
    <b><a href="#storagearea-backingstore">#storagearea-backingstore</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-storagearea-backingstore">3. The StorageArea class</a>
-    <li><a href="#ref-for-storagearea-backingstore">3.10. get backingStore()</a> <a href="#ref-for-storagearea-backingstore①">(2)</a>
+    <li><a href="#ref-for-storagearea-backingstore">3.10. get backingStore()</a> <a href="#ref-for-storagearea-backingstore①">(2)</a> <a href="#ref-for-storagearea-backingstore②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="add-a-simple-event-listener">
