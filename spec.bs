@@ -566,6 +566,21 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
     1. Return |promise|.
 </div>
 
+<div class="example" id="example-entries-to-server">
+  Assuming you knew that that you only stored JSON-compatible types in <code>[=storage=]</code>, you could use the following code to send all locally-stored entries to a server:
+
+  <xmp highlight="js">
+    const entries = JSON.stringify(await storage.entries());
+    fetch("/storage-receiver", {
+      method: "POST",
+      body: entries,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  </xmp>
+</div>
+
 <h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
 
 <dl class="domintro non-normative">
