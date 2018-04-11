@@ -1176,7 +1176,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 4ed3ee986a8d1722dd7c6bb819b1a2484c3cfb47" name="generator">
+  <meta content="Bikeshed version 38f47721ec8b2e235a176c5ab0c64e918037b4be" name="generator">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1477,7 +1477,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-04-10">10 April 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-04-11">11 April 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1491,7 +1491,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 10 April 2018,
+In addition, as of 11 April 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1692,7 +1692,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md="">
       <p>Let <var>area</var> be this <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑨">StorageArea</a></code> object.</p>
      <li data-md="">
-      <p>Set <var>area</var>’s internal slots to the initial values indicated in <a href="#storagearea" id="ref-for-storagearea①②">§3 The StorageArea class</a>.</p>
+      <p>Set <var>area</var>’s internal slots to the initial values indicated in <a href="#storagearea" id="ref-for-storagearea①④">§3 The StorageArea class</a>.</p>
      <li data-md="">
       <p>Let <var>nameString</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>name</var>).</p>
      <li data-md="">
@@ -1831,7 +1831,7 @@ Parts of this work may be from another specification document.  If so, those par
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.6" data-lt="clear()" id="storagearea-clear"><span class="secno">3.6. </span><span class="content">clear()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear</a></code>()</code> 
+    <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear③">clear</a></code>()</code> 
     <dd>
      <p>Asynchronously deletes all entries in this storage area. </p>
      <p>This is done by actually deleting the underlying IndexedDB database. As such, it always can be used as a fail-safe to get a clean slate, <a href="#clear-recover-from-changes">as shown below</a>. </p>
@@ -1844,29 +1844,15 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md="">
       <p>If <var>area</var> does not have an [[DatabasePromise]] internal slot, or <var>area</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is not the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code> exception.</p>
      <li data-md="">
-      <p>If <var>area</var>.[[DatabasePromise]] is not null, return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by">transforming</a> <var>area</var>.[[DatabasePromise]] by:</p>
-      <ul>
+      <p>If <var>area</var>.[[DatabasePromise]] is not null, return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by">transforming</a> <var>area</var>.[[DatabasePromise]] by fulfillment and rejection handlers that both perform the following steps:</p>
+      <ol>
        <li data-md="">
-        <p>A fulfillment handler that performs the following steps, given <var>database</var>:</p>
-        <ol>
-         <li data-md="">
-          <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>.</p>
-         <li data-md="">
-          <p>Set <var>area</var>.[[DatabasePromise]] to null.</p>
-         <li data-md="">
-          <p>Return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
-        </ol>
+        <p>Set <var>area</var>.[[DatabasePromise]] to null.</p>
        <li data-md="">
-        <p>A rejection handler that performs the following steps:</p>
-        <ol>
-         <li data-md="">
-          <p>Set <var>area</var>.[[DatabasePromise]] to null.</p>
-         <li data-md="">
-          <p>Return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database①">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
-        </ol>
-      </ul>
+        <p>Return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
+      </ol>
      <li data-md="">
-      <p>Otherwise, return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database②">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
+      <p>Otherwise, return the result of <a data-link-type="dfn" href="#deleting-the-database" id="ref-for-deleting-the-database①">deleting the database</a> given by <var>area</var>.[[DatabaseName]].</p>
     </ol>
    </div>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="deleting the database|delete the database" data-noexport="" id="deleting-the-database">delete the database</dfn> given a string <var>name</var>:</p>
@@ -2066,7 +2052,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
       <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by①">transforming</a> <var>area</var>.[[DatabasePromise]] by a fulfillment handler that performs the following steps, given <var>database</var>:</p>
       <ol>
        <li data-md="">
-        <p>Let <var>transaction</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction" id="ref-for-dom-idbdatabase-transaction">transaction()</a></code> method on <var>database</var>, given the arguments "<code>store</code>" and <var>mode</var>.</p>
+        <p>Let <var>transaction</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction" id="ref-for-dom-idbdatabase-transaction">transaction()</a></code> method on <var>database</var>, given the arguments "<code>store</code>" and <var>mode</var>.</p>
        <li data-md="">
         <p>Let <var>store</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction①">IDBTransaction</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore" id="ref-for-dom-idbtransaction-objectstore">objectStore()</a></code> method on <var>transaction</var>, given the argument "<code>store</code>".</p>
        <li data-md="">
@@ -2094,12 +2080,15 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
         <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.[[DatabasePromise]] to null.</p>
         <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑧">perform a database operation</a> will attempt to reopen it.</p>
        <li data-md="">
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>database</var> for "<code>versionchange</code>" that performs the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>, and then sets <var>area</var>.[[DatabasePromise]] to null.</p>
+        <p class="note" role="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear()</a></code> method), to succeed. Without this, if two <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①②">StorageArea</a></code> instances were both open referencing the same underlying database, <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear②">clear()</a></code> would hang, as it only closes the connection maintained by the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①③">StorageArea</a></code> it is invoked on.</p>
+       <li data-md="">
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑧">Resolve</a> <var>promise</var> with <var>database</var>.</p>
       </ol>
      <li data-md="">
-      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①①">error</a>.</p>
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②②">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#error" id="ref-for-error①①">error</a>.</p>
      <li data-md="">
-      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②②">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②③">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
       <ol>
        <li data-md="">
         <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#result" id="ref-for-result⑦">result</a>.</p>
@@ -2491,7 +2480,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-storagearea">2. The async-local-storage layered API</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a> <a href="#ref-for-storagearea③">(4)</a> <a href="#ref-for-storagearea④">(5)</a>
     <li><a href="#ref-for-storagearea⑤">3. The StorageArea class</a> <a href="#ref-for-storagearea⑥">(2)</a> <a href="#ref-for-storagearea⑦">(3)</a>
     <li><a href="#ref-for-storagearea⑧">3.1. constructor(name)</a> <a href="#ref-for-storagearea⑨">(2)</a> <a href="#ref-for-storagearea">(3)</a>
-    <li><a href="#ref-for-storagearea①⓪">3.11. Supporting operations</a> <a href="#ref-for-storagearea①①">(2)</a>
+    <li><a href="#ref-for-storagearea①⓪">3.11. Supporting operations</a> <a href="#ref-for-storagearea①①">(2)</a> <a href="#ref-for-storagearea①②">(3)</a> <a href="#ref-for-storagearea①③">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-constructor">
@@ -2536,12 +2525,13 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-clear">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-clear">3.6. clear()</a>
+    <li><a href="#ref-for-storagearea-clear①">3.11. Supporting operations</a> <a href="#ref-for-storagearea-clear②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="deleting-the-database">
    <b><a href="#deleting-the-database">#deleting-the-database</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-deleting-the-database">3.6. clear()</a> <a href="#ref-for-deleting-the-database①">(2)</a> <a href="#ref-for-deleting-the-database②">(3)</a>
+    <li><a href="#ref-for-deleting-the-database">3.6. clear()</a> <a href="#ref-for-deleting-the-database①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-keys">
@@ -2585,7 +2575,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener①②">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①④">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①⑥">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑦">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⑨">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(2)</a> <a href="#ref-for-add-a-simple-event-listener②①">(3)</a> <a href="#ref-for-add-a-simple-event-listener②②">(4)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑨">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(2)</a> <a href="#ref-for-add-a-simple-event-listener②①">(3)</a> <a href="#ref-for-add-a-simple-event-listener②②">(4)</a> <a href="#ref-for-add-a-simple-event-listener②③">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="current-idbfactory">
