@@ -21,6 +21,7 @@ url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-i
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
+  text: WeakMap; url: sec-weakmap-objects; type: interface
   text: Date; url: sec-date-objects; type: interface
   text: ToString; url: sec-tostring; type: abstract-op
   text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object; type: interface
@@ -59,6 +60,14 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
     ],
     "href": "https://github.com/drufball/layered-apis/blob/master/README.md",
     "title": "Layered APIs"
+  },
+  "CLASS-FIELDS": {
+    "authors": [
+      "Daniel Ehrenberg",
+      "Jeff Morrison"
+    ],
+    "href": "https://tc39.github.io/proposal-class-fields/",
+    "title": "Public and private instance fields proposal"
   }
 }
 </pre>
@@ -257,7 +266,7 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
 
     Web IDL has a few minor mismatches with our goals for layered APIs:
 
-    * Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. Our brand checks (included in each method's description manually) are same-realm-only.
+    * Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. [=StorageArea/brand check|Our brand checks=] are same-realm-only.
 
     * It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered API in JavaScript. (But not impossible.)
 
@@ -285,6 +294,10 @@ Each {{StorageArea}} instance must also contain the following internal slots:
     <td>null
     <td>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=]
 </table>
+
+An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} if |obj| has a \[[DatabaseName]] internal slot and |obj|'s [=relevant realm=] is equal to the [=current realm=].
+
+<p class="note">The realm check here gives us semantics identical to using JavaScript's {{WeakMap}} or the proposed private class fields. This ensures {{StorageArea}} does not use any magic, like the platform's usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. [[ECMA-262]] [[CLASS-FIELDS]]
 
 <h3 id="storagearea-constructor" constructor for="StorageArea" lt="constructor(name)">constructor(|name|)</h3>
 
@@ -427,7 +440,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <div class="algorithm">
   1. Let |area| be this object.
-  1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. If |area| does not [=StorageArea/brand check=], return [=a promise rejected with=] a {{TypeError}} exception.
   1. If |area|.\[[DatabasePromise]] is not null, return the result of [=transforming=] |area|.\[[DatabasePromise]] by fulfillment and rejection handlers that both perform the following steps:
     1. Set |area|.\[[DatabasePromise]] to null.
     1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
@@ -555,7 +568,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <div class="algorithm">
   1. Let |area| be this object.
-  1. If |area| does not have a \[[DatabaseName]] internal slot, throw a {{TypeError}}.
+  1. If |area| does not [=StorageArea/brand check=], throw a {{TypeError}} exception.
   1. Let |info| be <a abstract-op>ObjectCreate</a>({{%ObjectPrototype%}}).
   1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>database</code>", |area|.\[[DatabaseName]]).
   1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>store</code>", "<code>store</code>").
@@ -583,7 +596,7 @@ The <dfn>current <code>IDBFactory</code></dfn> is the {{IDBFactory}} instance re
 To <dfn lt="performing a database operation|perform a database operation">perform a database operation</dfn> given a {{StorageArea}} |area|, a mode string |mode|, and a set of steps |steps| that operate on an {{IDBTransaction}} |transaction| and an {{IDBObjectStore}} |store|:
 
 <div class="algorithm">
-  1. If |area| does not have an \[[DatabasePromise]] internal slot, or |area|'s [=relevant realm=] is not the [=current realm=], return [=a promise rejected with=] a {{TypeError}} exception.
+  1. If |area| does not [=StorageArea/brand check=], return [=a promise rejected with=] a {{TypeError}} exception.
   1. Assert: |area|.\[[DatabaseName]] is a string (and in particular is not null).
   1. If |area|.\[[DatabasePromise]] is null, [=initialize the database promise=] for |area|.
   1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the following steps, given |database|:
