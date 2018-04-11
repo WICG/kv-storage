@@ -83,6 +83,10 @@ urlPrefix: https://dom.spec.whatwg.org/#event-listener-; spec: DOM; type: dfn; f
   z-index: 4;
 }
 
+summary {
+  cursor: pointer;
+}
+
 /* hide ugly stuff that is moved to the acks */
 [data-fill-with="spec-metadata"] .editor {
   display: none;
@@ -231,7 +235,7 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
 
 <ul>
   <li><p>The constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block.</p></li>
-  <li id="fn-tostring-censorship"><p><a abstract-op>HostHasSourceTextAvailable</a> must return false for all function objects (i.e. the constructor, methods, and getters) created.</p></li>
+  <li id="fn-tostring-censorship"><p><a abstract-op>HostHasSourceTextAvailable</a> must return false for all function objects (i.e. the constructor, methods, and getter) created.</p></li>
 </ul>
 
 <pre highlight="js">
@@ -251,6 +255,26 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
     get backingStore() { /* <a href="#storagearea-backingstore">see below</a> */ }
   }
 </pre>
+
+<div class="note">
+  <p>The intention of defining the {{StorageArea}} class in this way, using a skeleton JavaScript class definition, is to automatically establish the various properties of the class, its methods, and its getter, which otherwise need to be specified in tedious detail. For example, this automatically establishes the <code>length</code> and <code>name</code> properties of all these functions, their property descriptors, their <code>prototype</code> and <code>constructor</code> properties, etc. And it does so in a way that is consistent with what a JavaScript developer would expect.
+
+  <details>
+    <summary>Why not use Web IDL?</summary>
+
+    Apart from the above novel technique, there are two commonly-seen alternatives for defining JavaScript classes. The JavaScript specification, as well as the Streams Standard, defer to the "<a href="https://tc39.github.io/ecma262/#sec-ecmascript-standard-built-in-objects">ECMAScript Standard Built-in Objects</a>" section of the JavaScript specification, which defines many defaults. The more popular alternative, however, is to use Web IDL. Why aren't we using that?
+
+    Web IDL has a few minor mismatches with our goals for layered APIs:
+
+    * Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. Our brand checks (included in each method's description manually) are same-realm-only.
+
+    * It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered web API in JavaScript. (But not impossible.)
+
+    * The generic nature of Web IDL means that it is best implemented using code generation. However, implementers currently do not have a Web IDL bindings generator that produces JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create a JavaScript-producing Web IDL bindings generator. Furthermore, the generated JavaScript would end up being quite large; see <a href="https://gist.github.com/domenic/1f57ecc0720b3861b58192a67e296e9b">an example</a>. <!-- TODO: maybe make an actual generated StorageArea example -->
+
+    None of these mismatches are fatal. We could switch this specification to Web IDL if it ends up being desired. But for now, we're experimenting with this different—and more JavaScript-implementation-friendly—mechanism of specifying a class definition.
+  </details>
+</div>
 
 Each {{StorageArea}} instance must also contain the following internal slots:
 
