@@ -350,7 +350,7 @@ An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} i
 
     <p>Values retrieved will be [$StructuredDeserialize|structured-deserialized$] from their original form.
 
-    <p>Note: since you can store the value undefined, the fulfillment value of undefined is ambiguous between being not present and being present with the value undefined. If you need to distinguish these cases, you can use {{StorageArea/has()}}, but beware of the race conditions <a href="#has-race-conditions">noted there</a>.
+    <p>Note: since you can store the value undefined, the fulfillment value of undefined is ambiguous between being not present and being present with the value undefined. If you need to distinguish these cases, you can use {{StorageArea/has()}}, but beware of the race conditions <a href="#example-has-race-conditions">noted there</a>.
 </dl>
 
 <div class="algorithm">
@@ -371,7 +371,21 @@ An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} i
     <p>Asynchronously determines whether a value is stored at the given |key|, returning a promise fulfilled with either true or false.
 </dl>
 
-<div class="example" id="has-race-conditions">
+<div class="example" id="example-has-flag">
+  {{StorageArea/has()}} is commonly used for storing "flags". The boolean condition of present/not-present is often simpler than actually storing a boolean.
+
+  <xmp highlight="js">
+    await storage.set("userIsHappyAndKnowsIt"); // second argument is implicitly undefined
+
+    // ... later ...
+
+    if (await storage.has("userIsHappyAndKnowsIt")) {
+      clapTheirHands();
+    }
+  </xmp>
+</div>
+
+<div class="example" id="example-has-race-conditions">
   <strong>Warning!</strong> Using this method in combination with {{StorageArea/get()}} is generally a bad idea. For example, the following code might look correct, but it is actually prone to race conditions:
 
   <xmp highlight="js">
