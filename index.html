@@ -1188,6 +1188,10 @@ Possible extra rowspan handling
   z-index: 4;
 }
 
+summary {
+  cursor: pointer;
+}
+
 /* hide ugly stuff that is moved to the acks */
 [data-fill-with="spec-metadata"] .editor {
   display: none;
@@ -1558,7 +1562,7 @@ Parts of this work may be from another specification document.  If so, those par
 <span class="p">&lt;/</span><span class="nt">p</span><span class="p">></span>
 <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">"module"</span><span class="p">></span>
   <span class="kr">import</span> <span class="p">{</span> storage <span class="p">}</span> from
-      <span class="s2">"std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js"</span><span class="p">;</span>
+    <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.js"</span><span class="p">;</span>
 
   <span class="p">(</span>async <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
     <span class="kd">let</span> pageLoadCount <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"pageLoadCount"</span><span class="p">)</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
@@ -1575,27 +1579,39 @@ Parts of this work may be from another specification document.  If so, those par
     </div>
    </div>
    <h2 class="heading settled" data-level="2" id="module"><span class="secno">2. </span><span class="content">The <code>async-local-storage</code> layered web API</span><a class="self-link" href="#module"></a></h2>
+   <dl class="domintro non-normative" id="module-domintro">
+    <dt><code>import * as <var>als</var> from "std:async-local-storage|https://example.com/als-polyfill.js"</code> 
+    <dd>
+     <p>Imports the async local storage API, using the built-in implementation if it exists, or the implementation found at the fallback URL otherwise. </p>
+     <p>If the built-in implementation is not imported in a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts" id="ref-for-secure-contexts">secure context</a>, the <code>import</code> statement will cause a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, as persistent storage is a powerful feature. </p>
+    <dt><code><var>als</var>.<a data-link-type="dfn" href="#stdasync-local-storage-storage" id="ref-for-stdasync-local-storage-storage">storage</a></code> 
+    <dd>
+     <p>Returns the default storage area. It is a pre-constructed instance of the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea">StorageArea</a></code> class, meant to be a convenience similar to <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage③">localStorage</a></code>. </p>
+    <dt><code><var>als</var>.<a data-link-type="dfn" href="#stdasync-local-storage-storagearea" id="ref-for-stdasync-local-storage-storagearea">StorageArea</a></code> 
+    <dd>
+     <p>Returns the constructor for the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①">StorageArea</a></code> class, to allow the creation of isolated storage areas. </p>
+   </dl>
    <p>This specification defines a new layered web API, whose <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure" id="ref-for-part-1-the-infrastructure">API identifier</a> is "<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="async-local-storage"><code>async-local-storage</code></dfn>" and whose exports are the following:</p>
    <dl>
-    <dt data-md=""><code>StorageArea</code>
+    <dt data-md=""><dfn class="dfn-paneled" data-dfn-for="std:async-local-storage" data-dfn-type="dfn" data-noexport="" id="stdasync-local-storage-storage"><code>storage</code></dfn>
     <dd data-md="">
-     <p>The <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea">StorageArea</a></code> class</p>
-    <dt data-md=""><code>storage</code>
+     <p>An instance of the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea②">StorageArea</a></code> class, created as if by <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-construct" id="ref-for-sec-construct">Construct</a>(<code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea③">StorageArea</a></code>, « "<code>default</code>" »).</p>
+    <dt data-md=""><dfn class="dfn-paneled" data-dfn-for="std:async-local-storage" data-dfn-type="dfn" data-noexport="" id="stdasync-local-storage-storagearea"><code>StorageArea</code></dfn>
     <dd data-md="">
-     <p>An instance of the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①">StorageArea</a></code> class, created as if by <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-construct" id="ref-for-sec-construct">Construct</a>(<code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea②">StorageArea</a></code>, « "<code>default</code>" »).</p>
+     <p>The <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea④">StorageArea</a></code> class</p>
    </dl>
    <div class="example" id="example-importing">
-    <a class="self-link" href="#example-importing"></a> To get access to these exports, one would use the usual syntax for layered web APIs: 
+    <a class="self-link" href="#example-importing"></a> To get access to these exports, one could use the syntax shown <a href="#module-domintro">above</a>, or import them directly without the intermediate <var>als</var> variable: 
 <pre class="highlight"><span class="kr">import</span> <span class="p">{</span> storage<span class="p">,</span> StorageArea <span class="p">}</span> from
-    <span class="s2">"std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js"</span><span class="p">;</span>
+  <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.js"</span><span class="p">;</span>
 </pre>
    </div>
    <p>Additionally, evaluating the layered API’s module must run the following steps:</p>
    <ol>
     <li data-md="">
-     <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a> is not <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-secure-contexts/#settings-object" id="ref-for-settings-object">contextually secure</a>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
+     <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a> is not <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-secure-contexts/#settings-object" id="ref-for-settings-object">contextually secure</a>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror①">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
    </ol>
-   <div class="note" role="note">
+   <div class="advisement">
      This specification currently fails to fulfill the mandate of layered web APIs being built on top of existing web platform features in two ways: 
     <ul>
      <li data-md="">
@@ -1606,13 +1622,13 @@ Parts of this work may be from another specification document.  If so, those par
     <p>We hope we can resolve this conflict; please refer to the above-linked issue threads for more discussion.</p>
    </div>
    <h2 class="heading settled dfn-paneled idl-code" data-dfn-type="interface" data-export="" data-level="3" data-lt="StorageArea" id="storagearea"><span class="secno">3. </span><span class="content">The <code>StorageArea</code> class</span></h2>
-   <p>Upon evaluating the <a data-link-type="dfn" href="#async-local-storage" id="ref-for-async-local-storage"><code>async-local-storage</code></a> layered API module, the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea③">StorageArea</a></code> class must be created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>. The result must be equivalent to evaluating the following JavaScript code, with the following two exceptions:</p>
+   <p>Upon evaluating the <a data-link-type="dfn" href="#async-local-storage" id="ref-for-async-local-storage"><code>async-local-storage</code></a> layered API module, the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑤">StorageArea</a></code> class must be created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>. The result must be equivalent to evaluating the following JavaScript code, with the following two exceptions:</p>
    <ul>
     <li>
      <p>The constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block.</p>
     <li id="fn-tostring-censorship">
      <a class="self-link" href="#fn-tostring-censorship"></a>
-     <p><a data-link-type="abstract-op" href="https://tc39.github.io/Function-prototype-toString-revision/#proposal-sec-hosthassourcetextavailable" id="ref-for-proposal-sec-hosthassourcetextavailable">HostHasSourceTextAvailable</a> must return false for all function objects (i.e. the constructor, methods, and getters) created.</p>
+     <p><a data-link-type="abstract-op" href="https://tc39.github.io/Function-prototype-toString-revision/#proposal-sec-hosthassourcetextavailable" id="ref-for-proposal-sec-hosthassourcetextavailable">HostHasSourceTextAvailable</a> must return false for all function objects (i.e. the constructor, methods, and getter) created.</p>
    </ul>
 <pre class="highlight"><span class="kr">class</span> StorageArea <span class="p">{</span>
   constructor<span class="p">(</span>name<span class="p">)</span>  <span class="p">{</span> <span class="cm">/* </span><a href="#storagearea-constructor" id="ref-for-storagearea-constructor"><span class="cm">see below</span></a><span class="cm"> */</span> <span class="p">}</span>
@@ -1630,7 +1646,24 @@ Parts of this work may be from another specification document.  If so, those par
   get backingStore<span class="p">()</span> <span class="p">{</span> <span class="cm">/* </span><a href="#storagearea-backingstore" id="ref-for-storagearea-backingstore"><span class="cm">see below</span></a><span class="cm"> */</span> <span class="p">}</span>
 <span class="p">}</span>
 </pre>
-   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea④">StorageArea</a></code> instance must also contain the following internal slots:</p>
+   <div class="note" role="note">
+    <p>The intention of defining the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> class in this way, using a skeleton JavaScript class definition, is to automatically establish the various properties of the class, its methods, and its getter, which otherwise need to be specified in tedious detail. For example, this automatically establishes the <code>length</code> and <code>name</code> properties of all these functions, their property descriptors, their <code>prototype</code> and <code>constructor</code> properties, etc. And it does so in a way that is consistent with what a JavaScript developer would expect. </p>
+    <details>
+     <summary>Why not use Web IDL?</summary>
+     <p>Apart from the above novel technique, there are two commonly-seen alternatives for defining JavaScript classes. The JavaScript specification, as well as the Streams Standard, defer to the "<a href="https://tc39.github.io/ecma262/#sec-ecmascript-standard-built-in-objects">ECMAScript Standard Built-in Objects</a>" section of the JavaScript specification, which defines many defaults. The more popular alternative, however, is to use Web IDL. Why aren’t we using that?</p>
+     <p>Web IDL has a few minor mismatches with our goals for layered APIs:</p>
+     <ul>
+      <li data-md="">
+       <p>Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. Our brand checks (included in each method’s description manually) are same-realm-only.</p>
+      <li data-md="">
+       <p>It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered web API in JavaScript. (But not impossible.)</p>
+      <li data-md="">
+       <p>The generic nature of Web IDL means that it is best implemented using code generation. However, implementers currently do not have a Web IDL bindings generator that produces JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create a JavaScript-producing Web IDL bindings generator. Furthermore, the generated JavaScript would end up being quite large; see <a href="https://gist.github.com/domenic/1f57ecc0720b3861b58192a67e296e9b">an example</a>.</p>
+     </ul>
+     <p>None of these mismatches are fatal. We could switch this specification to Web IDL if it ends up being desired. But for now, we’re experimenting with this different—and more JavaScript-implementation-friendly—mechanism of specifying a class definition.</p>
+    </details>
+   </div>
+   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑦">StorageArea</a></code> instance must also contain the following internal slots:</p>
    <table>
     <thead>
      <tr>
@@ -1648,18 +1681,18 @@ Parts of this work may be from another specification document.  If so, those par
       <td>A promise for an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase">IDBDatabase</a></code> object, lazily initialized when <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation">performing any database operation</a> 
    </table>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="constructor" data-export="" data-level="3.1" data-lt="constructor(name)" id="storagearea-constructor"><span class="secno">3.1. </span><span class="content">constructor(<var>name</var>)</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code><var>storage</var> = new <code class="idl"><a data-link-type="idl" href="#storagearea-constructor" id="ref-for-storagearea-constructor①">StorageArea</a></code>(<var>name</var>)</code> 
     <dd>
-     <p>Creates a new <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑤">StorageArea</a></code> that provides an async key/value store view onto an IndexedDB database named <code>`async-local-storage:${name}`</code>. </p>
+     <p>Creates a new <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑧">StorageArea</a></code> that provides an async key/value store view onto an IndexedDB database named <code>`async-local-storage:${name}`</code>. </p>
      <p>This does not actually open or create the database yet; that is done lazily when other methods are called. This means that all other methods can reject with database-related exceptions in failure cases. </p>
    </dl>
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>Let <var>area</var> be this <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> object.</p>
+      <p>Let <var>area</var> be this <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑨">StorageArea</a></code> object.</p>
      <li data-md="">
-      <p>Set <var>area</var>’s internal slots to the initial values indicated in <a href="#storagearea" id="ref-for-storagearea⑨">§3 The StorageArea class</a>.</p>
+      <p>Set <var>area</var>’s internal slots to the initial values indicated in <a href="#storagearea" id="ref-for-storagearea①②">§3 The StorageArea class</a>.</p>
      <li data-md="">
       <p>Let <var>nameString</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>name</var>).</p>
      <li data-md="">
@@ -1667,18 +1700,18 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.2" data-lt="set(key, value)" id="storagearea-set"><span class="secno">3.2. </span><span class="content">set(<var>key</var>, <var>value</var>)</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-set" id="ref-for-storagearea-set①">set</a></code>(<var>key</var>, <var>value</var>)</code> 
     <dd>
      <p>Asynchronously stores the given <var>value</var> so that it can later be retrieved by the given <var>key</var>. </p>
-     <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a number, string, array, <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-date-objects" id="ref-for-sec-date-objects">Date</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer">ArrayBuffer</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DataView" id="ref-for-idl-DataView">DataView</a></code>, <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-typedarray-objects" id="ref-for-sec-typedarray-objects">typed array</a>, or an array of these. Invalid keys will cause the returned promise to reject with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>. </p>
-     <p>Values can be any value that can be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage" id="ref-for-structuredserializeforstorage">structured-serialized for storage</a>. Un-serializable values will cause a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#datacloneerror" id="ref-for-datacloneerror">DataCloneError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>. </p>
+     <p>Keys have to follow the same restrictions as IndexedDB keys: roughly, a key can be a number, string, array, <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-date-objects" id="ref-for-sec-date-objects">Date</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer">ArrayBuffer</a></code>, <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DataView" id="ref-for-idl-DataView">DataView</a></code>, <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-typedarray-objects" id="ref-for-sec-typedarray-objects">typed array</a>, or an array of these. Invalid keys will cause the returned promise to reject with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException②">DOMException</a></code>. </p>
+     <p>Values can be any value that can be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage" id="ref-for-structuredserializeforstorage">structured-serialized for storage</a>. Un-serializable values will cause a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#datacloneerror" id="ref-for-datacloneerror">DataCloneError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException③">DOMException</a></code>. </p>
      <p>The returned promise will fulfill with undefined on success. </p>
    </dl>
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key①">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror①">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException③">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key①">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror①">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException④">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation①">performing a database operation</a> given this object, "<code>readwrite</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1698,7 +1731,7 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.3" data-lt="get(key)" id="storagearea-get"><span class="secno">3.3. </span><span class="content">get(<var>key</var>)</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code><var>value</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-get" id="ref-for-storagearea-get③">get</a></code>(<var>key</var>)</code> 
     <dd>
      <p>Asynchronously retrieves the value stored at the given <var>key</var>, or undefined if there is no value stored at <var>key</var>. </p>
@@ -1708,7 +1741,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key②">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror②">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException④">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key②">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with①">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror②">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑤">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation②">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1726,7 +1759,7 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.4" data-lt="has(key)" id="storagearea-has"><span class="secno">3.4. </span><span class="content">has(<var>key</var>)</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code><var>isPresent</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has①">has</a></code>(<var>key</var>)</code> 
     <dd>
      <p>Asynchronously determines whether a value is stored at the given <var>key</var>, returning a promise fulfilled with either true or false. </p>
@@ -1750,7 +1783,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key③">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror③">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑤">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key③">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with②">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror③">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑥">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation③">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1768,7 +1801,7 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.5" data-lt="delete(key)" id="storagearea-delete"><span class="secno">3.5. </span><span class="content">delete(<var>key</var>)</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-delete" id="ref-for-storagearea-delete①">delete</a></code>(<var>key</var>)</code> 
     <dd>
      <p>Asynchronously deletes the entry at the given <var>key</var>. </p>
@@ -1777,7 +1810,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="algorithm">
     <ol>
      <li data-md="">
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror④">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑥">DOMException</a></code>.</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with③">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#dataerror" id="ref-for-dataerror④">DataError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑦">DOMException</a></code>.</p>
      <li data-md="">
       <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation④">performing a database operation</a> given this object, "<code>readwrite</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
@@ -1797,7 +1830,7 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.6" data-lt="clear()" id="storagearea-clear"><span class="secno">3.6. </span><span class="content">clear()</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code>await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear</a></code>()</code> 
     <dd>
      <p>Asynchronously deletes all entries in this storage area. </p>
@@ -1887,7 +1920,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
 </pre>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.7" data-lt="keys()" id="storagearea-keys"><span class="secno">3.7. </span><span class="content">keys()</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code><var>keys</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys③">keys</a></code>()</code> 
     <dd>
      <p>Asynchronously retrieves an array containing the keys of all entries in this storage area. </p>
@@ -1912,7 +1945,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.8" data-lt="values()" id="storagearea-values"><span class="secno">3.8. </span><span class="content">values()</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code><var>values</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-values" id="ref-for-storagearea-values①">values</a></code>()</code> 
     <dd>
      <p>Asynchronously retrieves an array containing the values of all entries in this storage area. </p>
@@ -1937,7 +1970,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.9" data-lt="entries()" id="storagearea-entries"><span class="secno">3.9. </span><span class="content">entries()</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code><var>entries</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries①">entries</a></code>()</code> 
     <dd>
      <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area. </p>
@@ -1967,7 +2000,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="attribute" data-export="" data-level="3.10" data-lt="backingStore" id="storagearea-backingstore"><span class="secno">3.10. </span><span class="content">get backingStore()</span></h3>
-   <dl class="domintro">
+   <dl class="domintro non-normative">
     <dt><code>{ <var>database</var>, <var>store</var>, <var>version</var> } = <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore②">backingStore</a></code></code> 
     <dd>
      <p>Asynchronously retrieves an an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area: </p>
@@ -2022,7 +2055,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
       <p>Return the result of performing the steps listed in the description of the getter for <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①">WindowOrWorkerGlobalScope</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb">indexedDB</a></code> attribute on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object①">current global object</a>.</p>
     </ol>
    </div>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport="" id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑦">StorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑧">IDBObjectStore</a></code> <var>store</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport="" id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⓪">StorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑧">IDBObjectStore</a></code> <var>store</var>:</p>
    <div class="algorithm">
     <ol>
      <li data-md="">
@@ -2043,7 +2076,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
       </ol>
     </ol>
    </div>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="initialize-the-database-promise">initialize the database promise</dfn> for a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑧">StorageArea</a></code> <var>area</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="initialize-the-database-promise">initialize the database promise</dfn> for a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①①">StorageArea</a></code> <var>area</var>:</p>
    <div class="algorithm">
     <ol>
      <li data-md="">
@@ -2276,7 +2309,13 @@ for their contributions to this specification.</p>
    <li><a href="#performing-a-database-operation">perform a database operation</a><span>, in §3.11</span>
    <li><a href="#performing-a-database-operation">performing a database operation</a><span>, in §3.11</span>
    <li><a href="#storagearea-set">set(key, value)</a><span>, in §3.1</span>
-   <li><a href="#storagearea">StorageArea</a><span>, in §2</span>
+   <li><a href="#stdasync-local-storage-storage">storage</a><span>, in §2</span>
+   <li>
+    StorageArea
+    <ul>
+     <li><a href="#storagearea">(interface)</a><span>, in §2</span>
+     <li><a href="#stdasync-local-storage-storagearea">dfn for std:async-local-storage</a><span>, in §2</span>
+    </ul>
    <li><a href="#storagearea-values">values()</a><span>, in §3.7</span>
    <li><a href="#zip">zip</a><span>, in §3.11</span>
   </ul>
@@ -2386,6 +2425,7 @@ for their contributions to this specification.</p>
     <a data-link-type="biblio">[secure-contexts]</a> defines the following terms:
     <ul>
      <li><a href="https://w3c.github.io/webappsec-secure-contexts/#settings-object">Is an environment settings object contextually secure?</a>
+     <li><a href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts">secure contexts</a>
     </ul>
    <li>
     <a data-link-type="biblio">[service-workers-2]</a> defines the following terms:
@@ -2442,13 +2482,25 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-async-local-storage">3. The StorageArea class</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="stdasync-local-storage-storage">
+   <b><a href="#stdasync-local-storage-storage">#stdasync-local-storage-storage</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-stdasync-local-storage-storage">2. The async-local-storage layered web API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="stdasync-local-storage-storagearea">
+   <b><a href="#stdasync-local-storage-storagearea">#stdasync-local-storage-storagearea</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-stdasync-local-storage-storagearea">2. The async-local-storage layered web API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="storagearea">
    <b><a href="#storagearea">#storagearea</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-storagearea">2. The async-local-storage layered web API</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a>
-    <li><a href="#ref-for-storagearea③">3. The StorageArea class</a> <a href="#ref-for-storagearea④">(2)</a>
-    <li><a href="#ref-for-storagearea⑤">3.1. constructor(name)</a> <a href="#ref-for-storagearea⑥">(2)</a> <a href="#ref-for-storagearea">(3)</a>
-    <li><a href="#ref-for-storagearea⑦">3.11. Supporting operations</a> <a href="#ref-for-storagearea⑧">(2)</a>
+    <li><a href="#ref-for-storagearea">2. The async-local-storage layered web API</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a> <a href="#ref-for-storagearea③">(4)</a> <a href="#ref-for-storagearea④">(5)</a>
+    <li><a href="#ref-for-storagearea⑤">3. The StorageArea class</a> <a href="#ref-for-storagearea⑥">(2)</a> <a href="#ref-for-storagearea⑦">(3)</a>
+    <li><a href="#ref-for-storagearea⑧">3.1. constructor(name)</a> <a href="#ref-for-storagearea⑨">(2)</a> <a href="#ref-for-storagearea">(3)</a>
+    <li><a href="#ref-for-storagearea①⓪">3.11. Supporting operations</a> <a href="#ref-for-storagearea①①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-constructor">
