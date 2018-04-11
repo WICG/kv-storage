@@ -153,7 +153,7 @@ This specification proposes a new API, called async local storage, which is inte
     </p>
     <script type="module">
       import { storage } from
-          "std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js";
+        "std:async-local-storage|https://example.com/als-polyfill.js";
 
       (async () => {
         let pageLoadCount = await storage.get("pageLoadCount") || 0;
@@ -176,19 +176,38 @@ This specification proposes a new API, called async local storage, which is inte
 
 <h2 id="module">The <code>async-local-storage</code> layered web API</h2>
 
+<dl class="domintro non-normative" id="module-domintro">
+  <dt><code>import * as |als| from "std:async-local-storage|https://example.com/als-polyfill.js"</code>
+  <dd>
+    <p>Imports the async local storage API, using the built-in implementation if it exists, or the implementation found at the fallback URL otherwise.
+
+    <p>If the built-in implementation is not imported in a [=secure context=], the <code>import</code> statement will cause a "{{SecurityError}}" {{DOMException}}, as persistent storage is a powerful feature.
+  </dd>
+
+  <dt><code>|als|.[=std:async-local-storage/storage=]</code>
+  <dd>
+    <p>Returns the default storage area. It is a pre-constructed instance of the {{StorageArea}} class, meant to be a convenience similar to {{Window/localStorage}}.
+  </dd>
+
+  <dt><code>|als|.[=std:async-local-storage/StorageArea=]</code>
+  <dd>
+    <p>Returns the constructor for the {{StorageArea}} class, to allow the creation of isolated storage areas.
+  </dd>
+</dl>
+
 This specification defines a new layered web API, whose [=API identifier=] is "<dfn><code>async-local-storage</code></dfn>" and whose exports are the following:
 
-: <code>StorageArea</code>
-:: The {{StorageArea}} class
-: <code>storage</code>
+: <dfn for="std:async-local-storage"><code>storage</code></dfn>
 :: An instance of the {{StorageArea}} class, created as if by <a abstract-op>Construct</a>({{StorageArea}}, « "<code>default</code>" »).
+: <dfn for="std:async-local-storage"><code>StorageArea</code></dfn>
+:: The {{StorageArea}} class
 
 <div class="example" id="example-importing">
-  To get access to these exports, one would use the usual syntax for layered web APIs:
+  To get access to these exports, one could use the syntax shown <a href="#module-domintro">above</a>, or import them directly without the intermediate |als| variable:
 
   <xmp highlight="js">
     import { storage, StorageArea } from
-        "std:async-local-storage|https://somecdn.com/async-local-storage-polyfill.js";
+      "std:async-local-storage|https://example.com/als-polyfill.js";
   </xmp>
 </div>
 
@@ -254,7 +273,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-constructor" constructor for="StorageArea" lt="constructor(name)">constructor(|name|)</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code>|storage| = new {{StorageArea/constructor(name)|StorageArea}}(|name|)</code>
   <dd>
     <p>Creates a new {{StorageArea}} that provides an async key/value store view onto an IndexedDB database named <code>`async-local-storage:${name}`</code>.
@@ -271,12 +290,12 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code>await |storage|.{{StorageArea/set()|set}}(|key|, |value|)</code>
   <dd>
     <p>Asynchronously stores the given |value| so that it can later be retrieved by the given |key|.
 
-    <p>Keys must follow the same restrictions as IndexedDB keys: roughly, a key can be a number, string, array, {{Date}}, {{ArrayBuffer}}, {{DataView}}, [=typed array=], or an array of these. Invalid keys will cause the returned promise to reject with a "{{DataError}}" {{DOMException}}.
+    <p>Keys have to follow the same restrictions as IndexedDB keys: roughly, a key can be a number, string, array, {{Date}}, {{ArrayBuffer}}, {{DataView}}, [=typed array=], or an array of these. Invalid keys will cause the returned promise to reject with a "{{DataError}}" {{DOMException}}.
 
     <p>Values can be any value that can be [$StructuredSerializeForStorage|structured-serialized for storage$]. Un-serializable values will cause a "{{DataCloneError}}" {{DOMException}}.
 
@@ -296,7 +315,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-get" method for="StorageArea">get(|key|)</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code>|value| = await |storage|.{{StorageArea/get()|get}}(|key|)</code>
   <dd>
     <p>Asynchronously retrieves the value stored at the given |key|, or undefined if there is no value stored at |key|.
@@ -318,7 +337,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code><var ignore>isPresent</var> = await |storage|.{{StorageArea/has()|has}}(|key|)</code>
   <dd>
     <p>Asynchronously determines whether a value is stored at the given |key|, returning a promise fulfilled with either true or false.
@@ -360,7 +379,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-delete" method for="StorageArea">delete(|key|)</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code>await |storage|.{{StorageArea/delete()|delete}}(|key|)</code>
   <dd>
     <p>Asynchronously deletes the entry at the given |key|.
@@ -381,7 +400,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
 
 <h3 id="storagearea-clear" method for="StorageArea">clear()</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code>await |storage|.{{StorageArea/clear()|clear}}()</code>
   <dd>
     <p>Asynchronously deletes all entries in this storage area.
@@ -451,7 +470,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <h3 id="storagearea-keys" method for="StorageArea">keys()</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code><var ignore>keys</var> = await |storage|.{{StorageArea/keys()|keys}}()</code>
   <dd>
     <p>Asynchronously retrieves an array containing the keys of all entries in this storage area.
@@ -470,7 +489,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <h3 id="storagearea-values" method for="StorageArea">values()</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code><var ignore>values</var> = await |storage|.{{StorageArea/values()|values}}()</code>
   <dd>
     <p>Asynchronously retrieves an array containing the values of all entries in this storage area.
@@ -489,7 +508,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <h3 id="storagearea-entries" method for="StorageArea">entries()</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code><var ignore>entries</var> = await |storage|.{{StorageArea/entries()|entries}}()</code>
   <dd>
     <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
@@ -512,7 +531,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
 
-<dl class="domintro">
+<dl class="domintro non-normative">
   <dt><code>{ |database|, |store|, |version| } = |storage|.{{StorageArea/backingStore}}</code>
   <dd>
     <p>Asynchronously retrieves an an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area:
