@@ -269,11 +269,13 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
 
     * Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. [=StorageArea/brand check|Our brand checks=] are same-realm-only.
 
+    * It does not have a mechanism for exposing classes inside modules; instead they are always exposed on some set of global objects.
+
     * It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered API in JavaScript. (But not impossible.)
 
-    * The generic nature of Web IDL means that it is best implemented using code generation. However, implementers currently do not have a Web IDL bindings generator that produces JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create a JavaScript-producing Web IDL bindings generator. Furthermore, the generated JavaScript would end up being quite large; see <a href="https://gist.github.com/domenic/1f57ecc0720b3861b58192a67e296e9b">an example</a>. <!-- TODO: maybe make an actual generated StorageArea example -->
+    * The generic nature of Web IDL means that it is best implemented using code generation. However, most implementers currently do not have a Web IDL bindings generator that wraps JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create such a bindings generator. Furthermore, the wrappers end up being quite large; see <a href="https://gist.github.com/domenic/b5c395e036781173e123">an example</a>. <!-- TODO: maybe make an actual generated StorageArea example -->
 
-    None of these mismatches are fatal. We could switch this specification to Web IDL if it ends up being desired. But for now, we're experimenting with this different—and more JavaScript-implementation-friendly—mechanism of specifying a class definition.
+    None of these mismatches are fatal. We could switch this specification to Web IDL, with appropriate extensions for solving the first two problems, if that ends up being desired. But for now, we're experimenting with this different—and more JavaScript-implementation-friendly—mechanism of specifying a class definition.
   </details>
 </div>
 
