@@ -1176,7 +1176,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 38f47721ec8b2e235a176c5ab0c64e918037b4be" name="generator">
+  <meta content="Bikeshed version 1d236565a9bc80d6441dcb0854593dac701b9df5" name="generator">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1477,7 +1477,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-04-11">11 April 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-04-20">20 April 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1491,7 +1491,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 11 April 2018,
+In addition, as of 20 April 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1656,11 +1656,13 @@ Parts of this work may be from another specification document.  If so, those par
       <li data-md="">
        <p>Its automatically-generated brand checks are both unforgeable and cross-realm, which is not accomplishable in JavaScript. <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks">Our brand checks</a> are same-realm-only.</p>
       <li data-md="">
+       <p>It does not have a mechanism for exposing classes inside modules; instead they are always exposed on some set of global objects.</p>
+      <li data-md="">
        <p>It produces methods and accessors that are enumerable, which does not match the natural JavaScript implementation. This would make it more difficult to implement a Web IDL-specified layered API in JavaScript. (But not impossible.)</p>
       <li data-md="">
-       <p>The generic nature of Web IDL means that it is best implemented using code generation. However, implementers currently do not have a Web IDL bindings generator that produces JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create a JavaScript-producing Web IDL bindings generator. Furthermore, the generated JavaScript would end up being quite large; see <a href="https://gist.github.com/domenic/1f57ecc0720b3861b58192a67e296e9b">an example</a>.</p>
+       <p>The generic nature of Web IDL means that it is best implemented using code generation. However, most implementers currently do not have a Web IDL bindings generator that wraps JavaScript; using Web IDL would virtually require them to either implement the layered API in C++, or create such a bindings generator. Furthermore, the wrappers end up being quite large; see <a href="https://gist.github.com/domenic/b5c395e036781173e123">an example</a>.</p>
      </ul>
-     <p>None of these mismatches are fatal. We could switch this specification to Web IDL if it ends up being desired. But for now, we’re experimenting with this different—and more JavaScript-implementation-friendly—mechanism of specifying a class definition.</p>
+     <p>None of these mismatches are fatal. We could switch this specification to Web IDL, with appropriate extensions for solving the first two problems, if that ends up being desired. But for now, we’re experimenting with this different—and more JavaScript-implementation-friendly—mechanism of specifying a class definition.</p>
     </details>
    </div>
    <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑦">StorageArea</a></code> instance must also contain the following internal slots:</p>
