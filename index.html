@@ -1591,7 +1591,7 @@ Parts of this work may be from another specification document.  If so, those par
     <dd>
      <p>Returns the constructor for the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①">StorageArea</a></code> class, to allow the creation of isolated storage areas. </p>
    </dl>
-   <p>This specification defines a new layered API, whose <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure" id="ref-for-part-1-the-infrastructure">API identifier</a> is "<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="async-local-storage"><code>async-local-storage</code></dfn>" and whose exports are the following:</p>
+   <p>This specification defines a new layered API, whose <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentapi-identifier" id="ref-for-user-contentapi-identifier">API identifier</a> is "<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="async-local-storage"><code>async-local-storage</code></dfn>" and whose <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentexports" id="ref-for-user-contentexports">exports</a> are the following:</p>
    <dl>
     <dt data-md=""><dfn class="dfn-paneled" data-dfn-for="std:async-local-storage" data-dfn-type="dfn" data-noexport="" id="stdasync-local-storage-storage"><code>storage</code></dfn>
     <dd data-md="">
@@ -1606,7 +1606,7 @@ Parts of this work may be from another specification document.  If so, those par
   <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.js"</span><span class="p">;</span>
 </pre>
    </div>
-   <p>Additionally, evaluating the layered API’s module must run the following steps:</p>
+   <p>The layered API’s <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentevaluation-steps" id="ref-for-user-contentevaluation-steps">evaluation steps</a> are the following:</p>
    <ol>
     <li data-md="">
      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a> is not <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-secure-contexts/#settings-object" id="ref-for-settings-object">contextually secure</a>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror①">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
@@ -2452,9 +2452,11 @@ for their contributions to this specification.</p>
      <li><a href="https://infra.spec.whatwg.org/#list-size">size</a>
     </ul>
    <li>
-    <a data-link-type="biblio">[LAPI]</a> defines the following terms:
+    <a data-link-type="biblio">[LAPI-SPEC]</a> defines the following terms:
     <ul>
-     <li><a href="https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure">api identifier</a>
+     <li><a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentapi-identifier">api identifier</a>
+     <li><a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentevaluation-steps">evaluation steps</a>
+     <li><a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentexports">exports</a>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
@@ -2504,8 +2506,8 @@ for their contributions to this specification.</p>
    <dd>Ali Alabbas; Joshua Bell. <a href="https://w3c.github.io/IndexedDB/">Indexed Database API 2.0</a>. URL: <a href="https://w3c.github.io/IndexedDB/">https://w3c.github.io/IndexedDB/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
-   <dt id="biblio-lapi">[LAPI]
-   <dd>Domenic Denicola; Dru Knox; Ojan Vafai. <a href="https://github.com/drufball/layered-apis/blob/master/README.md">Layered APIs</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/README.md">https://github.com/drufball/layered-apis/blob/master/README.md</a>
+   <dt id="biblio-lapi-spec">[LAPI-SPEC]
+   <dd>Domenic Denicola. <a href="https://github.com/drufball/layered-apis/blob/master/spec.md">Layered APIs Proto-spec</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/spec.md">https://github.com/drufball/layered-apis/blob/master/spec.md</a>
    <dt id="biblio-promises-guide">[PROMISES-GUIDE]
    <dd>Domenic Denicola. <a href="https://www.w3.org/2001/tag/doc/promises-guide">Writing Promise-Using Specifications</a>. 16 February 2016. Finding of the W3C TAG. URL: <a href="https://www.w3.org/2001/tag/doc/promises-guide">https://www.w3.org/2001/tag/doc/promises-guide</a>
    <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
@@ -2519,6 +2521,8 @@ for their contributions to this specification.</p>
    <dd>Daniel Ehrenberg; Jeff Morrison. <a href="https://tc39.github.io/proposal-class-fields/">Public and private instance fields proposal</a>. URL: <a href="https://tc39.github.io/proposal-class-fields/">https://tc39.github.io/proposal-class-fields/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+   <dt id="biblio-lapi">[LAPI]
+   <dd>Domenic Denicola; Dru Knox; Ojan Vafai. <a href="https://github.com/drufball/layered-apis/blob/master/README.md">Layered APIs</a>. URL: <a href="https://github.com/drufball/layered-apis/blob/master/README.md">https://github.com/drufball/layered-apis/blob/master/README.md</a>
    <dt id="biblio-service-workers-2">[SERVICE-WORKERS-2]
    <dd>Service Workers URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
   </dl>
