@@ -2,9 +2,11 @@
 
 This document is an explainer for a potential future web platform feature, "async local storage". It's like [`localStorage`](https://html.spec.whatwg.org/multipage/webstorage.html#webstorage), but async!
 
-## Sample code
+This feature would be implemented as a [layered API](https://github.com/drufball/layered-apis) on top of IndexedDB; see more on that below.
 
-(Note: the `import` syntax used here presumes this would be implemented as a [layered web API](https://github.com/drufball/layered-apis), and is [still tentative](https://docs.google.com/document/d/1jRQjQP8DmV7RL75u_67ps3SB1sjfa1bFZmbCMfJCvrM/edit?usp=sharing).)
+A [full specification](https://domenic.github.io/async-local-storage/) is also available.
+
+## Sample code
 
 ```js
 import { storage } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
@@ -25,7 +27,7 @@ import { storage } from "std:async-local-storage|https://somecdn.com/async-local
 
 Local storage is a well-known and well-loved API. It only has one problem: it's synchronous. This leads to [terrible performance](https://hacks.mozilla.org/2012/03/there-is-no-simple-solution-for-local-storage/) and cross-window synchronization issues.
 
-The well-known alternative is IndexedDB. IndexedDB is, however, quite hard to use. It has no simple key/value layer, instead requiring understanding concepts like database upgrades and transactions. Its API is also quite dated; it does not use promises, but instead `IDBRequest` objects with their `onsuccess` and `onerror` methods.
+The alternative is IndexedDB. IndexedDB is, however, quite hard to use. It has no simple key/value layer, instead requiring understanding concepts like database upgrades and transactions. Its API is also quite dated; it does not use promises, but instead `IDBRequest` objects with their `onsuccess` and `onerror` methods.
 
 In the face of this, a cottage industry of solutions for "async local storage" have sprung up to wrap IndexedDB. Perhaps the most well-known of these is [localForage](https://localforage.github.io/localForage/), which copies the `localStorage` API directly.
 
@@ -37,7 +39,7 @@ Fortunately, this sort of case is exactly what [layered APIs](https://github.com
 
 ### `Map`-like key/value pair API
 
-Note that keys and values would be allowed to be any [structured-serializable type](https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects) (but, see [#2](https://github.com/domenic/async-local-storage/issues/2)).
+Note that keys and values would be allowed to be any [structured-serializable type](https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects) (see [#2](https://github.com/domenic/async-local-storage/issues/2) for more discussion).
 
 #### `set(key, value)`
 
@@ -91,7 +93,7 @@ import { storage, StorageArea } from "std:async-local-storage|https://somecdn.co
 
 This sort of API has [precedent in localForage](https://www.npmjs.com/package/localforage#multiple-instances), which is notable since localForage otherwise sticks rather strictly to the `localStorage` API surface.
 
-Note that the scope of the default storage area would be per-realm, or more precisely, per module map, since it would be created whenever you imported the module.
+The scope of the default storage area would be per-realm. (Or more precisely, per module map, since it would be created whenever you imported the module.)
 
 ### `backingStore`: falling back to IndexedDB
 
