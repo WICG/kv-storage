@@ -17,7 +17,10 @@ Default Biblio Status: current
 <pre class="anchors">
 url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
 
-url: https://github.com/drufball/layered-apis/blob/master/README.md#part-1-the-infrastructure; type: dfn; text: API identifier; spec: LAPI
+urlPrefix: https://github.com/drufball/layered-apis/blob/master/spec.md/#user-content; type: dfn; spec: LAPI-SPEC; for: LAPI
+  text: API identifier
+  text: exports
+  text: evaluation steps
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
@@ -61,6 +64,13 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
     ],
     "href": "https://github.com/drufball/layered-apis/blob/master/README.md",
     "title": "Layered APIs"
+  },
+  "LAPI-SPEC": {
+    "authors": [
+      "Domenic Denicola"
+    ],
+    "href": "https://github.com/drufball/layered-apis/blob/master/spec.md",
+    "title": "Layered APIs Proto-spec"
   },
   "CLASS-FIELDS": {
     "authors": [
@@ -200,7 +210,7 @@ This specification proposes a new API, called async local storage, which is inte
   </dd>
 </dl>
 
-This specification defines a new layered API, whose [=API identifier=] is "<dfn><code>async-local-storage</code></dfn>" and whose exports are the following:
+This specification defines a new layered API, whose [=LAPI/API identifier=] is "<dfn><code>async-local-storage</code></dfn>" and whose [=LAPI/exports=] are the following:
 
 : <dfn for="std:async-local-storage"><code>storage</code></dfn>
 :: An instance of the {{StorageArea}} class, created as if by <a abstract-op>Construct</a>({{StorageArea}}, « "<code>default</code>" »).
@@ -216,7 +226,7 @@ This specification defines a new layered API, whose [=API identifier=] is "<dfn>
   </xmp>
 </div>
 
-Additionally, evaluating the layered API's module must run the following steps:
+The layered API's [=LAPI/evaluation steps=] are the following:
 
 1. If the [=current settings object=] is not [$Is an environment settings object contextually secure?|contextually secure$], throw a "{{SecurityError}}" {{DOMException}}.
 
