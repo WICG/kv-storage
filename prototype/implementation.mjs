@@ -1,14 +1,14 @@
 // TODOs/spec-noncompliances:
 // - Susceptible to tampering of built-in prototypes and globals. We want to work on tooling to ameliorate that.
-// - Uses symbols for information hiding but those are interceptable and forgeable. Need private fields/methods.
 
-const databaseName = Symbol("[[DatabaseName]]");
-const databasePromise = Symbol("[[DatabasePromise]]");
+// TODO: use private fields when those ship
+const databaseName = new WeakMap();
+const databasePromise = new WeakMap();
 
 export class StorageArea {
   constructor(name) {
-    this[databasePromise] = null;
-    this[databaseName] = "async-local-storage:" + `${name}`;
+    databasePromise.set(this, null);
+    databaseName.set(this, "async-local-storage:" + `${name}`);
   }
 
   async set(key, value) {
@@ -66,24 +66,24 @@ export class StorageArea {
   }
 
   async clear() {
-    if (!(databasePromise in this)) {
+    if (!databasePromise.has(this)) {
       return Promise.reject(new TypeError("Invalid this value"));
     }
 
-    if (this[databasePromise] !== null) {
-      return this[databasePromise].then(
+    if (databasePromise.get(this) !== null) {
+      return databasePromise.get(this).then(
         () => {
-          this[databasePromise] = null;
-          return deleteDatabase(this[databaseName]);
+          databasePromise.set(this, null);
+          return deleteDatabase(databaseName.get(this));
         },
         () => {
-          this[databasePromise] = null;
-          return deleteDatabase(this[databaseName]);
+          databasePromise.set(this, null);
+          return deleteDatabase(databaseName.get(this));
         }
       );
     }
 
-    return deleteDatabase(this[databaseName]);
+    return deleteDatabase(databaseName.get(this));
   }
 
   async keys() {
@@ -125,12 +125,12 @@ export class StorageArea {
   }
 
   get backingStore() {
-    if (!(databasePromise in this)) {
+    if (!databasePromise.has(this)) {
       throw new TypeError("Invalid this value");
     }
 
     return {
-      database: this[databaseName],
+      database: databaseName.get(this),
       store: "store",
       version: 1
     };
@@ -140,15 +140,15 @@ export class StorageArea {
 export const storage = new StorageArea("default");
 
 function performDatabaseOperation(area, mode, steps) {
-  if (!(databasePromise in area)) {
+  if (!databasePromise.has(area)) {
     return Promise.reject(new TypeError("Invalid this value"));
   }
 
-  if (area[databasePromise] === null) {
+  if (databasePromise.get(area) === null) {
     initializeDatabasePromise(area);
   }
 
-  return area[databasePromise].then(database => {
+  return databasePromise.get(area).then(database => {
     const transaction = database.transaction("store", mode);
     const store = transaction.objectStore("store");
 
@@ -157,15 +157,15 @@ function performDatabaseOperation(area, mode, steps) {
 }
 
 function initializeDatabasePromise(area) {
-  area[databasePromise] = new Promise((resolve, reject) => {
-    const request = self.indexedDB.open(area[databaseName], 1);
+  databasePromise.set(area, new Promise((resolve, reject) => {
+    const request = self.indexedDB.open(databaseName.get(area), 1);
 
     request.onsuccess = () => {
       const database = request.result;
-      database.onclose = () => area[databasePromise] = null;
+      database.onclose = () => databasePromise.set(area, null);
       database.onversionchange = () => {
         database.close();
-        area[databasePromise] = null;
+        databasePromise.set(area, null);
       }
       resolve(database);
     };
@@ -179,7 +179,7 @@ function initializeDatabasePromise(area) {
         reject(e);
       }
     };
-  });
+  }));
 }
 
 function isAllowedAsAKey(value) {
@@ -210,7 +210,7 @@ function isDate(value) {
   try {
     Date.prototype.getTime.call(value);
     return true;
-  } catch (e) { // TODO: remove useless binding
+  } catch (e) { // TODO: remove useless binding when that ships
     return false;
   }
 }
@@ -220,7 +220,7 @@ function isArrayBuffer(value) {
   try {
     byteLengthGetter.call(value);
     return true;
-  } catch (e) { // TODO: remove useless binding
+  } catch (e) { // TODO: remove useless binding when that ships
     return false;
   }
 }

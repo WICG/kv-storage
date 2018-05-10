@@ -22,9 +22,7 @@ test(() => {
 }, "backingStore returns the correct object");
 
 promise_test(async (t) => {
-  t.add_cleanup(async () => {
-    await storage.clear();
-  });
+  t.add_cleanup(() => storage.clear());
 
   assert_equals(await storage.set("key", "value"), undefined);
 
