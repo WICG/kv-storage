@@ -5,6 +5,10 @@
 const databaseName = new WeakMap();
 const databasePromise = new WeakMap();
 
+if (!self.isSecureContext) {
+  throw new DOMException("Async local storage is only available in secure contexts", "SecurityError");
+}
+
 export class StorageArea {
   constructor(name) {
     databasePromise.set(this, null);
