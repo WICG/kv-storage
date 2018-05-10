@@ -1176,7 +1176,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 9a34557acbc84c33a01a7ce77aaf3a491bdef7dd" name="generator">
+  <meta content="Bikeshed version b740b15097946bf1d13405dc6d7ca5a72fa2530d" name="generator">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1477,7 +1477,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-01">1 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-10">10 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1491,7 +1491,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 1 May 2018,
+In addition, as of 10 May 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1520,7 +1520,7 @@ Parts of this work may be from another specification document.  If so, those par
       <li><a href="#storagearea-values"><span class="secno">3.8</span> <span class="content">values()</span></a>
       <li><a href="#storagearea-entries"><span class="secno">3.9</span> <span class="content">entries()</span></a>
       <li><a href="#storagearea-backingstore"><span class="secno">3.10</span> <span class="content">get backingStore()</span></a>
-      <li><a href="#supporting"><span class="secno">3.11</span> <span class="content">Supporting operations</span></a>
+      <li><a href="#supporting"><span class="secno">3.11</span> <span class="content">Supporting operations and concepts</span></a>
      </ol>
     <li><a href="#acks"><span class="secno"></span> <span class="content">Acknowledgments</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
@@ -1922,10 +1922,10 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.7" data-lt="keys()" id="storagearea-keys"><span class="secno">3.7. </span><span class="content">keys()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code><var>keys</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys③">keys</a></code>()</code> 
+    <dt><code><var>keys</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys④">keys</a></code>()</code> 
     <dd>
      <p>Asynchronously retrieves an array containing the keys of all entries in this storage area. </p>
-     <p>Keys will be returned in <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#greater-than" id="ref-for-greater-than">ascending</a> order; roughly, segregated by type, and then sorted within each type. They will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize①">structured-deserialized</a> from their original form. </p>
+     <p>Keys will be returned in <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#greater-than" id="ref-for-greater-than">ascending</a> order; roughly, segregated by type, and then sorted within each type. They will be <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip">key round-tripped</a> from their original form. </p>
    </dl>
    <div class="algorithm">
     <ol>
@@ -1950,7 +1950,7 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
     <dt><code><var>values</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-values" id="ref-for-storagearea-values①">values</a></code>()</code> 
     <dd>
      <p>Asynchronously retrieves an array containing the values of all entries in this storage area. </p>
-     <p>Values will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys①">keys()</a></code>. They will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize②">structured-deserialized</a> from their original form. </p>
+     <p>Values will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys①">keys()</a></code>. They will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize①">structured-deserialized</a> from their original form. </p>
    </dl>
    <div class="algorithm">
     <ol>
@@ -1972,10 +1972,10 @@ openRequest<span class="p">.</span>onsuccess <span class="o">=</span> <span clas
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.9" data-lt="entries()" id="storagearea-entries"><span class="secno">3.9. </span><span class="content">entries()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code><var>entries</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries①">entries</a></code>()</code> 
+    <dt><code><var>entries</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries②">entries</a></code>()</code> 
     <dd>
      <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area. </p>
-     <p>Entries will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys②">keys()</a></code>. Each key and value will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize③">structured-deserialized</a> from its original form. </p>
+     <p>Entries will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys②">keys()</a></code>. Each key and value will be <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip①">key round-tripped</a> and <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize②">structured-deserialized</a> from its original form, respectively. </p>
    </dl>
    <div class="algorithm">
     <ol>
@@ -2079,7 +2079,7 @@ request<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p
 </pre>
     <p>Satisfied with his web app’s Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)</p>
    </div>
-   <h3 class="heading settled" data-level="3.11" id="supporting"><span class="secno">3.11. </span><span class="content">Supporting operations</span><a class="self-link" href="#supporting"></a></h3>
+   <h3 class="heading settled" data-level="3.11" id="supporting"><span class="secno">3.11. </span><span class="content">Supporting operations and concepts</span><a class="self-link" href="#supporting"></a></h3>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="add-a-simple-event-listener">add a simple event listener</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> <var>target</var>, an event type string <var>type</var>, and a set of steps <var>steps</var>:</p>
    <div class="algorithm">
     <ol>
@@ -2198,6 +2198,9 @@ request<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p
     <li data-md="">
      <p>Return <var>result</var>.</p>
    </ol>
+   <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="key round-trip" data-noexport="" id="key-round-trip">Key round-tripping</dfn> refers to the way in which JavaScript values are processed by first being passed through IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key①">convert a value to a key</a> operation, then converted back through its <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value" id="ref-for-convert-a-key-to-a-value">convert a key to a value</a> operation. Keys returned by the <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys③">keys()</a></code> or <code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries①">entries()</a></code> methods will have gone through this process.</p>
+   <p>Notably, any <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-typedarray-objects" id="ref-for-sec-typedarray-objects①">typed arrays</a> or <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DataView" id="ref-for-idl-DataView①">DataView</a></code>s will have been "unwrapped", and returned back as just <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer①">ArrayBuffer</a></code>s containing the same bytes. Also, similar to the <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage" id="ref-for-structuredserializeforstorage①">structured-serialization</a>/<a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize③">deserialization</a> process, any "expando" properties or other modifications will not be preserved by <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip②">key round-tripping</a>.</p>
+   <p class="note" role="note">For primitive string or number values, there’s no need to worry about <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip③">key round-tripping</a>; the values are indistinguishable.</p>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
    <p>The editor would like to thank
 Joshua Bell
@@ -2354,6 +2357,7 @@ for their contributions to this specification.</p>
    <li><a href="#storagearea-get">get(key)</a><span>, in §3.2</span>
    <li><a href="#storagearea-has">has(key)</a><span>, in §3.3</span>
    <li><a href="#initialize-the-database-promise">initialize the database promise</a><span>, in §3.11</span>
+   <li><a href="#key-round-trip">key round-trip</a><span>, in §3.11</span>
    <li><a href="#storagearea-keys">keys()</a><span>, in §3.6</span>
    <li><a href="#performing-a-database-operation">perform a database operation</a><span>, in §3.11</span>
    <li><a href="#performing-a-database-operation">performing a database operation</a><span>, in §3.11</span>
@@ -2426,6 +2430,7 @@ for their contributions to this specification.</p>
      <li><a href="https://w3c.github.io/IndexedDB/#greater-than">ascending</a>
      <li><a href="https://w3c.github.io/IndexedDB/#close-a-database-connection">close a database connection</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close">close()</a>
+     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value">convert a key to a value</a>
      <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count">count()</a>
      <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">createObjectStore(name)</a>
@@ -2552,7 +2557,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-storagearea">2. The async-local-storage layered API</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a> <a href="#ref-for-storagearea③">(4)</a> <a href="#ref-for-storagearea④">(5)</a>
     <li><a href="#ref-for-storagearea⑤">3. The StorageArea class</a> <a href="#ref-for-storagearea⑥">(2)</a> <a href="#ref-for-storagearea⑦">(3)</a> <a href="#ref-for-storagearea⑧">(4)</a> <a href="#ref-for-storagearea⑨">(5)</a>
     <li><a href="#ref-for-storagearea①⓪">3.1. constructor(name)</a> <a href="#ref-for-storagearea①①">(2)</a> <a href="#ref-for-storagearea">(3)</a>
-    <li><a href="#ref-for-storagearea①②">3.11. Supporting operations</a> <a href="#ref-for-storagearea①③">(2)</a> <a href="#ref-for-storagearea①④">(3)</a> <a href="#ref-for-storagearea①⑤">(4)</a>
+    <li><a href="#ref-for-storagearea①②">3.11. Supporting operations and concepts</a> <a href="#ref-for-storagearea①③">(2)</a> <a href="#ref-for-storagearea①④">(3)</a> <a href="#ref-for-storagearea①⑤">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-brand-checks">
@@ -2561,7 +2566,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-storagearea-brand-checks">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-brand-checks①">3.6. clear()</a>
     <li><a href="#ref-for-storagearea-brand-checks②">3.10. get backingStore()</a>
-    <li><a href="#ref-for-storagearea-brand-checks③">3.11. Supporting operations</a>
+    <li><a href="#ref-for-storagearea-brand-checks③">3.11. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-constructor">
@@ -2606,7 +2611,7 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-clear">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-clear">3.6. clear()</a>
-    <li><a href="#ref-for-storagearea-clear①">3.11. Supporting operations</a> <a href="#ref-for-storagearea-clear②">(2)</a>
+    <li><a href="#ref-for-storagearea-clear①">3.11. Supporting operations and concepts</a> <a href="#ref-for-storagearea-clear②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="deleting-the-database">
@@ -2622,6 +2627,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-storagearea-keys">3.7. keys()</a>
     <li><a href="#ref-for-storagearea-keys①">3.8. values()</a>
     <li><a href="#ref-for-storagearea-keys②">3.9. entries()</a>
+    <li><a href="#ref-for-storagearea-keys③">3.11. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-values">
@@ -2636,6 +2642,7 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-entries">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-entries">3.9. entries()</a>
+    <li><a href="#ref-for-storagearea-entries①">3.11. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-backingstore">
@@ -2656,14 +2663,14 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener①②">3.7. keys()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①④">3.8. values()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener①⑥">3.9. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑦">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⑨">3.11. Supporting operations</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(2)</a> <a href="#ref-for-add-a-simple-event-listener②①">(3)</a> <a href="#ref-for-add-a-simple-event-listener②②">(4)</a> <a href="#ref-for-add-a-simple-event-listener②③">(5)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑨">3.11. Supporting operations and concepts</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(2)</a> <a href="#ref-for-add-a-simple-event-listener②①">(3)</a> <a href="#ref-for-add-a-simple-event-listener②②">(4)</a> <a href="#ref-for-add-a-simple-event-listener②③">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="current-idbfactory">
    <b><a href="#current-idbfactory">#current-idbfactory</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-idbfactory">3.6. clear()</a>
-    <li><a href="#ref-for-current-idbfactory①">3.11. Supporting operations</a>
+    <li><a href="#ref-for-current-idbfactory①">3.11. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="performing-a-database-operation">
@@ -2677,13 +2684,13 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-performing-a-database-operation⑤">3.7. keys()</a>
     <li><a href="#ref-for-performing-a-database-operation⑥">3.8. values()</a>
     <li><a href="#ref-for-performing-a-database-operation⑦">3.9. entries()</a>
-    <li><a href="#ref-for-performing-a-database-operation⑧">3.11. Supporting operations</a>
+    <li><a href="#ref-for-performing-a-database-operation⑧">3.11. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="initialize-the-database-promise">
    <b><a href="#initialize-the-database-promise">#initialize-the-database-promise</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-initialize-the-database-promise">3.11. Supporting operations</a>
+    <li><a href="#ref-for-initialize-the-database-promise">3.11. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="allowed-as-a-key">
@@ -2694,13 +2701,21 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-allowed-as-a-key②">3.3. get(key)</a>
     <li><a href="#ref-for-allowed-as-a-key③">3.4. has(key)</a>
     <li><a href="#ref-for-allowed-as-a-key④">3.5. delete(key)</a>
-    <li><a href="#ref-for-allowed-as-a-key⑤">3.11. Supporting operations</a> <a href="#ref-for-allowed-as-a-key⑥">(2)</a> <a href="#ref-for-allowed-as-a-key⑦">(3)</a>
+    <li><a href="#ref-for-allowed-as-a-key⑤">3.11. Supporting operations and concepts</a> <a href="#ref-for-allowed-as-a-key⑥">(2)</a> <a href="#ref-for-allowed-as-a-key⑦">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="zip">
    <b><a href="#zip">#zip</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-zip">3.9. entries()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="key-round-trip">
+   <b><a href="#key-round-trip">#key-round-trip</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-key-round-trip">3.7. keys()</a>
+    <li><a href="#ref-for-key-round-trip①">3.9. entries()</a>
+    <li><a href="#ref-for-key-round-trip②">3.11. Supporting operations and concepts</a> <a href="#ref-for-key-round-trip③">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
