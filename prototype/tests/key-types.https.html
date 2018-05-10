@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Async local storage API surface</title>
+<title>Async local storage: tests against various key types</title>
 
 <script src="https://w3c-test.org/resources/testharness.js"></script>
 <script src="https://w3c-test.org/resources/testharnessreport.js"></script>
 
 <script type="module">
-import { promiseTestWithArea } from "./helpers/als-tests.js";
+import { promiseTestWithArea, testVariousMethods } from "./helpers/als-tests.js";
+import { assertEqualDates, assertEqualArrayBuffers, assertABViewEqualsArrayBuffer }
+  from "./helpers/equality-asserters.js";
 
 const invalidKeys = {
   "undefined": undefined,
@@ -22,12 +24,12 @@ const invalidKeys = {
 };
 
 const validKeys = {
-  "a number": 5,
-  "a string": "a string",
-  "a Date": new Date(),
-  "a typed array": new Uint8Array(),
-  "a DataView": new DataView(new ArrayBuffer()),
-  "an ArrayBuffer": new ArrayBuffer()
+  "a number": [5, assert_equals],
+  "a string": ["a string", assert_equals],
+  "a Date": [new Date(), assertEqualDates],
+  "a typed array": [new Uint8Array([1, 2]), assertABViewEqualsArrayBuffer],
+  "a DataView": [new DataView(new Uint8Array([3, 4]).buffer), assertABViewEqualsArrayBuffer],
+  "an ArrayBuffer": [new Uint8Array([5, 6]).buffer, assertEqualArrayBuffers]
 };
 
 const methods = ["set", "get", "has", "delete"];
@@ -46,15 +48,19 @@ for (const method of methods) {
   }, `${method}: invalid keys, nested in arrays`);
 
   promiseTestWithArea(async (area, t) => {
-    for (const key of Object.values(validKeys)) {
+    for (const [key] of Object.values(validKeys)) {
       await area[method](key);
     }
   }, `${method}: valid keys`);
 
   promiseTestWithArea(async (area, t) => {
-    for (const key of Object.values(validKeys)) {
+    for (const [key] of Object.values(validKeys)) {
       await area[method]([key]);
     }
   }, `${method}: valid keys, nested in arrays`);
+}
+
+for (const [description, [key, equalityAsserter]] of Object.entries(validKeys)) {
+  testVariousMethods(`Storage methods smoke test: ${description} key`, key, 5, equalityAsserter);
 }
 </script>

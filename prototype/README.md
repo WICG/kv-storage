@@ -8,8 +8,6 @@ The tests aren't quite ready to be upstreamed into [web platform tests](https://
 
 Tests that we should write:
 
-- get()/set()/has()/delete()
-  - For each key type
 - clear()
 - entries()/keys()/values()
   - Don't forget to test undefined values

@@ -41,6 +41,7 @@ urlPrefix: https://tc39.github.io/Function-prototype-toString-revision/#; spec: 
 
 urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: convert a value to a key
+  text: convert a key to a value
   text: close a database connection
   text: result; for: request
   text: error; for: request
@@ -525,7 +526,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   <dd>
     <p>Asynchronously retrieves an array containing the keys of all entries in this storage area.
 
-    <p>Keys will be returned in [=key/ascending=] order; roughly, segregated by type, and then sorted within each type. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
+    <p>Keys will be returned in [=key/ascending=] order; roughly, segregated by type, and then sorted within each type. They will be [=key round-tripped=] from their original form.
 </dl>
 
 <div class="algorithm">
@@ -563,7 +564,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   <dd>
     <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
 
-    <p>Entries will be ordered as corresponding to their keys; see {{StorageArea/keys()}}. Each key and value will be [$StructuredDeserialize|structured-deserialized$] from its original form.
+    <p>Entries will be ordered as corresponding to their keys; see {{StorageArea/keys()}}. Each key and value will be [=key round-tripped=] and [$StructuredDeserialize|structured-deserialized$] from its original form, respectively.
 </dl>
 
 <div class="algorithm">
@@ -664,7 +665,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   Satisfied with his web app's Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)
 </div>
 
-<h3 id="supporting">Supporting operations</h3>
+<h3 id="supporting">Supporting operations and concepts</h3>
 
 To <dfn>add a simple event listener</dfn>, given an {{EventTarget}} |target|, an event type string |type|, and a set of steps |steps|:
 
@@ -739,6 +740,12 @@ To <dfn>zip</dfn> two [=lists=] |a| and |b|:
 1. While |i| is less than |a|'s [=list/size=]:
   1. [=list/Append=] « |a|[|i|], |b|[|i|] » to |result|.
 1. Return |result|.
+
+<dfn lt="key round-trip">Key round-tripping</dfn> refers to the way in which JavaScript values are processed by first being passed through IndexedDB's [=convert a value to a key=] operation, then converted back through its [=convert a key to a value=] operation. Keys returned by the {{StorageArea/keys()}} or {{StorageArea/entries()}} methods will have gone through this process.
+
+Notably, any [=typed arrays=] or {{DataView}}s will have been "unwrapped", and returned back as just {{ArrayBuffer}}s containing the same bytes. Also, similar to the [$StructuredSerializeForStorage|structured-serialization$]/[$StructuredDeserialize|deserialization$] process, any "expando" properties or other modifications will not be preserved by [=key round-tripping=].
+
+<p class="note">For primitive string or number values, there's no need to worry about [=key round-tripping=]; the values are indistinguishable.</p>
 
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
