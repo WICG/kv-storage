@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Async local storage API surface</title>
+
+<script src="https://w3c-test.org/resources/testharness.js"></script>
+<script src="https://w3c-test.org/resources/testharnessreport.js"></script>
+
+<script type="module">
+import { promiseTestWithArea } from "./helpers/als-tests.js";
+
+const invalidKeys = {
+  "undefined": undefined,
+  "null": null,
+  "a boolean": true,
+  "a symbol": Symbol("a symbol"),
+  "an object": { an: "object" },
+  "a function": () => {},
+  "a regexp": /foo/,
+  "a Map": new Map(),
+  "a Set": new Set(),
+  "an IDBKeyRange": IDBKeyRange.only(5)
+};
+
+const validKeys = {
+  "a number": 5,
+  "a string": "a string",
+  "a Date": new Date(),
+  "a typed array": new Uint8Array(),
+  "a DataView": new DataView(new ArrayBuffer()),
+  "an ArrayBuffer": new ArrayBuffer()
+};
+
+const methods = ["set", "get", "has", "delete"];
+
+for (const method of methods) {
+  promiseTestWithArea(async (area, t) => {
+    for (const [description, key] of Object.entries(invalidKeys)) {
+      await promise_rejects(t, "DataError", area[method](key), description);
+    }
+  }, `${method}: invalid keys`);
+
+  promiseTestWithArea(async (area, t) => {
+    for (const [description, key] of Object.entries(invalidKeys)) {
+      await promise_rejects(t, "DataError", area[method]([key]), description);
+    }
+  }, `${method}: invalid keys, nested in arrays`);
+
+  promiseTestWithArea(async (area, t) => {
+    for (const key of Object.values(validKeys)) {
+      await area[method](key);
+    }
+  }, `${method}: valid keys`);
+
+  promiseTestWithArea(async (area, t) => {
+    for (const key of Object.values(validKeys)) {
+      await area[method]([key]);
+    }
+  }, `${method}: valid keys, nested in arrays`);
+}
+</script>
