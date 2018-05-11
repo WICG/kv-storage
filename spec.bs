@@ -379,6 +379,12 @@ An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} i
 
 <h3 id="storagearea-has" method for="StorageArea">has(|key|)</h3>
 
+<dl class="domintro non-normative">
+  <dt><code><var ignore>isPresent</var> = await |storage|.{{StorageArea/has()|has}}(|key|)</code>
+  <dd>
+    <p>Asynchronously determines whether a value is stored at the given |key|, returning a promise fulfilled with either true or false.
+</dl>
+
 <div class="algorithm">
   1. If |key| is not [=allowed as a key=], return [=a promise rejected with=] a "{{DataError}}" {{DOMException}}.
   1. Return the result of [=performing a database operation=] given this object, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
@@ -388,12 +394,6 @@ An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} i
     1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
     1. Return |promise|.
 </div>
-
-<dl class="domintro non-normative">
-  <dt><code><var ignore>isPresent</var> = await |storage|.{{StorageArea/has()|has}}(|key|)</code>
-  <dd>
-    <p>Asynchronously determines whether a value is stored at the given |key|, returning a promise fulfilled with either true or false.
-</dl>
 
 <div class="example" id="example-has-flag">
   {{StorageArea/has()}} is commonly used for storing "flags". The boolean condition of present/not-present is often simpler than actually storing a boolean.
