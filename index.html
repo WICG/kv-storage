@@ -1477,7 +1477,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-10">10 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-11">11 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1491,7 +1491,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 10 May 2018,
+In addition, as of 11 May 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1763,6 +1763,11 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export="" data-level="3.4" data-lt="has(key)" id="storagearea-has"><span class="secno">3.4. </span><span class="content">has(<var>key</var>)</span></h3>
+   <dl class="domintro non-normative">
+    <dt><code><var>isPresent</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has①">has</a></code>(<var>key</var>)</code> 
+    <dd>
+     <p>Asynchronously determines whether a value is stored at the given <var>key</var>, returning a promise fulfilled with either true or false. </p>
+   </dl>
    <div class="algorithm">
     <ol>
      <li data-md="">
@@ -1783,11 +1788,6 @@ Parts of this work may be from another specification document.  If so, those par
       </ol>
     </ol>
    </div>
-   <dl class="domintro non-normative">
-    <dt><code><var>isPresent</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has①">has</a></code>(<var>key</var>)</code> 
-    <dd>
-     <p>Asynchronously determines whether a value is stored at the given <var>key</var>, returning a promise fulfilled with either true or false. </p>
-   </dl>
    <div class="example" id="example-has-flag">
     <a class="self-link" href="#example-has-flag"></a> <code class="idl"><a data-link-type="idl" href="#storagearea-has" id="ref-for-storagearea-has②">has()</a></code> is commonly used for storing "flags". The boolean condition of present/not-present is often simpler than actually storing a boolean. 
 <pre class="highlight">await storage<span class="p">.</span>set<span class="p">(</span><span class="s2">"userIsHappyAndKnowsIt"</span><span class="p">);</span> <span class="c1">// second argument is implicitly undefined</span>
