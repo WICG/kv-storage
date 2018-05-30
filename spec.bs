@@ -662,7 +662,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
     };
   </xmp>
 
-  Satisfied with his web app's Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)
+  Satisfied with their web app's Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)
 </div>
 
 <h3 id="supporting">Supporting operations and concepts</h3>
