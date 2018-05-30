@@ -268,7 +268,7 @@ Upon evaluating the <a><code>async-local-storage</code></a> layered API module, 
   }
 </pre>
 
-<div class="note">
+<div class="note" id="class-definition-explanation">
   <p>The intention of defining the {{StorageArea}} class in this way, using a skeleton JavaScript class definition, is to automatically establish the various properties of the class, its methods, and its getter, which otherwise need to be specified in tedious detail. For example, this automatically establishes the <code>length</code> and <code>name</code> properties of all these functions, their property descriptors, their <code>prototype</code> and <code>constructor</code> properties, etc. And it does so in a way that is consistent with what a JavaScript developer would expect.
 
   <details>

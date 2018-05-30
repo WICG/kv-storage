@@ -135,3 +135,19 @@ localForage is downloaded [~350K times per month](https://www.npmjs.com/package/
 Another notable library in this vein is [idb-keyval](https://www.npmjs.com/package/idb-keyval), which is downloaded ~16K times per month via npm.
 
 For comparison, Angular is downloaded [~960K times per month](https://www.npmjs.com/package/angular), React [~5.896 million times per month](https://www.npmjs.com/package/react), and Vue [~1.030 million](https://www.npmjs.com/package/vue).
+
+## Appendix: layered API vs. traditional browser API
+
+As mentioned briefly above, we see the async local storage specification as the perfect candidate for using the [layered API](https://github.com/drufball/layered-apis) infrastructure.
+
+You can read more about layered APIs in general, and the motivations behind them, at that link. But one perspective that may be helpful is to consider the ways in which async local storage would be different if it were implemented as a more traditional browser API, versus a layered API. The following list is, to our knowledge, comprehensive:
+
+* As a layered API, you need to import the `storage` and `StorageArea` values from the "`std:async-local-storage`" built-in module. A traditional browser API would expose these as globals.
+
+  This choice allows implementations to lazily load the code for async local storage only as requested by the page, instead of having to generate the bindings for the `storage` and `StorageArea` globals in every realm (whether or not they are used).
+* As a layered API, async local storage has explicit interactions with the underlying platform feature it is based on, viz. IndexedDB. A traditional browser API that supplied async local storage functionality would probably instead choose to use an independent storage mechanism, not directly accessible to web developers except through the async local storage API itself. (Similar to how `localStorage`, IndexedDB, and the cache API are all independent, and not layered on top of any single primitive.)
+
+  We believe this layering provides benefits, both in the abstract sense of the [extensible web manifesto](http://extensiblewebmanifesto.org/), but also in the concrete sense of [allowing the web developer access to the backing store](https://domenic.github.io/async-local-storage/#example-backingstore).
+* As a layered API, we've made certain choices about esoteric aspects of how classes and methods are exposed that differ slightly from Web IDL-defined classes. None of these differences are essential, and we could eliminate them if desired. See [the explanation in the specification](https://domenic.github.io/async-local-storage/#class-definition-explanation) for more on this subject.
+
+As you can see, the observable differences between layered API vs. traditional browser APIs are fairly slight. The most noticeable for web developers is probably the use of a built-in module instead of global properties.
