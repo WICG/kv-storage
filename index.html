@@ -992,57 +992,92 @@ Possible extra rowspan handling
 	.toc > li li          { font-weight: normal; }
 	.toc > li li li       { font-size:   95%;    }
 	.toc > li li li li    { font-size:   90%;    }
+	.toc > li li li li .secno { font-size: 85%; }
 	.toc > li li li li li { font-size:   85%;    }
+	.toc > li li li li li .secno { font-size: 100%; }
 
-	.toc > li             { margin: 1.5rem 0;    }
-	.toc > li li          { margin: 0.3rem 0;    }
-	.toc > li li li       { margin-left: 2rem;   }
+	/* @supports not (display:grid) { */
+		.toc > li             { margin: 1.5rem 0;    }
+		.toc > li li          { margin: 0.3rem 0;    }
+		.toc > li li li       { margin-left: 2rem;   }
 
-	/* Section numbers in a column of their own */
-	.toc .secno {
-		float: left;
-		width: 4rem;
-		white-space: nowrap;
-	}
-	.toc > li li li li .secno {
-		font-size: 85%;
-	}
-	.toc > li li li li li .secno {
-		font-size: 100%;
-	}
+		/* Section numbers in a column of their own */
+		.toc .secno {
+			float: left;
+			width: 4rem;
+			white-space: nowrap;
+		}
 
-	:not(li) > .toc              { margin-left:  5rem; }
-	.toc .secno                  { margin-left: -5rem; }
-	.toc > li li li .secno       { margin-left: -7rem; }
-	.toc > li li li li .secno    { margin-left: -9rem; }
-	.toc > li li li li li .secno { margin-left: -11rem; }
+		.toc li {
+			clear: both;
+		}
 
-	/* Tighten up indentation in narrow ToCs */
-	@media (max-width: 30em) {
-		:not(li) > .toc              { margin-left:  4rem; }
-		.toc .secno                  { margin-left: -4rem; }
-		.toc > li li li              { margin-left:  1rem; }
-		.toc > li li li .secno       { margin-left: -5rem; }
-		.toc > li li li li .secno    { margin-left: -6rem; }
-		.toc > li li li li li .secno { margin-left: -7rem; }
-	}
-	@media screen and (min-width: 78em) {
-		body:not(.toc-inline) :not(li) > .toc              { margin-left:  4rem; }
-		body:not(.toc-inline) .toc .secno                  { margin-left: -4rem; }
-		body:not(.toc-inline) .toc > li li li              { margin-left:  1rem; }
-		body:not(.toc-inline) .toc > li li li .secno       { margin-left: -5rem; }
-		body:not(.toc-inline) .toc > li li li li .secno    { margin-left: -6rem; }
-		body:not(.toc-inline) .toc > li li li li li .secno { margin-left: -7rem; }
-	}
-	body.toc-sidebar #toc :not(li) > .toc              { margin-left:  4rem; }
-	body.toc-sidebar #toc .toc .secno                  { margin-left: -4rem; }
-	body.toc-sidebar #toc .toc > li li li              { margin-left:  1rem; }
-	body.toc-sidebar #toc .toc > li li li .secno       { margin-left: -5rem; }
-	body.toc-sidebar #toc .toc > li li li li .secno    { margin-left: -6rem; }
-	body.toc-sidebar #toc .toc > li li li li li .secno { margin-left: -7rem; }
+		:not(li) > .toc              { margin-left:  5rem; }
+		.toc .secno                  { margin-left: -5rem; }
+		.toc > li li li .secno       { margin-left: -7rem; }
+		.toc > li li li li .secno    { margin-left: -9rem; }
+		.toc > li li li li li .secno { margin-left: -11rem; }
 
-	.toc li {
-		clear: both;
+		/* Tighten up indentation in narrow ToCs */
+		@media (max-width: 30em) {
+			:not(li) > .toc              { margin-left:  4rem; }
+			.toc .secno                  { margin-left: -4rem; }
+			.toc > li li li              { margin-left:  1rem; }
+			.toc > li li li .secno       { margin-left: -5rem; }
+			.toc > li li li li .secno    { margin-left: -6rem; }
+			.toc > li li li li li .secno { margin-left: -7rem; }
+		}
+	/* } */
+
+	@supports (display:grid) {
+		/* Use #toc over .toc to override non-@supports rules. */
+		#toc {
+			display: grid;
+			align-content: start;
+			grid-template-columns: auto 1fr;
+			grid-column-gap: 1rem;
+			column-gap: 1rem;
+			grid-row-gap: .6rem;
+			row-gap: .6rem;
+		}
+		#toc h2 {
+			grid-column: 1 / -1;
+			margin-bottom: 0;
+		}
+		#toc ol,
+		#toc li,
+		#toc a {
+			display: contents;
+			/* Switch <a> to subgrid when supported */
+		}
+		#toc span {
+			margin: 0;
+		}
+		#toc > .toc > li > a > span {
+			/* The spans of the top-level list,
+			   comprising the first items of each top-level section. */
+			margin-top: 1.1rem;
+		}
+		#toc .secno {
+			grid-column: 1;
+			width: auto;
+		}
+		#toc .content {
+			grid-column: 2;
+			width: auto;
+			margin-right: 1rem;
+		}
+		#toc .content:hover {
+			background: rgba(75%, 75%, 75%, .25);
+			border-bottom: 3px solid #054572;
+			margin-bottom: -3px;
+		}
+		#toc li li li .content {
+			margin-left: 1rem;
+		}
+		#toc li li li li .content {
+			margin-left: 2rem;
+		}
 	}
 
 
@@ -1176,7 +1211,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version b740b15097946bf1d13405dc6d7ca5a72fa2530d" name="generator">
+  <meta content="Bikeshed version 6bebf68aed1298eb5349b6cdea3fab1e79551a6f" name="generator">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1380,41 +1415,41 @@ pre .property::before, pre .property::after {
 }</style>
 <style>/* style-dfn-panel */
 
-        .dfn-panel {
-            position: absolute;
-            z-index: 35;
-            height: auto;
-            width: -webkit-fit-content;
-            width: fit-content;
-            max-width: 300px;
-            max-height: 500px;
-            overflow: auto;
-            padding: 0.5em 0.75em;
-            font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-            background: #DDDDDD;
-            color: black;
-            border: outset 0.2em;
-        }
-        .dfn-panel:not(.on) { display: none; }
-        .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
-        .dfn-panel > b { display: block; }
-        .dfn-panel a { color: black; }
-        .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
-        .dfn-panel > b + b { margin-top: 0.25em; }
-        .dfn-panel ul { padding: 0; }
-        .dfn-panel li { list-style: inside; }
-        .dfn-panel.activated {
-            display: inline-block;
-            position: fixed;
-            left: .5em;
-            bottom: 2em;
-            margin: 0 auto;
-            max-width: calc(100vw - 1.5em - .4em - .5em);
-            max-height: 30vh;
-        }
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    height: auto;
+    width: -webkit-fit-content;
+    width: fit-content;
+    max-width: 300px;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: #DDDDDD;
+    color: black;
+    border: outset 0.2em;
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: black; }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0; }
+.dfn-panel li { list-style: inside; }
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
 
-        .dfn-paneled { cursor: pointer; }
-        </style>
+.dfn-paneled { cursor: pointer; }
+</style>
 <style>/* style-syntax-highlighting */
 
 .highlight:not(.idl) { background: hsl(24, 20%, 95%); }
@@ -1477,7 +1512,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-11">11 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-30">30 May 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1491,7 +1526,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 11 May 2018,
+In addition, as of 30 May 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1646,7 +1681,8 @@ Parts of this work may be from another specification document.  If so, those par
   get backingStore<span class="p">()</span> <span class="p">{</span> <span class="cm">/* </span><a href="#storagearea-backingstore" id="ref-for-storagearea-backingstore"><span class="cm">see below</span></a><span class="cm"> */</span> <span class="p">}</span>
 <span class="p">}</span>
 </pre>
-   <div class="note" role="note">
+   <div class="note" id="class-definition-explanation" role="note">
+    <a class="self-link" href="#class-definition-explanation"></a> 
     <p>The intention of defining the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> class in this way, using a skeleton JavaScript class definition, is to automatically establish the various properties of the class, its methods, and its getter, which otherwise need to be specified in tedious detail. For example, this automatically establishes the <code>length</code> and <code>name</code> properties of all these functions, their property descriptors, their <code>prototype</code> and <code>constructor</code> properties, etc. And it does so in a way that is consistent with what a JavaScript developer would expect. </p>
     <details>
      <summary>Why not use Web IDL?</summary>
@@ -2077,7 +2113,7 @@ request<span class="p">.</span>onsuccess <span class="o">=</span> <span class="p
   <span class="p">};</span>
 <span class="p">};</span>
 </pre>
-    <p>Satisfied with his web app’s Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)</p>
+    <p>Satisfied with their web app’s Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)</p>
    </div>
    <h3 class="heading settled" data-level="3.11" id="supporting"><span class="secno">3.11. </span><span class="content">Supporting operations and concepts</span><a class="self-link" href="#supporting"></a></h3>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="add-a-simple-event-listener">add a simple event listener</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> <var>target</var>, an event type string <var>type</var>, and a set of steps <var>steps</var>:</p>
@@ -2372,130 +2408,646 @@ for their contributions to this specification.</p>
    <li><a href="#storagearea-values">values()</a><span>, in §3.7</span>
    <li><a href="#zip">zip</a><span>, in §3.11</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-callbackdef-eventlistener">
+   <a href="https://dom.spec.whatwg.org/#callbackdef-eventlistener">https://dom.spec.whatwg.org/#callbackdef-eventlistener</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-callbackdef-eventlistener">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-eventtarget">
+   <a href="https://dom.spec.whatwg.org/#eventtarget">https://dom.spec.whatwg.org/#eventtarget</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-eventtarget">3.11. Supporting operations and concepts</a> <a href="#ref-for-eventtarget①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-eventtarget-addeventlistener">
+   <a href="https://dom.spec.whatwg.org/#dom-eventtarget-addeventlistener">https://dom.spec.whatwg.org/#dom-eventtarget-addeventlistener</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-eventtarget-addeventlistener">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-object-prototype-object">
+   <a href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object">https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-properties-of-the-object-prototype-object">3.10. get backingStore()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-construct">
+   <a href="https://tc39.github.io/ecma262/#sec-construct">https://tc39.github.io/ecma262/#sec-construct</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-construct">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createdataproperty">
+   <a href="https://tc39.github.io/ecma262/#sec-createdataproperty">https://tc39.github.io/ecma262/#sec-createdataproperty</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createdataproperty">3.10. get backingStore()</a> <a href="#ref-for-sec-createdataproperty①">(2)</a> <a href="#ref-for-sec-createdataproperty②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-date-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-date-objects">https://tc39.github.io/ecma262/#sec-date-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-date-objects">3.2. set(key, value)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-isarray">
+   <a href="https://tc39.github.io/ecma262/#sec-isarray">https://tc39.github.io/ecma262/#sec-isarray</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-isarray">2. The async-local-storage layered API</a>
+    <li><a href="#ref-for-sec-isarray①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-map-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-map-objects">https://tc39.github.io/ecma262/#sec-map-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-map-objects">1. Introduction</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-objectcreate">
+   <a href="https://tc39.github.io/ecma262/#sec-objectcreate">https://tc39.github.io/ecma262/#sec-objectcreate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-objectcreate">3.10. get backingStore()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-tostring">
+   <a href="https://tc39.github.io/ecma262/#sec-tostring">https://tc39.github.io/ecma262/#sec-tostring</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-tostring">3.1. constructor(name)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-ecmascript-data-types-and-values">
+   <a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-ecmascript-data-types-and-values">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-weakmap-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-weakmap-objects">https://tc39.github.io/ecma262/#sec-weakmap-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-weakmap-objects">3. The StorageArea class</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-current-realm">
+   <a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-current-realm">3. The StorageArea class</a> <a href="#ref-for-current-realm①">(2)</a>
+    <li><a href="#ref-for-current-realm②">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-typedarray-objects">
+   <a href="https://tc39.github.io/ecma262/#sec-typedarray-objects">https://tc39.github.io/ecma262/#sec-typedarray-objects</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-typedarray-objects">3.2. set(key, value)</a>
+    <li><a href="#ref-for-sec-typedarray-objects①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-headers">
+   <a href="https://fetch.spec.whatwg.org/#headers">https://fetch.spec.whatwg.org/#headers</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-headers">1. Introduction</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-proposal-sec-hosthassourcetextavailable">
+   <a href="https://tc39.github.io/Function-prototype-toString-revision/#proposal-sec-hosthassourcetextavailable">https://tc39.github.io/Function-prototype-toString-revision/#proposal-sec-hosthassourcetextavailable</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-proposal-sec-hosthassourcetextavailable">3. The StorageArea class</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-storage-2">
+   <a href="https://html.spec.whatwg.org/multipage/webstorage.html#storage-2">https://html.spec.whatwg.org/multipage/webstorage.html#storage-2</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-storage-2">1. Introduction</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-structureddeserialize">
+   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize">https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-structureddeserialize">3.3. get(key)</a>
+    <li><a href="#ref-for-structureddeserialize①">3.8. values()</a>
+    <li><a href="#ref-for-structureddeserialize②">3.9. entries()</a>
+    <li><a href="#ref-for-structureddeserialize③">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-structuredserializeforstorage">
+   <a href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage">https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-structuredserializeforstorage">3.2. set(key, value)</a>
+    <li><a href="#ref-for-structuredserializeforstorage①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-windoworworkerglobalscope">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope">https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-windoworworkerglobalscope">3.11. Supporting operations and concepts</a> <a href="#ref-for-windoworworkerglobalscope①">(2)</a> <a href="#ref-for-windoworworkerglobalscope②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-current-global-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-current-global-object">3.11. Supporting operations and concepts</a> <a href="#ref-for-current-global-object①">(2)</a> <a href="#ref-for-current-global-object②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-current-settings-object">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-current-settings-object">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-localstorage">
+   <a href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage">https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-localstorage①">1. Introduction</a> <a href="#ref-for-dom-localstorage②">(2)</a>
+    <li><a href="#ref-for-dom-localstorage③">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-relevant-realm">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm">https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-relevant-realm">3. The StorageArea class</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idbdatabase">
+   <a href="https://w3c.github.io/IndexedDB/#idbdatabase">https://w3c.github.io/IndexedDB/#idbdatabase</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idbdatabase">3. The StorageArea class</a>
+    <li><a href="#ref-for-idbdatabase①">3.11. Supporting operations and concepts</a> <a href="#ref-for-idbdatabase②">(2)</a> <a href="#ref-for-idbdatabase③">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idbfactory">
+   <a href="https://w3c.github.io/IndexedDB/#idbfactory">https://w3c.github.io/IndexedDB/#idbfactory</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idbfactory">3.6. clear()</a>
+    <li><a href="#ref-for-idbfactory①">3.11. Supporting operations and concepts</a> <a href="#ref-for-idbfactory②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idbkeyrange">
+   <a href="https://w3c.github.io/IndexedDB/#idbkeyrange">https://w3c.github.io/IndexedDB/#idbkeyrange</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idbkeyrange">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idbobjectstore">
+   <a href="https://w3c.github.io/IndexedDB/#idbobjectstore">https://w3c.github.io/IndexedDB/#idbobjectstore</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idbobjectstore">3.2. set(key, value)</a>
+    <li><a href="#ref-for-idbobjectstore①">3.3. get(key)</a>
+    <li><a href="#ref-for-idbobjectstore②">3.4. has(key)</a>
+    <li><a href="#ref-for-idbobjectstore③">3.5. delete(key)</a>
+    <li><a href="#ref-for-idbobjectstore④">3.7. keys()</a>
+    <li><a href="#ref-for-idbobjectstore⑤">3.8. values()</a>
+    <li><a href="#ref-for-idbobjectstore⑥">3.9. entries()</a> <a href="#ref-for-idbobjectstore⑦">(2)</a>
+    <li><a href="#ref-for-idbobjectstore⑧">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idbtransaction">
+   <a href="https://w3c.github.io/IndexedDB/#idbtransaction">https://w3c.github.io/IndexedDB/#idbtransaction</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idbtransaction">3.11. Supporting operations and concepts</a> <a href="#ref-for-idbtransaction①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-greater-than">
+   <a href="https://w3c.github.io/IndexedDB/#greater-than">https://w3c.github.io/IndexedDB/#greater-than</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-greater-than">3.7. keys()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-close-a-database-connection">
+   <a href="https://w3c.github.io/IndexedDB/#close-a-database-connection">https://w3c.github.io/IndexedDB/#close-a-database-connection</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-close-a-database-connection">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbdatabase-close">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close">https://w3c.github.io/IndexedDB/#dom-idbdatabase-close</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbdatabase-close">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-convert-a-key-to-a-value">
+   <a href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value">https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-convert-a-key-to-a-value">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-convert-a-value-to-a-key">
+   <a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-convert-a-value-to-a-key">3.11. Supporting operations and concepts</a> <a href="#ref-for-convert-a-value-to-a-key①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-count">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbobjectstore-count">3.4. has(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbdatabase-createobjectstore">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbdatabase-createobjectstore">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-delete">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-delete">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-delete</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbobjectstore-delete">3.5. delete(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbfactory-deletedatabase">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-deletedatabase">https://w3c.github.io/IndexedDB/#dom-idbfactory-deletedatabase</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbfactory-deletedatabase">3.6. clear()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-error">
+   <a href="https://w3c.github.io/IndexedDB/#error">https://w3c.github.io/IndexedDB/#error</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-error">3.2. set(key, value)</a> <a href="#ref-for-error①">(2)</a>
+    <li><a href="#ref-for-error②">3.3. get(key)</a>
+    <li><a href="#ref-for-error③">3.4. has(key)</a>
+    <li><a href="#ref-for-error④">3.5. delete(key)</a> <a href="#ref-for-error⑤">(2)</a>
+    <li><a href="#ref-for-error⑥">3.6. clear()</a>
+    <li><a href="#ref-for-error⑦">3.7. keys()</a>
+    <li><a href="#ref-for-error⑧">3.8. values()</a>
+    <li><a href="#ref-for-error⑨">3.9. entries()</a> <a href="#ref-for-error①⓪">(2)</a>
+    <li><a href="#ref-for-error①①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-get">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbobjectstore-get">3.3. get(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-getall">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbobjectstore-getall">3.8. values()</a>
+    <li><a href="#ref-for-dom-idbobjectstore-getall①">3.9. entries()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-getallkeys">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbobjectstore-getallkeys">3.7. keys()</a>
+    <li><a href="#ref-for-dom-idbobjectstore-getallkeys①">3.9. entries()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-windoworworkerglobalscope-indexeddb">
+   <a href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb">https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-windoworworkerglobalscope-indexeddb">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbtransaction-objectstore">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore">https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbtransaction-objectstore">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbfactory-open">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open">https://w3c.github.io/IndexedDB/#dom-idbfactory-open</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbfactory-open">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-put">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-put">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-put</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbobjectstore-put">3.2. set(key, value)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-result">
+   <a href="https://w3c.github.io/IndexedDB/#result">https://w3c.github.io/IndexedDB/#result</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-result">3.3. get(key)</a>
+    <li><a href="#ref-for-result①">3.4. has(key)</a>
+    <li><a href="#ref-for-result②">3.7. keys()</a>
+    <li><a href="#ref-for-result③">3.8. values()</a>
+    <li><a href="#ref-for-result④">3.9. entries()</a> <a href="#ref-for-result⑤">(2)</a>
+    <li><a href="#ref-for-result⑥">3.11. Supporting operations and concepts</a> <a href="#ref-for-result⑦">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-transaction-concept">
+   <a href="https://w3c.github.io/IndexedDB/#transaction-concept">https://w3c.github.io/IndexedDB/#transaction-concept</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-transaction-concept">3.10. get backingStore()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbdatabase-transaction">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbdatabase-transaction">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-append">
+   <a href="https://infra.spec.whatwg.org/#list-append">https://infra.spec.whatwg.org/#list-append</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-append">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list">
+   <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list">3.11. Supporting operations and concepts</a> <a href="#ref-for-list①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-size">
+   <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-size">3.11. Supporting operations and concepts</a> <a href="#ref-for-list-size①">(2)</a> <a href="#ref-for-list-size②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-user-contentapi-identifier">
+   <a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentapi-identifier">https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentapi-identifier</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-user-contentapi-identifier">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-user-contentevaluation-steps">
+   <a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentevaluation-steps">https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentevaluation-steps</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-user-contentevaluation-steps">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-user-contentexports">
+   <a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentexports">https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentexports</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-user-contentexports">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-a-new-promise">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-a-new-promise">3.2. set(key, value)</a>
+    <li><a href="#ref-for-a-new-promise①">3.3. get(key)</a>
+    <li><a href="#ref-for-a-new-promise②">3.4. has(key)</a>
+    <li><a href="#ref-for-a-new-promise③">3.5. delete(key)</a>
+    <li><a href="#ref-for-a-new-promise④">3.6. clear()</a>
+    <li><a href="#ref-for-a-new-promise⑤">3.7. keys()</a>
+    <li><a href="#ref-for-a-new-promise⑥">3.8. values()</a>
+    <li><a href="#ref-for-a-new-promise⑦">3.9. entries()</a>
+    <li><a href="#ref-for-a-new-promise⑧">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-a-promise-rejected-with">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with">https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-a-promise-rejected-with">3.2. set(key, value)</a>
+    <li><a href="#ref-for-a-promise-rejected-with①">3.3. get(key)</a>
+    <li><a href="#ref-for-a-promise-rejected-with②">3.4. has(key)</a>
+    <li><a href="#ref-for-a-promise-rejected-with③">3.5. delete(key)</a>
+    <li><a href="#ref-for-a-promise-rejected-with④">3.6. clear()</a>
+    <li><a href="#ref-for-a-promise-rejected-with⑤">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-reject-promise">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-reject-promise">3.2. set(key, value)</a> <a href="#ref-for-reject-promise①">(2)</a>
+    <li><a href="#ref-for-reject-promise②">3.3. get(key)</a>
+    <li><a href="#ref-for-reject-promise③">3.4. has(key)</a>
+    <li><a href="#ref-for-reject-promise④">3.5. delete(key)</a> <a href="#ref-for-reject-promise⑤">(2)</a>
+    <li><a href="#ref-for-reject-promise⑥">3.6. clear()</a> <a href="#ref-for-reject-promise⑦">(2)</a>
+    <li><a href="#ref-for-reject-promise⑧">3.7. keys()</a>
+    <li><a href="#ref-for-reject-promise⑨">3.8. values()</a>
+    <li><a href="#ref-for-reject-promise①⓪">3.9. entries()</a> <a href="#ref-for-reject-promise①①">(2)</a>
+    <li><a href="#ref-for-reject-promise①②">3.11. Supporting operations and concepts</a> <a href="#ref-for-reject-promise①③">(2)</a> <a href="#ref-for-reject-promise①④">(3)</a> <a href="#ref-for-reject-promise①⑤">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-resolve-promise">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-resolve-promise">3.2. set(key, value)</a>
+    <li><a href="#ref-for-resolve-promise①">3.3. get(key)</a>
+    <li><a href="#ref-for-resolve-promise②">3.4. has(key)</a>
+    <li><a href="#ref-for-resolve-promise③">3.5. delete(key)</a>
+    <li><a href="#ref-for-resolve-promise④">3.6. clear()</a>
+    <li><a href="#ref-for-resolve-promise⑤">3.7. keys()</a>
+    <li><a href="#ref-for-resolve-promise⑥">3.8. values()</a>
+    <li><a href="#ref-for-resolve-promise⑦">3.9. entries()</a>
+    <li><a href="#ref-for-resolve-promise⑧">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-transforming-by">
+   <a href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by">https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-transforming-by">3.6. clear()</a>
+    <li><a href="#ref-for-transforming-by①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-settings-object">
+   <a href="https://w3c.github.io/webappsec-secure-contexts/#settings-object">https://w3c.github.io/webappsec-secure-contexts/#settings-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-settings-object">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-secure-contexts">
+   <a href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts">https://w3c.github.io/webappsec-secure-contexts/#secure-contexts</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-secure-contexts">2. The async-local-storage layered API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-cache">
+   <a href="https://w3c.github.io/ServiceWorker/#cache">https://w3c.github.io/ServiceWorker/#cache</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-cache">1. Introduction</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-ArrayBuffer">
+   <a href="https://heycam.github.io/webidl/#idl-ArrayBuffer">https://heycam.github.io/webidl/#idl-ArrayBuffer</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-ArrayBuffer">3.2. set(key, value)</a>
+    <li><a href="#ref-for-idl-ArrayBuffer①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-DOMException">
+   <a href="https://heycam.github.io/webidl/#idl-DOMException">https://heycam.github.io/webidl/#idl-DOMException</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-DOMException">2. The async-local-storage layered API</a> <a href="#ref-for-idl-DOMException①">(2)</a>
+    <li><a href="#ref-for-idl-DOMException②">3.2. set(key, value)</a> <a href="#ref-for-idl-DOMException③">(2)</a> <a href="#ref-for-idl-DOMException④">(3)</a>
+    <li><a href="#ref-for-idl-DOMException⑤">3.3. get(key)</a>
+    <li><a href="#ref-for-idl-DOMException⑥">3.4. has(key)</a>
+    <li><a href="#ref-for-idl-DOMException⑦">3.5. delete(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-datacloneerror">
+   <a href="https://heycam.github.io/webidl/#datacloneerror">https://heycam.github.io/webidl/#datacloneerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-datacloneerror">3.2. set(key, value)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dataerror">
+   <a href="https://heycam.github.io/webidl/#dataerror">https://heycam.github.io/webidl/#dataerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dataerror">3.2. set(key, value)</a> <a href="#ref-for-dataerror①">(2)</a>
+    <li><a href="#ref-for-dataerror②">3.3. get(key)</a>
+    <li><a href="#ref-for-dataerror③">3.4. has(key)</a>
+    <li><a href="#ref-for-dataerror④">3.5. delete(key)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-DataView">
+   <a href="https://heycam.github.io/webidl/#idl-DataView">https://heycam.github.io/webidl/#idl-DataView</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-DataView">3.2. set(key, value)</a>
+    <li><a href="#ref-for-idl-DataView①">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-securityerror">
+   <a href="https://heycam.github.io/webidl/#securityerror">https://heycam.github.io/webidl/#securityerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-securityerror">2. The async-local-storage layered API</a> <a href="#ref-for-securityerror①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-exceptiondef-typeerror">
+   <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-exceptiondef-typeerror">3.6. clear()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror①">3.10. get backingStore()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror②">3.11. Supporting operations and concepts</a> <a href="#ref-for-exceptiondef-typeerror③">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-convert-ecmascript-to-idl-value">
+   <a href="https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value">https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-convert-ecmascript-to-idl-value">3.11. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-include">
+   <a href="https://heycam.github.io/webidl/#include">https://heycam.github.io/webidl/#include</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-include">3.11. Supporting operations and concepts</a> <a href="#ref-for-include①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-named-properties">
+   <a href="https://heycam.github.io/webidl/#idl-named-properties">https://heycam.github.io/webidl/#idl-named-properties</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-named-properties">1. Introduction</a>
+   </ul>
+  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
-     <li><a href="https://dom.spec.whatwg.org/#callbackdef-eventlistener">EventListener</a>
-     <li><a href="https://dom.spec.whatwg.org/#eventtarget">EventTarget</a>
-     <li><a href="https://dom.spec.whatwg.org/#dom-eventtarget-addeventlistener">addEventListener(type, callback)</a>
+     <li><span class="dfn-paneled" id="term-for-callbackdef-eventlistener" style="color:initial">EventListener</span>
+     <li><span class="dfn-paneled" id="term-for-eventtarget" style="color:initial">EventTarget</span>
+     <li><span class="dfn-paneled" id="term-for-dom-eventtarget-addeventlistener" style="color:initial">addEventListener(type, callback)</span>
     </ul>
    <li>
     <a data-link-type="biblio">[ECMA-262]</a> defines the following terms:
     <ul>
-     <li><a href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-construct">Construct</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-createdataproperty">CreateDataProperty</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-date-objects">Date</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-isarray">IsArray</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-map-objects">Map</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-objectcreate">ObjectCreate</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-tostring">ToString</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">Type</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-weakmap-objects">WeakMap</a>
-     <li><a href="https://tc39.github.io/ecma262/#current-realm">current realm</a>
-     <li><a href="https://tc39.github.io/ecma262/#sec-typedarray-objects">typed array</a>
+     <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-object-prototype-object" style="color:initial">%ObjectPrototype%</span>
+     <li><span class="dfn-paneled" id="term-for-sec-construct" style="color:initial">Construct</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createdataproperty" style="color:initial">CreateDataProperty</span>
+     <li><span class="dfn-paneled" id="term-for-sec-date-objects" style="color:initial">Date</span>
+     <li><span class="dfn-paneled" id="term-for-sec-isarray" style="color:initial">IsArray</span>
+     <li><span class="dfn-paneled" id="term-for-sec-map-objects" style="color:initial">Map</span>
+     <li><span class="dfn-paneled" id="term-for-sec-objectcreate" style="color:initial">ObjectCreate</span>
+     <li><span class="dfn-paneled" id="term-for-sec-tostring" style="color:initial">ToString</span>
+     <li><span class="dfn-paneled" id="term-for-sec-ecmascript-data-types-and-values" style="color:initial">Type</span>
+     <li><span class="dfn-paneled" id="term-for-sec-weakmap-objects" style="color:initial">WeakMap</span>
+     <li><span class="dfn-paneled" id="term-for-current-realm" style="color:initial">current realm</span>
+     <li><span class="dfn-paneled" id="term-for-sec-typedarray-objects" style="color:initial">typed array</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><a href="https://fetch.spec.whatwg.org/#headers">Headers</a>
+     <li><span class="dfn-paneled" id="term-for-headers" style="color:initial">Headers</span>
     </ul>
    <li>
     <a data-link-type="biblio">[fn-tostring]</a> defines the following terms:
     <ul>
-     <li><a href="https://tc39.github.io/Function-prototype-toString-revision/#proposal-sec-hosthassourcetextavailable">HostHasSourceTextAvailable</a>
+     <li><span class="dfn-paneled" id="term-for-proposal-sec-hosthassourcetextavailable" style="color:initial">HostHasSourceTextAvailable</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
-     <li><a href="https://html.spec.whatwg.org/multipage/webstorage.html#storage-2">Storage</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize">StructuredDeserialize</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage">StructuredSerializeForStorage</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope">WindowOrWorkerGlobalScope</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">current global object</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">current settings object</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage">localStorage</a>
-     <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm">relevant realm</a>
+     <li><span class="dfn-paneled" id="term-for-storage-2" style="color:initial">Storage</span>
+     <li><span class="dfn-paneled" id="term-for-structureddeserialize" style="color:initial">StructuredDeserialize</span>
+     <li><span class="dfn-paneled" id="term-for-structuredserializeforstorage" style="color:initial">StructuredSerializeForStorage</span>
+     <li><span class="dfn-paneled" id="term-for-windoworworkerglobalscope" style="color:initial">WindowOrWorkerGlobalScope</span>
+     <li><span class="dfn-paneled" id="term-for-current-global-object" style="color:initial">current global object</span>
+     <li><span class="dfn-paneled" id="term-for-current-settings-object" style="color:initial">current settings object</span>
+     <li><span class="dfn-paneled" id="term-for-dom-localstorage" style="color:initial">localStorage</span>
+     <li><span class="dfn-paneled" id="term-for-concept-relevant-realm" style="color:initial">relevant realm</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INDEXEDDB-2]</a> defines the following terms:
     <ul>
-     <li><a href="https://w3c.github.io/IndexedDB/#idbdatabase">IDBDatabase</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#idbfactory">IDBFactory</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#idbkeyrange">IDBKeyRange</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#idbobjectstore">IDBObjectStore</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#idbtransaction">IDBTransaction</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#greater-than">ascending</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#close-a-database-connection">close a database connection</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close">close()</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value">convert a key to a value</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">convert a value to a key</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-count">count()</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">createObjectStore(name)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-delete">delete(query)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-deletedatabase">deleteDatabase(name)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for request)</small></a>
-     <li><a href="https://w3c.github.io/IndexedDB/#error">error <small>(for transaction)</small></a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get">get(query)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall">getAll()</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys">getAllKeys()</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb">indexedDB</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore">objectStore(name)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open">open(name)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-put">put(value)</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#result">result</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#transaction-concept">transaction</a>
-     <li><a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">transaction(storeNames)</a>
+     <li><span class="dfn-paneled" id="term-for-idbdatabase" style="color:initial">IDBDatabase</span>
+     <li><span class="dfn-paneled" id="term-for-idbfactory" style="color:initial">IDBFactory</span>
+     <li><span class="dfn-paneled" id="term-for-idbkeyrange" style="color:initial">IDBKeyRange</span>
+     <li><span class="dfn-paneled" id="term-for-idbobjectstore" style="color:initial">IDBObjectStore</span>
+     <li><span class="dfn-paneled" id="term-for-idbtransaction" style="color:initial">IDBTransaction</span>
+     <li><span class="dfn-paneled" id="term-for-greater-than" style="color:initial">ascending</span>
+     <li><span class="dfn-paneled" id="term-for-close-a-database-connection" style="color:initial">close a database connection</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-close" style="color:initial">close()</span>
+     <li><span class="dfn-paneled" id="term-for-convert-a-key-to-a-value" style="color:initial">convert a key to a value</span>
+     <li><span class="dfn-paneled" id="term-for-convert-a-value-to-a-key" style="color:initial">convert a value to a key</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-count" style="color:initial">count()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-createobjectstore" style="color:initial">createObjectStore(name)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-delete" style="color:initial">delete(query)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbfactory-deletedatabase" style="color:initial">deleteDatabase(name)</span>
+     <li><span class="dfn-paneled" id="term-for-error" style="color:initial">error <small>(for transaction)</small></span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-get" style="color:initial">get(query)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-getall" style="color:initial">getAll()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-getallkeys" style="color:initial">getAllKeys()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-windoworworkerglobalscope-indexeddb" style="color:initial">indexedDB</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbtransaction-objectstore" style="color:initial">objectStore(name)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbfactory-open" style="color:initial">open(name)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-put" style="color:initial">put(value)</span>
+     <li><span class="dfn-paneled" id="term-for-result" style="color:initial">result</span>
+     <li><span class="dfn-paneled" id="term-for-transaction-concept" style="color:initial">transaction</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-transaction" style="color:initial">transaction(storeNames)</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><a href="https://infra.spec.whatwg.org/#list-append">append</a>
-     <li><a href="https://infra.spec.whatwg.org/#list">list</a>
-     <li><a href="https://infra.spec.whatwg.org/#list-size">size</a>
+     <li><span class="dfn-paneled" id="term-for-list-append" style="color:initial">append</span>
+     <li><span class="dfn-paneled" id="term-for-list" style="color:initial">list</span>
+     <li><span class="dfn-paneled" id="term-for-list-size" style="color:initial">size</span>
     </ul>
    <li>
     <a data-link-type="biblio">[LAPI-SPEC]</a> defines the following terms:
     <ul>
-     <li><a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentapi-identifier">api identifier</a>
-     <li><a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentevaluation-steps">evaluation steps</a>
-     <li><a href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentexports">exports</a>
+     <li><span class="dfn-paneled" id="term-for-user-contentapi-identifier" style="color:initial">api identifier</span>
+     <li><span class="dfn-paneled" id="term-for-user-contentevaluation-steps" style="color:initial">evaluation steps</span>
+     <li><span class="dfn-paneled" id="term-for-user-contentexports" style="color:initial">exports</span>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
     <ul>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">a new promise</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with">a promise rejected with</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">resolve</a>
-     <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by">transforming</a>
+     <li><span class="dfn-paneled" id="term-for-a-new-promise" style="color:initial">a new promise</span>
+     <li><span class="dfn-paneled" id="term-for-a-promise-rejected-with" style="color:initial">a promise rejected with</span>
+     <li><span class="dfn-paneled" id="term-for-reject-promise" style="color:initial">reject</span>
+     <li><span class="dfn-paneled" id="term-for-resolve-promise" style="color:initial">resolve</span>
+     <li><span class="dfn-paneled" id="term-for-transforming-by" style="color:initial">transforming</span>
     </ul>
    <li>
     <a data-link-type="biblio">[secure-contexts]</a> defines the following terms:
     <ul>
-     <li><a href="https://w3c.github.io/webappsec-secure-contexts/#settings-object">Is an environment settings object contextually secure?</a>
-     <li><a href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts">secure contexts</a>
+     <li><span class="dfn-paneled" id="term-for-settings-object" style="color:initial">Is an environment settings object contextually secure?</span>
+     <li><span class="dfn-paneled" id="term-for-secure-contexts" style="color:initial">secure contexts</span>
     </ul>
    <li>
     <a data-link-type="biblio">[service-workers-2]</a> defines the following terms:
     <ul>
-     <li><a href="https://w3c.github.io/ServiceWorker/#cache">Cache</a>
+     <li><span class="dfn-paneled" id="term-for-cache" style="color:initial">Cache</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
     <ul>
-     <li><a href="https://heycam.github.io/webidl/#idl-ArrayBuffer">ArrayBuffer</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-DOMException">DOMException</a>
-     <li><a href="https://heycam.github.io/webidl/#datacloneerror">DataCloneError</a>
-     <li><a href="https://heycam.github.io/webidl/#dataerror">DataError</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-DataView">DataView</a>
-     <li><a href="https://heycam.github.io/webidl/#securityerror">SecurityError</a>
-     <li><a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">TypeError</a>
-     <li><a href="https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value">converted to an idl value</a>
-     <li><a href="https://heycam.github.io/webidl/#include">include</a>
-     <li><a href="https://heycam.github.io/webidl/#idl-named-properties">named properties</a>
+     <li><span class="dfn-paneled" id="term-for-idl-ArrayBuffer" style="color:initial">ArrayBuffer</span>
+     <li><span class="dfn-paneled" id="term-for-idl-DOMException" style="color:initial">DOMException</span>
+     <li><span class="dfn-paneled" id="term-for-datacloneerror" style="color:initial">DataCloneError</span>
+     <li><span class="dfn-paneled" id="term-for-dataerror" style="color:initial">DataError</span>
+     <li><span class="dfn-paneled" id="term-for-idl-DataView" style="color:initial">DataView</span>
+     <li><span class="dfn-paneled" id="term-for-securityerror" style="color:initial">SecurityError</span>
+     <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror" style="color:initial">TypeError</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-convert-ecmascript-to-idl-value" style="color:initial">converted to an idl value</span>
+     <li><span class="dfn-paneled" id="term-for-include" style="color:initial">include</span>
+     <li><span class="dfn-paneled" id="term-for-idl-named-properties" style="color:initial">named properties</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -2720,57 +3272,57 @@ for their contributions to this specification.</p>
   </aside>
 <script>/* script-dfn-panel */
 
-        document.body.addEventListener("click", function(e) {
-            var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
-            // Find the dfn element or panel, if any, that was clicked on.
-            var el = e.target;
-            var target;
-            var hitALink = false;
-            while(el.parentElement) {
-                if(el.tagName == "A") {
-                    // Clicking on a link in a <dfn> shouldn't summon the panel
-                    hitALink = true;
-                }
-                if(el.classList.contains("dfn-paneled")) {
-                    target = "dfn";
-                    break;
-                }
-                if(el.classList.contains("dfn-panel")) {
-                    target = "dfn-panel";
-                    break;
-                }
-                el = el.parentElement;
-            }
-            if(target != "dfn-panel") {
-                // Turn off any currently "on" or "activated" panels.
-                queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
-                    el.classList.remove("on");
-                    el.classList.remove("activated");
-                });
-            }
-            if(target == "dfn" && !hitALink) {
-                // open the panel
-                var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
-                if(dfnPanel) {
-                    dfnPanel.classList.add("on");
-                    var rect = el.getBoundingClientRect();
-                    dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
-                    dfnPanel.style.top = window.scrollY + rect.top + "px";
-                    var panelRect = dfnPanel.getBoundingClientRect();
-                    var panelWidth = panelRect.right - panelRect.left;
-                    if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
-                        // Reposition, because the panel is overflowing
-                        dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
-                    }
-                } else {
-                    console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
-                }
-            } else if(target == "dfn-panel") {
-                // Switch it to "activated" state, which pins it.
-                el.classList.add("activated");
-                el.style.left = null;
-                el.style.top = null;
-            }
-
+document.body.addEventListener("click", function(e) {
+    var queryAll = function(sel) { return [].slice.call(document.querySelectorAll(sel)); }
+    // Find the dfn element or panel, if any, that was clicked on.
+    var el = e.target;
+    var target;
+    var hitALink = false;
+    while(el.parentElement) {
+        if(el.tagName == "A") {
+            // Clicking on a link in a <dfn> shouldn't summon the panel
+            hitALink = true;
+        }
+        if(el.classList.contains("dfn-paneled")) {
+            target = "dfn";
+            break;
+        }
+        if(el.classList.contains("dfn-panel")) {
+            target = "dfn-panel";
+            break;
+        }
+        el = el.parentElement;
+    }
+    if(target != "dfn-panel") {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(function(el){
+            el.classList.remove("on");
+            el.classList.remove("activated");
         });
-        </script>
+    }
+    if(target == "dfn" && !hitALink) {
+        // open the panel
+        var dfnPanel = document.querySelector(".dfn-panel[data-for='" + el.id + "']");
+        if(dfnPanel) {
+            dfnPanel.classList.add("on");
+            var rect = el.getBoundingClientRect();
+            dfnPanel.style.left = window.scrollX + rect.right + 5 + "px";
+            dfnPanel.style.top = window.scrollY + rect.top + "px";
+            var panelRect = dfnPanel.getBoundingClientRect();
+            var panelWidth = panelRect.right - panelRect.left;
+            if(panelRect.right > document.body.scrollWidth && (rect.left - (panelWidth + 5)) > 0) {
+                // Reposition, because the panel is overflowing
+                dfnPanel.style.left = window.scrollX + rect.left - (panelWidth + 5) + "px";
+            }
+        } else {
+            console.log("Couldn't find .dfn-panel[data-for='" + el.id + "']");
+        }
+    } else if(target == "dfn-panel") {
+        // Switch it to "activated" state, which pins it.
+        el.classList.add("activated");
+        el.style.left = null;
+        el.style.top = null;
+    }
+
+});
+</script>
