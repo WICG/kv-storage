@@ -121,8 +121,10 @@ export class StorageArea {
         keysRequest.onerror = () => reject(keysRequest.error);
         valuesRequest.onerror = () => reject(valuesRequest.error);
 
-        valuesRequest.onsuccess = () => {
-          resolve(zip(keysRequest.result, valuesRequest.result));
+        keysRequest.onsuccess = valuesRequest.onsuccess = () => {
+          if (keysRequest.result && valuesRequest.result) {
+            resolve(zip(keysRequest.result, valuesRequest.result));
+          }
         };
       });
     });
