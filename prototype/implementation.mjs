@@ -92,7 +92,7 @@ export class StorageArea {
 
   async keys() {
     return performDatabaseOperation(this, "readonly", (transaction, store) => {
-      const request = store.getAllKeys(undefined);
+      const request = store.getAllKeys();
 
       return new Promise((resolve, reject) => {
         request.onsuccess = () => resolve(request.result);
@@ -103,7 +103,7 @@ export class StorageArea {
 
   async values() {
     return performDatabaseOperation(this, "readonly", (transaction, store) => {
-      const request = store.getAll(undefined);
+      const request = store.getAll();
 
       return new Promise((resolve, reject) => {
         request.onsuccess = () => resolve(request.result);
@@ -114,8 +114,8 @@ export class StorageArea {
 
   async entries() {
     return performDatabaseOperation(this, "readonly", (transaction, store) => {
-      const keysRequest = store.getAllKeys(undefined);
-      const valuesRequest = store.getAll(undefined);
+      const keysRequest = store.getAllKeys();
+      const valuesRequest = store.getAll();
 
       return new Promise((resolve, reject) => {
         keysRequest.onerror = () => reject(keysRequest.error);
