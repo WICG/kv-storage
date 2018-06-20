@@ -1211,7 +1211,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 6bebf68aed1298eb5349b6cdea3fab1e79551a6f" name="generator">
+  <meta content="Bikeshed version 78f180fa233a56b5d798946eb29b265f4e32d5f4" name="generator">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1512,7 +1512,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Async Local Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-05-30">30 May 2018</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2018-06-20">20 June 2018</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt class="editor">Editor:
@@ -1526,7 +1526,7 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 30 May 2018,
+In addition, as of 20 June 2018,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1597,7 +1597,7 @@ Parts of this work may be from another specification document.  If so, those par
 <span class="p">&lt;/</span><span class="nt">p</span><span class="p">></span>
 <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">"module"</span><span class="p">></span>
   <span class="kr">import</span> <span class="p">{</span> storage <span class="p">}</span> from
-    <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.js"</span><span class="p">;</span>
+    <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.mjs"</span><span class="p">;</span>
 
   <span class="p">(</span>async <span class="p">()</span> <span class="p">=></span> <span class="p">{</span>
     <span class="kd">let</span> pageLoadCount <span class="o">=</span> await storage<span class="p">.</span>get<span class="p">(</span><span class="s2">"pageLoadCount"</span><span class="p">)</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
@@ -1615,7 +1615,7 @@ Parts of this work may be from another specification document.  If so, those par
    </div>
    <h2 class="heading settled" data-level="2" id="module"><span class="secno">2. </span><span class="content">The <code>async-local-storage</code> layered API</span><a class="self-link" href="#module"></a></h2>
    <dl class="domintro non-normative" id="module-domintro">
-    <dt><code>import * as <var>als</var> from "std:async-local-storage|https://example.com/als-polyfill.js"</code> 
+    <dt><code>import * as <var>als</var> from "std:async-local-storage|https://example.com/als-polyfill.mjs"</code> 
     <dd>
      <p>Imports the async local storage API, using the built-in implementation if it exists, or the implementation found at the fallback URL otherwise. </p>
      <p>If the built-in implementation is not imported in a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#secure-contexts" id="ref-for-secure-contexts">secure context</a>, the <code>import</code> statement will cause a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>, as persistent storage is a powerful feature. </p>
@@ -1638,7 +1638,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="example" id="example-importing">
     <a class="self-link" href="#example-importing"></a> To get access to these exports, one could use the syntax shown <a href="#module-domintro">above</a>, or import them directly without the intermediate <var>als</var> variable: 
 <pre class="highlight"><span class="kr">import</span> <span class="p">{</span> storage<span class="p">,</span> StorageArea <span class="p">}</span> from
-  <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.js"</span><span class="p">;</span>
+  <span class="s2">"std:async-local-storage|https://example.com/als-polyfill.mjs"</span><span class="p">;</span>
 </pre>
    </div>
    <p>The layered API’s <a data-link-type="dfn" href="https://github.com/drufball/layered-apis/blob/master/spec.md/#user-contentevaluation-steps" id="ref-for-user-contentevaluation-steps">evaluation steps</a> are the following:</p>
