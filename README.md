@@ -9,7 +9,7 @@ A [full specification](https://domenic.github.io/async-local-storage/) is also a
 ## Sample code
 
 ```js
-import { storage } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { storage } from "std:async-local-storage|https://cdn.example/async-local-storage.mjs";
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -78,7 +78,7 @@ Returns a promise for an array containing all the stored key/value pairs, each a
 We additionally expose a `StorageArea` constructor, which allows you to create an "isolated" storage area that is less likely to collide than using the default one:
 
 ```js
-import { storage, StorageArea } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { storage, StorageArea } from "std:async-local-storage|https://cdn.example/async-local-storage.mjs";
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -102,7 +102,7 @@ One of the great things about implementing async local storage as a layered web 
 To facilitate this, we include an API that allows you to get a `{ database, store, version }` object identifying the IndexedDB database and store within that database where a given `StorageArea`'s data is being stored:
 
 ```js
-import { storage } from "std:async-local-storage|https://somecdn.com/async-local-storage.js";
+import { storage } from "std:async-local-storage|https://cdn.example/async-local-storage.mjs";
 import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-was-a-native-JS-module";
 
 (async () => {

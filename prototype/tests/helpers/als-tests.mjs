@@ -1,5 +1,5 @@
 import { StorageArea, storage as defaultArea } from "../../implementation.mjs";
-import { assertArrayCustomEquals } from "./equality-asserters.js";
+import { assertArrayCustomEquals } from "./equality-asserters.mjs";
 
 export function testWithArea(testFn, description) {
   test(t => {
