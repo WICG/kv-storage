@@ -169,7 +169,7 @@ This specification proposes a new API, called async local storage, which is inte
     </p>
     <script type="module">
       import { storage } from
-        "std:async-local-storage|https://example.com/als-polyfill.js";
+        "std:async-local-storage|https://example.com/als-polyfill.mjs";
 
       (async () => {
         let pageLoadCount = await storage.get("pageLoadCount") || 0;
@@ -193,7 +193,7 @@ This specification proposes a new API, called async local storage, which is inte
 <h2 id="module">The <code>async-local-storage</code> layered API</h2>
 
 <dl class="domintro non-normative" id="module-domintro">
-  <dt><code>import * as |als| from "std:async-local-storage|https://example.com/als-polyfill.js"</code>
+  <dt><code>import * as |als| from "std:async-local-storage|https://example.com/als-polyfill.mjs"</code>
   <dd>
     <p>Imports the async local storage API, using the built-in implementation if it exists, or the implementation found at the fallback URL otherwise.
 
@@ -223,7 +223,7 @@ This specification defines a new layered API, whose [=LAPI/API identifier=] is "
 
   <xmp highlight="js">
     import { storage, StorageArea } from
-      "std:async-local-storage|https://example.com/als-polyfill.js";
+      "std:async-local-storage|https://example.com/als-polyfill.mjs";
   </xmp>
 </div>
 
