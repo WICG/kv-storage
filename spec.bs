@@ -491,6 +491,9 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
       // Now we can use it again!
       await area.set("fluffy", new Cat());
       await area.set("tigger", new Cat());
+
+      // Also, the version is back down to 1:
+      console.assert(area.backingStore.version === 1);
     })();
   </xmp>
 </div>
@@ -736,6 +739,7 @@ Eventually we hope to introduce the ability for web authors to write code that g
 <h2 id="acks" class="no-num">Acknowledgments</h2>
 
 The editor would like to thank
+Kenneth Rohde Christiansen and
 Joshua Bell
 for their contributions to this specification.
 
