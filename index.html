@@ -1946,6 +1946,9 @@ openRequest<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>
   <c- c1>// Now we can use it again!</c->
   await area<c- p>.</c->set<c- p>(</c-><c- u>"fluffy"</c-><c- p>,</c-> <c- k>new</c-> Cat<c- p>());</c->
   await area<c- p>.</c->set<c- p>(</c-><c- u>"tigger"</c-><c- p>,</c-> <c- k>new</c-> Cat<c- p>());</c->
+
+  <c- c1>// Also, the version is back down to 1:</c->
+  console<c- p>.</c->assert<c- p>(</c->area<c- p>.</c->backingStore<c- p>.</c->version <c- o>===</c-> <c- mi>1</c-><c- p>);</c->
 <c- p>})();</c->
 </pre>
    </div>
@@ -2241,6 +2244,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
    <p>Eventually we hope to introduce the ability for web authors to write code that gets these same benefits, instead of locking them up so that only web platform APIs like async local storage can achieve this level of encapsulation. That’s a separate effort, however, which is best followed in the above-linked issue threads.</p>
    <h2 class="no-num heading settled" id="acks"><span class="content">Acknowledgments</span><a class="self-link" href="#acks"></a></h2>
    <p>The editor would like to thank
+Kenneth Rohde Christiansen and
 Joshua Bell
 for their contributions to this specification.</p>
    <p>This standard is written by <a href="https://domenic.me/">Domenic Denicola</a> (<a href="https://google.com">Google</a>, <a href="mailto:d@domenic.me">d@domenic.me</a>).</p>
