@@ -261,7 +261,7 @@ Upon evaluating the <a><code>std:async-local-storage</code></a> module, the {{St
 
     * The generic nature of Web IDL means that it is best implemented using code generation. However, most implementers currently do not have a Web IDL bindings generator that wraps JavaScript; using Web IDL would virtually require them to either implement the built-in modules in C++, or create such a bindings generator. Furthermore, the wrappers end up being quite large; see <a href="https://gist.github.com/domenic/b5c395e036781173e123">an example</a>. <!-- TODO: maybe make an actual generated StorageArea example -->
 
-    None of these mismatches are fatal. We could switch this specification to Web IDL, with appropriate extensions for solving the first two problems, if that ends up being desired. We recognize that the goals for built-in modules are still under active discussion, and the above may not end up being important in the end. But for now, we're experimenting with this different—and more aligned-with-JavaScript-modules—mechanism of specifying a class definition.
+    None of these mismatches are fatal. We could switch this specification to Web IDL, with appropriate extensions for solving the first two problems, if that ends up being desired. We recognize that the goals for built-in modules are still under active discussion, and the above might not end up being important in the end. But for now, we're experimenting with this different—and more aligned-with-JavaScript-modules—mechanism of specifying a class definition.
   </details>
 </div>
 
