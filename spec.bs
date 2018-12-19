@@ -181,7 +181,7 @@ This specification proposes a new API, called async local storage, which is inte
   <dd>
     <p>Imports the async local storage API's namespace object as the variable |als|.
 
-    <p>If the built-in implementation is not imported in a [=secure context=], the <code>import</code> statement will cause a "{{SecurityError}}" {{DOMException}}, as persistent storage is a powerful feature.
+    <p>If the module is not imported in a [=secure context=], the <code>import</code> statement will cause a "{{SecurityError}}" {{DOMException}}, as persistent storage is a powerful feature.
   </dd>
 
   <dt><code>|als|.[=std:async-local-storage/storage=]</code>
