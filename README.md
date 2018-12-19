@@ -43,17 +43,17 @@ Note that keys and values would be allowed to be any [structured-serializable ty
 
 Sets the value of the entry identified by `key` to `value`. Returns a promise that fulfills with `undefined` once this is complete.
 
+_Note: setting an entry to have the value `undefined` is equivalent to deleting it. See discussion in [#3](https://github.com/domenic/async-local-storage/issues/3)._
+
 #### `get(key)`
 
 Returns a promise for the value of the entry identified by `key`, or `undefined` if no value is present.
 
-#### `has(key)`
-
-Returns a promise for a boolean that indicates whether an entry identified by `key` exists.
-
 #### `delete(key)`
 
 Removes the entry identified by `key`, if it exists. Once this completes, returns a promise for undefined.
+
+_Note: this is equivalent to `set(key, undefined)`. See discussion in [#3](https://github.com/domenic/async-local-storage/issues/3)._
 
 #### `clear()`
 
