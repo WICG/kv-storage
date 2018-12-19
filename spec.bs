@@ -38,9 +38,9 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: convert a value to a key
   text: convert a key to a value
   text: close a database connection
-  text: result; for: request
-  text: error; for: request
-  text: error; for: transaction
+  text: result; for: request; url: #request-result
+  text: error; for: request; url: #request-error
+  text: error; for: transaction; url: #transaction-error
   text: transaction; url: #transaction-concept
   text: ascending; for: key; url: #greater-than
 </pre>
