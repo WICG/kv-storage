@@ -1,14 +1,17 @@
 <pre class="metadata">
 Title: KV Storage
 Shortname: kv-storage
-Repository: domenic/kv-storage
+Repository: WICG/kv-storage
 Inline Github Issues: true
-Status: DREAM
+Group: WICG
+Status: ED
+Level: 1
+URL: https://wicg.github.io/kv-storage/
 Boilerplate: omit conformance, omit feedback-header
 Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me, https://domenic.me/
 Abstract: This specification details a high level asynchronous key/value storage API, layered on top of IndexedDB, and as a spiritual successor to the original <span class="non-normative">{{Window/localStorage}}</span>.
-!Participate: <a href="https://github.com/domenic/kv-storage">GitHub domenic/kv-storage</a> (<a href="https://github.com/domenic/kv-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/kv-storage/issues?state=open">open issues</a>)
-!Commits: <a href="https://github.com/domenic/kv-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
+!Participate: <a href="https://github.com/WICG/kv-storage">GitHub WICG/kv-storage</a> (<a href="https://github.com/WICG/kv-storage/issues/new">new issue</a>, <a href="https://github.com/WICG/kv-storage/issues?state=open">open issues</a>)
+!Commits: <a href="https://github.com/WICG/kv-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 Default Biblio Status: current
@@ -80,15 +83,6 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
 
 summary {
   cursor: pointer;
-}
-
-/* hide ugly stuff that is moved to the acks */
-[data-fill-with="spec-metadata"] .editor {
-  display: none;
-}
-
-[data-fill-with="copyright"] {
-  display: none;
 }
 
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -690,10 +684,6 @@ Jan Varga,
 Joshua Bell, and
 Victor Costan
 for their contributions to this specification.
-
-This standard is written by <a href="https://domenic.me/">Domenic Denicola</a> (<a href="https://google.com">Google</a>, <a href="mailto:d@domenic.me">d@domenic.me</a>).
-
-Per <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, to the extent possible under law, the editor has waived all copyright and related or neighboring rights to this work.
 
 <h2 id="conformance" class="no-num">Conformance</h2>
 
