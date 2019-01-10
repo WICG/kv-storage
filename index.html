@@ -1213,6 +1213,7 @@ Possible extra rowspan handling
 	}
 </style>
   <meta content="Bikeshed version 53d2305928d30790ebcc3b8ea611fb0709647013" name="generator">
+  <link href="https://wicg.github.io/kv-storage/" rel="canonical">
 <style>
 .selected-text-file-an-issue {
   position: fixed;
@@ -1226,15 +1227,6 @@ Possible extra rowspan handling
 
 summary {
   cursor: pointer;
-}
-
-/* hide ugly stuff that is moved to the acks */
-[data-fill-with="spec-metadata"] .editor {
-  display: none;
-}
-
-[data-fill-with="copyright"] {
-  display: none;
 }
 
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -1513,29 +1505,38 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">KV Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2019-01-10">10 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-10">10 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
+     <dt>This version:
+     <dd><a class="u-url" href="https://wicg.github.io/kv-storage/">https://wicg.github.io/kv-storage/</a>
      <dt class="editor">Editor:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-url url" href="https://domenic.me/">Domenic Denicola</a> (<a class="p-org org" href="https://www.google.com/">Google</a>) <a class="u-email email" href="mailto:d@domenic.me">d@domenic.me</a>
      <dt>Participate:
-     <dd><a href="https://github.com/domenic/kv-storage">GitHub domenic/kv-storage</a> (<a href="https://github.com/domenic/kv-storage/issues/new">new issue</a>, <a href="https://github.com/domenic/kv-storage/issues?state=open">open issues</a>)
+     <dd><a href="https://github.com/WICG/kv-storage">GitHub WICG/kv-storage</a> (<a href="https://github.com/WICG/kv-storage/issues/new">new issue</a>, <a href="https://github.com/WICG/kv-storage/issues?state=open">open issues</a>)
      <dt>Commits:
-     <dd><a href="https://github.com/domenic/kv-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
+     <dd><a href="https://github.com/WICG/kv-storage/commits/master/spec.bs">GitHub spec.bs commits</a>
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
-and related or neighboring rights to this work.
-In addition, as of 10 January 2019,
-the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
-which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
-Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2019 the Contributors to the KV Storage Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>This specification details a high level asynchronous key/value storage API, layered on top of IndexedDB, and as a spiritual successor to the original <span class="non-normative"><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage" id="ref-for-dom-localstorage">localStorage</a></code></span>.</p>
+  </div>
+  <div data-fill-with="at-risk"></div>
+  <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
+  <div data-fill-with="status">
+   <p> This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
+  It is not a W3C Standard nor is it on the W3C Standards Track.
+
+  Please note that under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a> there is a limited opt-out and other conditions apply.
+
+  Learn more about <a href="http://www.w3.org/community/">W3C Community and Business Groups</a>. </p>
+   <p></p>
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
@@ -2205,8 +2206,6 @@ Jan Varga,
 Joshua Bell, and
 Victor Costan
 for their contributions to this specification.</p>
-   <p>This standard is written by <a href="https://domenic.me/">Domenic Denicola</a> (<a href="https://google.com">Google</a>, <a href="mailto:d@domenic.me">d@domenic.me</a>).</p>
-   <p>Per <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, to the extent possible under law, the editor has waived all copyright and related or neighboring rights to this work.</p>
    <h2 class="no-num heading settled" id="conformance"><span class="content">Conformance</span><a class="self-link" href="#conformance"></a></h2>
    <p>This specification depends on the Infra Standard. <a data-link-type="biblio" href="#biblio-infra">[INFRA]</a></p>
   </main>
