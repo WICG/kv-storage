@@ -1,15 +1,17 @@
-# Async Local Storage
+# KV Storage
 
-This document is an explainer for a potential future web platform feature, "async local storage". It's like [`localStorage`](https://html.spec.whatwg.org/multipage/webstorage.html#webstorage), but async!
+This document is an explainer for a potential future web platform feature, "KV storage" (short for "key/value storage"). It's similar to [`localStorage`](https://html.spec.whatwg.org/multipage/webstorage.html#webstorage) in utility, but much more modern, and layered on top of IndexedDB.
+
+_This feature was formerly known as "async local storage", but in [#38](https://github.com/domenic/kv-storage/issues/38), folks pointed out that since we don't intend to access the `localStorage` database itself, that name was misleading._
 
 This feature would be implemented as a [built-in module](https://github.com/tc39/proposal-javascript-standard-library/). It would also use IndexedDB as its backing store; see more on that below.
 
-A [full specification](https://domenic.github.io/async-local-storage/) is also available.
+A [full specification](https://domenic.github.io/kv-storage/) is also available.
 
 ## Sample code
 
 ```js
-import { storage } from "std:async-local-storage"; // specifier not final
+import { storage } from "std:kv-storage"; // specifier prefix not final
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -29,21 +31,21 @@ Local storage is a well-known and well-loved API. It only has one problem: it's 
 
 The alternative is IndexedDB. IndexedDB is, however, quite hard to use. It has no simple key/value layer, instead requiring understanding concepts like database upgrades and transactions. Its API is also quite dated; it does not use promises, but instead `IDBRequest` objects with their `onsuccess` and `onerror` methods.
 
-In the face of this, a cottage industry of solutions for "async local storage" have sprung up to wrap IndexedDB. Perhaps the most well-known of these is [localForage](https://localforage.github.io/localForage/), which copies the `localStorage` API directly.
+In the face of this, a cottage industry of solutions for "async key/value storage" have sprung up to wrap IndexedDB. Perhaps the most well-known of these is [localForage](https://localforage.github.io/localForage/), which copies the `localStorage` API directly.
 
-After many years of convergence in library-space on this sort of solution, it's time to bring a simple async local storage solution out of the cold and into the web platform. We need an ergonomic out-of-the-box solution for storing key/value data.
+After many years of convergence in library-space on this sort of solution, it's time to bring a simple async key/value storage solution out of the cold and into the web platform.
 
 ## API
 
 ### `Map`-like key/value pair API
 
-Note that keys and values would be allowed to be any [structured-serializable type](https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects) (see [#2](https://github.com/domenic/async-local-storage/issues/2) for more discussion).
+Note that keys and values would be allowed to be any [structured-serializable type](https://html.spec.whatwg.org/multipage/structured-data.html#serializable-objects) (see [#2](https://github.com/domenic/kv-storage/issues/2) for more discussion).
 
 #### `set(key, value)`
 
 Sets the value of the entry identified by `key` to `value`. Returns a promise that fulfills with `undefined` once this is complete.
 
-_Note: setting an entry to have the value `undefined` is equivalent to deleting it. See discussion in [#3](https://github.com/domenic/async-local-storage/issues/3)._
+_Note: setting an entry to have the value `undefined` is equivalent to deleting it. See discussion in [#3](https://github.com/domenic/kv-storage/issues/3)._
 
 #### `get(key)`
 
@@ -53,7 +55,7 @@ Returns a promise for the value of the entry identified by `key`, or `undefined`
 
 Removes the entry identified by `key`, if it exists. Once this completes, returns a promise for undefined.
 
-_Note: this is equivalent to `set(key, undefined)`. See discussion in [#3](https://github.com/domenic/async-local-storage/issues/3)._
+_Note: this is equivalent to `set(key, undefined)`. See discussion in [#3](https://github.com/domenic/kv-storage/issues/3)._
 
 #### `clear()`
 
@@ -76,7 +78,7 @@ Returns a promise for an array containing all the stored key/value pairs, each a
 We additionally expose a `StorageArea` constructor, which allows you to create an "isolated" storage area that is less likely to collide than using the default one:
 
 ```js
-import { storage, StorageArea } from "std:async-local-storage|https://cdn.example/async-local-storage.mjs";
+import { storage, StorageArea } from "std:kv-storage";
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -95,12 +97,12 @@ The scope of the default storage area would be per-realm. (Or more precisely, pe
 
 ### `backingStore`: falling back to IndexedDB
 
-One of the great things about layering async local storage on top of IndexedDB is that, if the developer's code grows beyond the capabilities of a simple key/value store, they can easily transition to the full power of IndexedDB (such as using transactions, indices, or cursors), while reusing their database.
+One of the great things about layering KV storage on top of IndexedDB is that, if the developer's code grows beyond the capabilities of a simple key/value store, they can easily transition to the full power of IndexedDB (such as using transactions, indices, or cursors), while reusing their database.
 
 To facilitate this, we include an API that allows you to get a `{ database, store, version }` object identifying the IndexedDB database and store within that database where a given `StorageArea`'s data is being stored:
 
 ```js
-import { storage } from "std:async-local-storage|https://cdn.example/async-local-storage.mjs";
+import { storage } from "std:kv-storage";
 import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-was-a-native-JS-module";
 
 (async () => {
@@ -119,7 +121,7 @@ import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-
 
 ### Open issues and questions
 
-Please see [the issue tracker](https://github.com/domenic/async-local-storage/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Aapi) for open issues on the API surface detailed above.
+Please see [the issue tracker](https://github.com/domenic/kv-storage/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Aapi) for open issues on the API surface detailed above.
 
 ## Impact
 
