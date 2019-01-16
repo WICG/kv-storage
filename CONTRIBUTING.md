@@ -15,7 +15,7 @@ To build the specification, you can use one of:
 
 ## Tests
 
-Tests are maintained as part of the [web platform tests](https://github.com/web-platform-tests/wpt) project, for now under the [`async-local-storage`](https://github.com/web-platform-tests/wpt/tree/master/async-local-storage) directory (soon to be moved to a properly-named `kv-storage` directory).
+Tests are maintained as part of the [web platform tests](https://github.com/web-platform-tests/wpt) project, under the [`kv-storage`](https://github.com/web-platform-tests/wpt/tree/master/kv-storage) directory.
 
 This specification uses a tests-required policy: all normative changes must be accompanied by corresponding changes to the test suite.
 
