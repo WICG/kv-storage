@@ -278,7 +278,7 @@ Each {{StorageArea}} instance must also contain the following internal slots:
     <td>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=]
 </table>
 
-An object |obj| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} if |obj| has a \[[DatabaseName]] internal slot and |obj|'s [=relevant realm=] is equal to the [=current realm=].
+A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} if [$Type$](|val|) is Object, |val| has a \[[DatabaseName]] internal slot, and |val|'s [=relevant realm=] is equal to the [=current realm=].
 
 <p class="note">The realm check here gives us semantics identical to using JavaScript's {{WeakMap}} or the proposed private class fields. This ensures {{StorageArea}} does not use any magic, like the platform's usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. [[ECMA-262]] [[CLASS-FIELDS]]
 
