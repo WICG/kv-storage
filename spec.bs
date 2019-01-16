@@ -259,26 +259,16 @@ Upon evaluating the <a><code>std:kv-storage</code></a> module, the {{StorageArea
   </details>
 </div>
 
-Each {{StorageArea}} instance must also contain the following internal slots:
+Each {{StorageArea}} instance must also contain the <dfn for="StorageArea">\[[DatabaseName]]</dfn> and <dfn for="StorageArea">\[[DatabasePromise]]</dfn> internal slots. The following is a non-normative summary of their meaning:
 
-<table>
-  <thead>
-    <tr>
-      <th>Internal Slot
-      <th>Initial Value
-      <th>Description (<em>non-normative</em>)
-  </thead>
-  <tr>
-    <td>\[[DatabaseName]]
-    <td>null
-    <td>A string containing the name of the backing IndexedDB database
-  <tr>
-    <td>\[[DatabasePromise]]
-    <td>null
-    <td>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=]
-</table>
+<dl class="non-normative">
+  <dt>[=StorageArea/[[DatabaseName]]=]
+  <dd>A string containing the name of the backing IndexedDB database.
+  <dt>[=StorageArea/[[DatabasePromise]]=]
+  <dd>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=].
+</dl>
 
-A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} if [$Type$](|val|) is Object, |val| has a \[[DatabaseName]] internal slot, and |val|'s [=relevant realm=] is equal to the [=current realm=].
+A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} if [$Type$](|val|) is Object, |val| has a [=StorageArea/[[DatabaseName]]=] internal slot, and |val|'s [=relevant realm=] is equal to the [=current realm=].
 
 <p class="note">The realm check here gives us semantics identical to using JavaScript's {{WeakMap}} or the proposed private class fields. This ensures {{StorageArea}} does not use any magic, like the platform's usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. [[ECMA-262]] [[CLASS-FIELDS]]
 
@@ -294,9 +284,9 @@ A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{Storag
 
 <div class="algorithm">
   1. Let |area| be this {{StorageArea}} object.
-  1. Set |area|'s internal slots to the initial values indicated in [[#storagearea]].
   1. Let |nameString| be <a abstract-op>ToString</a>(|name|).
-  1. Set |area|.\[[DatabaseName]] to the concatenation of "<code>kv-storage:</code>" and |nameString|.
+  1. Set |area|.[=StorageArea/[[DatabaseName]]=] to the concatenation of "<code>kv-storage:</code>" and |nameString|.
+  1. Set |area|.[=StorageArea/[[DatabasePromise]]=] to null.
 </div>
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
@@ -383,10 +373,10 @@ A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{Storag
 <div class="algorithm">
   1. Let |area| be this object.
   1. If |area| does not [=StorageArea/brand check=], return [=a promise rejected with=] a {{TypeError}} exception.
-  1. If |area|.\[[DatabasePromise]] is not null, return the result of [=transforming=] |area|.\[[DatabasePromise]] by fulfillment and rejection handlers that both perform the following steps:
-    1. Set |area|.\[[DatabasePromise]] to null.
-    1. Return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
-  1. Otherwise, return the result of [=deleting the database=] given by |area|.\[[DatabaseName]].
+  1. If |area|.[=StorageArea/[[DatabasePromise]]=] is not null, return the result of [=transforming=] |area|.[=StorageArea/[[DatabasePromise]]=] by fulfillment and rejection handlers that both perform the following steps:
+    1. Set |area|.[=StorageArea/[[DatabasePromise]]=] to null.
+    1. Return the result of [=deleting the database=] given by |area|.[=StorageArea/[[DatabaseName]]=].
+  1. Otherwise, return the result of [=deleting the database=] given by |area|.[=StorageArea/[[DatabaseName]]=].
 </div>
 
 To <dfn lt="deleting the database|delete the database">delete the database</dfn> given a string |name|:
@@ -530,7 +520,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
   1. Let |area| be this object.
   1. If |area| does not [=StorageArea/brand check=], throw a {{TypeError}} exception.
   1. Let |info| be <a abstract-op>ObjectCreate</a>({{%ObjectPrototype%}}).
-  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>database</code>", |area|.\[[DatabaseName]]).
+  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>database</code>", |area|.[=StorageArea/[[DatabaseName]]=]).
   1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>store</code>", "<code>store</code>").
   1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>version</code>", 1).
   1. Return |info|.
@@ -603,9 +593,9 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
 
 <div class="algorithm">
   1. If |area| does not [=StorageArea/brand check=], return [=a promise rejected with=] a {{TypeError}} exception.
-  1. Assert: |area|.\[[DatabaseName]] is a string (and in particular is not null).
-  1. If |area|.\[[DatabasePromise]] is null, [=initialize the database promise=] for |area|.
-  1. Return the result of [=transforming=] |area|.\[[DatabasePromise]] by a fulfillment handler that performs the following steps, given |database|:
+  1. Assert: |area|.[=StorageArea/[[DatabaseName]]=] is a string (and in particular is not null).
+  1. If |area|.[=StorageArea/[[DatabasePromise]]=] is null, [=initialize the database promise=] for |area|.
+  1. Return the result of [=transforming=] |area|.[=StorageArea/[[DatabasePromise]]=] by a fulfillment handler that performs the following steps, given |database|:
     1. Let |transaction| be the result of performing the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/transaction()}} method on |database|, given the arguments "<code>store</code>" and |mode|.
     1. Let |store| be the result of performing the steps listed in the description of {{IDBTransaction}}'s {{IDBTransaction/objectStore()}} method on |transaction|, given the argument "<code>store</code>".
     1. Return the result of performing |steps|, passing along |transaction| and |store|.
@@ -614,22 +604,22 @@ To <dfn lt="performing a database operation|perform a database operation">perfor
 To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
 
 <div class="algorithm">
-  1. Set |area|.\[[DatabasePromise]] to [=a new promise=].
-  1. If the [=current global object=] does not [=include=] {{WindowOrWorkerGlobalScope}}, [=reject=] |area|.\[[DatabasePromise]] with a {{TypeError}}, and return.
-  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the <a>current <code>IDBFactory</code></a>, given the arguments |area|.\[[DatabaseName]] and 1.
-  1. If those steps threw an exception, catch the exception, [=reject=] |area|.\[[DatabasePromise]] with it, and return.
+  1. Set |area|.[=StorageArea/[[DatabasePromise]]=] to [=a new promise=].
+  1. If the [=current global object=] does not [=include=] {{WindowOrWorkerGlobalScope}}, [=reject=] |area|.[=StorageArea/[[DatabasePromise]]=] with a {{TypeError}}, and return.
+  1. Let |request| be the result of performing the steps listed in the description of {{IDBFactory}}'s {{IDBFactory/open()}} method on the <a>current <code>IDBFactory</code></a>, given the arguments |area|.[=StorageArea/[[DatabaseName]]=] and 1.
+  1. If those steps threw an exception, catch the exception, [=reject=] |area|.[=StorageArea/[[DatabasePromise]]=] with it, and return.
   1. [=Add a simple event listener=] to |request| for "<code>success</code>" that performs the following steps:
     1. Let |database| be |request|'s [=request/result=].
-    1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.\[[DatabasePromise]] to null.
+    1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.[=StorageArea/[[DatabasePromise]]=] to null.
       <p class="note">This means that if the database is [=close a database connection|closed abnormally=], future invocations of [=perform a database operation=] will attempt to reopen it.</p>
-    1. [=Add a simple event listener=] to |database| for "<code>versionchange</code>" that performs the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/close()}} method on |database|, and then sets |area|.\[[DatabasePromise]] to null.
+    1. [=Add a simple event listener=] to |database| for "<code>versionchange</code>" that performs the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/close()}} method on |database|, and then sets |area|.[=StorageArea/[[DatabasePromise]]=] to null.
        <p class="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the {{StorageArea/clear()}} method), to succeed. Without this, if two {{StorageArea}} instances were both open referencing the same underlying database, {{StorageArea/clear()}} would hang, as it only closes the connection maintained by the {{StorageArea}} it is invoked on.</p>
     1. [=Resolve=] |promise| with |database|.
   1. [=Add a simple event listener=] to |request| for "<code>error</code>" that [=rejects=] |promise| with |request|'s [=request/error=].
   1. [=Add a simple event listener=] to |request| for "<code>upgradeneeded</code>" that performs the following steps:
     1. Let |database| be |request|'s [=request/result=].
     1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
-    1. If these steps throw an exception, catch the exception and [=reject=] |area|.\[[DatabasePromise]] with it.
+    1. If these steps throw an exception, catch the exception and [=reject=] |area|.[=StorageArea/[[DatabasePromise]]=] with it.
 </div>
 
 A value |value| is <dfn>allowed as a key</dfn> if the following steps return true:
