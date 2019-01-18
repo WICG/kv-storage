@@ -1505,7 +1505,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">KV Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-16">16 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-18">18 January 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1556,9 +1556,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#storagearea-values"><span class="secno">3.7</span> <span class="content">values()</span></a>
       <li><a href="#storagearea-entries"><span class="secno">3.8</span> <span class="content">entries()</span></a>
       <li><a href="#storagearea-backingstore"><span class="secno">3.9</span> <span class="content">get backingStore()</span></a>
-      <li><a href="#supporting"><span class="secno">3.10</span> <span class="content">Supporting operations and concepts</span></a>
      </ol>
-    <li><a href="#perfect-polyfill"><span class="secno">4</span> <span class="content">Appendix: is this API perfectly layered?</span></a>
+    <li>
+     <a href="#async-iterator"><span class="secno">4</span> <span class="content">The storage area async iterator</span></a>
+     <ol class="toc">
+      <li><a href="#async-iterator-create"><span class="secno">4.1</span> <span class="content">Creation</span></a>
+      <li><a href="#storageareaasynciterator-next"><span class="secno">4.2</span> <span class="content">next()</span></a>
+     </ol>
+    <li><a href="#supporting"><span class="secno">5</span> <span class="content">Supporting operations and concepts</span></a>
+    <li><a href="#perfect-polyfill"><span class="secno">6</span> <span class="content">Appendix: is this API perfectly layered?</span></a>
     <li><a href="#acks"><span class="secno"></span> <span class="content">Acknowledgments</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content">Conformance</span></a>
     <li>
@@ -1650,7 +1656,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a> is not <a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-secure-contexts/#settings-object" id="ref-for-settings-object">contextually secure</a>, throw a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror①">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code>.</p>
    </ol>
    <h2 class="heading settled dfn-paneled idl-code" data-dfn-type="interface" data-export data-level="3" data-lt="StorageArea" id="storagearea"><span class="secno">3. </span><span class="content">The <code>StorageArea</code> class</span></h2>
-   <p>Upon evaluating the <a data-link-type="dfn" href="#stdkv-storage" id="ref-for-stdkv-storage"><code>std:kv-storage</code></a> module, the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑤">StorageArea</a></code> class must be created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>. The result must be equivalent to evaluating the following JavaScript code, with the following two exceptions:</p>
+   <p>Upon evaluating the <a data-link-type="dfn" href="#stdkv-storage" id="ref-for-stdkv-storage"><code>std:kv-storage</code></a> module, the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑤">StorageArea</a></code> class must be created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm">current realm</a>. The result must be equivalent to evaluating the following JavaScript code, with the following two exceptions:</p>
    <ul>
     <li>
      <p>The constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block.</p>
@@ -1673,9 +1679,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   get backingStore<c- p>()</c-> <c- p>{</c-> <c- d>/* </c-><a href="#storagearea-backingstore" id="ref-for-storagearea-backingstore"><c- d>see below</c-></a><c- d> */</c-> <c- p>}</c->
 <c- p>}</c->
 </pre>
+   <p>The <code>prototype</code> property of <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> must additionally have a <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#table-1" id="ref-for-table-1">@@asyncIterator</a> property, whose value is equal to the same function object as the original value of <code>StorageArea.prototype.entries()</code>.</p>
    <div class="note" id="class-definition-explanation" role="note">
     <a class="self-link" href="#class-definition-explanation"></a> 
-    <p>The intention of defining the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑥">StorageArea</a></code> class in this way, using a skeleton JavaScript class definition, is to automatically establish the various properties of the class, its methods, and its getter, which otherwise need to be specified in tedious detail. For example, this automatically establishes the <code>length</code> and <code>name</code> properties of all these functions, their property descriptors, their <code>prototype</code> and <code>constructor</code> properties, etc. And it does so in a way that is consistent with what a JavaScript developer would expect. </p>
+    <p>The intention of defining the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑦">StorageArea</a></code> class in this way, using a skeleton JavaScript class definition, is to automatically establish the various properties of the class, its methods, and its getter, which otherwise need to be specified in tedious detail. For example, this automatically establishes the <code>length</code> and <code>name</code> properties of all these functions, their property descriptors, their <code>prototype</code> and <code>constructor</code> properties, etc. And it does so in a way that is consistent with what a JavaScript developer would expect. </p>
     <details>
      <summary>Why not use Web IDL?</summary>
      <p>Apart from the above novel technique, there are two commonly-seen alternatives for defining JavaScript classes. The JavaScript specification, as well as the Streams Standard, defer to the "<a href="https://tc39.github.io/ecma262/#sec-ecmascript-standard-built-in-objects">ECMAScript Standard Built-in Objects</a>" section of the JavaScript specification, which defines many defaults. The more popular alternative, however, is to use Web IDL. Why aren’t we using that?</p>
@@ -1693,26 +1700,26 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>None of these mismatches are fatal. We could switch this specification to Web IDL, with appropriate extensions for solving the first two problems, if that ends up being desired. We recognize that the goals for built-in modules are still under active discussion, and the above might not end up being important in the end. But for now, we’re experimenting with this different—and more aligned-with-JavaScript-modules—mechanism of specifying a class definition.</p>
     </details>
    </div>
-   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑦">StorageArea</a></code> instance must also contain the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasename">[[DatabaseName]]</dfn> and <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasepromise">[[DatabasePromise]]</dfn> internal slots. The following is a non-normative summary of their meaning:</p>
+   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑧">StorageArea</a></code> instance must also contain the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasename">[[DatabaseName]]</dfn> and <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasepromise">[[DatabasePromise]]</dfn> internal slots. The following is a non-normative summary of their meaning:</p>
    <dl class="non-normative">
     <dt><a data-link-type="dfn" href="#databasename" id="ref-for-databasename">[[DatabaseName]]</a> 
     <dd>A string containing the name of the backing IndexedDB database. 
     <dt><a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise">[[DatabasePromise]]</a> 
     <dd>A promise for an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase">IDBDatabase</a></code> object, lazily initialized when <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation">performing any database operation</a>. 
    </dl>
-   <p>A JavaScript value <var>val</var> <dfn class="dfn-paneled" data-dfn-for="StorageArea" data-dfn-type="dfn" data-noexport id="storagearea-brand-checks">brand checks</dfn> as a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑧">StorageArea</a></code> if <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>val</var>) is Object, <var>val</var> has a <a data-link-type="dfn" href="#databasename" id="ref-for-databasename①">[[DatabaseName]]</a> internal slot, and <var>val</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is equal to the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>.</p>
-   <p class="note" role="note">The realm check here gives us semantics identical to using JavaScript’s <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-weakmap-objects" id="ref-for-sec-weakmap-objects">WeakMap</a></code> or the proposed private class fields. This ensures <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑨">StorageArea</a></code> does not use any magic, like the platform’s usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> <a data-link-type="biblio" href="#biblio-class-fields">[CLASS-FIELDS]</a> </p>
+   <p>A JavaScript value <var>val</var> <dfn class="dfn-paneled" data-dfn-for="StorageArea" data-dfn-type="dfn" data-noexport id="storagearea-brand-checks">brand checks</dfn> as a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑨">StorageArea</a></code> if <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>val</var>) is Object, <var>val</var> has a <a data-link-type="dfn" href="#databasename" id="ref-for-databasename①">[[DatabaseName]]</a> internal slot, and <var>val</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is equal to the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>.</p>
+   <p class="note" role="note">The realm check here gives us semantics identical to using JavaScript’s <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-weakmap-objects" id="ref-for-sec-weakmap-objects">WeakMap</a></code> or the proposed private class fields. This ensures <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⓪">StorageArea</a></code> does not use any magic, like the platform’s usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> <a data-link-type="biblio" href="#biblio-class-fields">[CLASS-FIELDS]</a> </p>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="constructor" data-export data-level="3.1" data-lt="constructor(name)" id="storagearea-constructor"><span class="secno">3.1. </span><span class="content">constructor(<var>name</var>)</span></h3>
    <dl class="domintro non-normative">
     <dt><code><var>storage</var> = new <code class="idl"><a data-link-type="idl" href="#storagearea-constructor" id="ref-for-storagearea-constructor①">StorageArea</a></code>(<var>name</var>)</code> 
     <dd>
-     <p>Creates a new <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⓪">StorageArea</a></code> that provides an async key/value store view onto an IndexedDB database named <code>`kv-storage:${name}`</code>. </p>
+     <p>Creates a new <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①①">StorageArea</a></code> that provides an async key/value store view onto an IndexedDB database named <code>`kv-storage:${name}`</code>. </p>
      <p>This does not actually open or create the database yet; that is done lazily when other methods are called. This means that all other methods can reject with database-related exceptions in failure cases. </p>
    </dl>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>Let <var>area</var> be this <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①①">StorageArea</a></code> object.</p>
+      <p>Let <var>area</var> be this <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①②">StorageArea</a></code> object.</p>
      <li data-md>
       <p>Let <var>nameString</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-tostring" id="ref-for-sec-tostring">ToString</a>(<var>name</var>).</p>
      <li data-md>
@@ -1899,87 +1906,86 @@ openRequest<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export data-level="3.6" data-lt="keys()" id="storagearea-keys"><span class="secno">3.6. </span><span class="content">keys()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code><var>keys</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys④">keys</a></code>()</code> 
+    <dt><code>for await (const <var>key</var> of <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys⑤">keys</a></code>()) { ... }</code> 
     <dd>
-     <p>Asynchronously retrieves an array containing the keys of all entries in this storage area. </p>
-     <p>Keys will be returned in <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#greater-than" id="ref-for-greater-than">ascending</a> order; roughly, segregated by type, and then sorted within each type. They will be <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip">key round-tripped</a> from their original form. </p>
+     <p>Retrieves an async iterator containing the keys of all entries in this storage area. </p>
+     <p>Keys will be yielded in <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#greater-than" id="ref-for-greater-than">ascending</a> order; roughly, segregated by type, and then sorted within each type. They will be <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip">key round-tripped</a> from their original form. </p>
+     <p>The iterator provides a live view onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration. </p>
    </dl>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation④">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
-      <ol>
-       <li data-md>
-        <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore④">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys" id="ref-for-dom-idbobjectstore-getallkeys">getAllKeys()</a></code> method on <var>store</var> given the argument undefined.</p>
-       <li data-md>
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise④">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result①">result</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑦">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error②">error</a>.</p>
-       <li data-md>
-        <p>Return <var>promise</var>.</p>
-      </ol>
+      <p>Let <var>area</var> be this object.</p>
+     <li data-md>
+      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks②">brand check</a>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> exception.</p>
+     <li data-md>
+      <p>Return the result of <a data-link-type="dfn" href="#create-a-storage-area-async-iterator" id="ref-for-create-a-storage-area-async-iterator">creating a storage area async iterator</a> given <var>area</var> and "<code>keys</code>".</p>
     </ol>
+   </div>
+   <div class="example" id="example-live-async-iterator">
+    <a class="self-link" href="#example-live-async-iterator"></a> To illustrate the live nature of the async iterator, consider the following: 
+<pre class="highlight">await storage<c- p>.</c->set<c- p>(</c-><c- mi>10</c-><c- p>,</c-> <c- u>"value 10"</c-><c- p>);</c->
+await storage<c- p>.</c->set<c- p>(</c-><c- mi>20</c-><c- p>,</c-> <c- u>"value 20"</c-><c- p>);</c->
+await storage<c- p>.</c->set<c- p>(</c-><c- mi>30</c-><c- p>,</c-> <c- u>"value 30"</c-><c- p>);</c->
+
+<c- kr>const</c-> keysSeen <c- o>=</c-> <c- p>[];</c->
+<c- k>for</c-> <c- p>(</c-><c- kr>const</c-> key <c- k>of</c-> storage<c- p>.</c->keys<c- p>())</c-> <c- p>{</c->
+  <c- k>if</c-> <c- p>(</c->key <c- o>===</c-> <c- mi>20</c-><c- p>)</c-> <c- p>{</c->
+    await storage<c- p>.</c->set<c- p>(</c-><c- mi>15</c-><c- p>,</c-> <c- u>"value 15"</c-><c- p>);</c->
+    await storage<c- p>.</c-><c- k>delete</c-><c- p>(</c-><c- mi>20</c-><c- p>);</c->
+    await storage<c- p>.</c->set<c- p>(</c-><c- mi>25</c-><c- p>,</c-> <c- u>"value 25"</c-><c- p>);</c->
+  <c- p>}</c->
+  keysSeen<c- p>.</c->push<c- p>(</c->key<c- p>);</c->
+<c- p>}</c->
+
+console<c- p>.</c->log<c- p>(</c->keysSeen<c- p>);</c->   <c- c1>// logs 10, 20, 25, 30</c->
+</pre>
+    <p>That is, calling <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys①">keys()</a></code> does not create a snapshot as of the time it was called; it returns a live asynchronous iterator, that lazily retrieves the next key after the last-seen one.</p>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export data-level="3.7" data-lt="values()" id="storagearea-values"><span class="secno">3.7. </span><span class="content">values()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code><var>values</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-values" id="ref-for-storagearea-values①">values</a></code>()</code> 
+    <dt><code>for await (const <var>value</var> of <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-values" id="ref-for-storagearea-values①">values</a></code>()) { ... }</code> 
     <dd>
      <p>Asynchronously retrieves an array containing the values of all entries in this storage area. </p>
-     <p>Values will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys①">keys()</a></code>. They will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize①">structured-deserialized</a> from their original form. </p>
+     <p>Values will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys②">keys()</a></code>. They will be <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize①">structured-deserialized</a> from their original form. </p>
+     <p>The iterator provides a live view onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration. </p>
    </dl>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑤">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
-      <ol>
-       <li data-md>
-        <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑤">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
-       <li data-md>
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①②">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑤">resolves</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result②">result</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①③">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error③">error</a>.</p>
-       <li data-md>
-        <p>Return <var>promise</var>.</p>
-      </ol>
+      <p>Let <var>area</var> be this object.</p>
+     <li data-md>
+      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks③">brand check</a>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code> exception.</p>
+     <li data-md>
+      <p>Return the result of <a data-link-type="dfn" href="#create-a-storage-area-async-iterator" id="ref-for-create-a-storage-area-async-iterator①">creating a storage area async iterator</a> given <var>area</var> and "<code>values</code>".</p>
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export data-level="3.8" data-lt="entries()" id="storagearea-entries"><span class="secno">3.8. </span><span class="content">entries()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code><var>entries</var> = await <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries②">entries</a></code>()</code> 
+    <dt><code>for await (const [<var>key</var>, <var>value</var>] of <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries②">entries</a></code>()) { ... }</code> 
+    <dt><code>for await (const [<var>key</var>, <var>value</var>] of <var>storage</var>) { ... }</code> 
     <dd>
      <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area. </p>
-     <p>Entries will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys②">keys()</a></code>. Each key and value will be <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip①">key round-tripped</a> and <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize②">structured-deserialized</a> from its original form, respectively. </p>
+     <p>Entries will be ordered as corresponding to their keys; see <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys③">keys()</a></code>. Each key and value will be <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip①">key round-tripped</a> and <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize②">structured-deserialized</a> from its original form, respectively. </p>
+     <p>The iterator provides a live view onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration. </p>
    </dl>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑥">performing a database operation</a> given this object, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
-      <ol>
-       <li data-md>
-        <p>Let <var>keysRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑥">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys" id="ref-for-dom-idbobjectstore-getallkeys①">getAllKeys()</a></code> method on <var>store</var> given the argument undefined.</p>
-       <li data-md>
-        <p>Let <var>valuesRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑦">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall" id="ref-for-dom-idbobjectstore-getall①">getAll()</a></code> method on <var>store</var> given the argument undefined.</p>
-       <li data-md>
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑥">a new promise</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①④">Add a simple event listener</a> to <var>keysRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑨">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error④">error</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⓪">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑤">error</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>valuesRequest</var> for "<code>success</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑥">resolves</a> <var>promise</var> with the result of <a data-link-type="dfn" href="#zip" id="ref-for-zip">zipping</a> <var>keysRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result③">result</a> and <var>valuesRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result④">result</a>.</p>
-        <p class="note" role="note">If <var>valuesRequest</var> succeeds, then <var>keysRequest</var> will have succeeded already.</p>
-       <li data-md>
-        <p>Return <var>promise</var>.</p>
-      </ol>
+      <p>Let <var>area</var> be this object.</p>
+     <li data-md>
+      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks④">brand check</a>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code> exception.</p>
+     <li data-md>
+      <p>Return the result of <a data-link-type="dfn" href="#create-a-storage-area-async-iterator" id="ref-for-create-a-storage-area-async-iterator②">creating a storage area async iterator</a> given <var>area</var> and "<code>entries</code>".</p>
     </ol>
    </div>
    <div class="example" id="example-entries-to-server">
     <a class="self-link" href="#example-entries-to-server"></a> Assuming you knew that that you only stored JSON-compatible types in <code><a data-link-type="dfn" href="#stdkv-storage-storage" id="ref-for-stdkv-storage-storage①">storage</a></code>, you could use the following code to send all locally-stored entries to a server: 
-<pre class="highlight"><c- kr>const</c-> entries <c- o>=</c-> JSON<c- p>.</c->stringify<c- p>(</c->await storage<c- p>.</c->entries<c- p>());</c->
+<pre class="highlight"><c- kr>const</c-> entries <c- o>=</c-> <c- p>[];</c->
+<c- k>for</c-> await <c- p>(</c-><c- kr>const</c-> entry <c- k>of</c-> storage<c- p>.</c->entries<c- p>())</c-> <c- p>{</c->
+  entries<c- p>.</c->push<c- p>(</c->entry<c- p>);</c->
+<c- p>}</c->
+
 fetch<c- p>(</c-><c- u>"/storage-receiver"</c-><c- p>,</c-> <c- p>{</c->
   method<c- o>:</c-> <c- u>"POST"</c-><c- p>,</c->
   body<c- o>:</c-> entries<c- p>,</c->
@@ -2009,7 +2015,7 @@ fetch<c- p>(</c-><c- u>"/storage-receiver"</c-><c- p>,</c-> <c- p>{</c->
      <li data-md>
       <p>Let <var>area</var> be this object.</p>
      <li data-md>
-      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks②">brand check</a>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code> exception.</p>
+      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks⑤">brand check</a>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code> exception.</p>
      <li data-md>
       <p>Let <var>info</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object" id="ref-for-sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a></code>).</p>
      <li data-md>
@@ -2056,12 +2062,169 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
 </pre>
     <p>Satisfied with their web app’s Pokémon integrity, our developer is now happy and fulfilled. (At least, until they realize that none of their code has error handling.)</p>
    </div>
-   <h3 class="heading settled" data-level="3.10" id="supporting"><span class="secno">3.10. </span><span class="content">Supporting operations and concepts</span><a class="self-link" href="#supporting"></a></h3>
+   <h2 class="heading settled" data-level="4" id="async-iterator"><span class="secno">4. </span><span class="content">The storage area async iterator</span><a class="self-link" href="#async-iterator"></a></h2>
+   <p class="note" role="note">Much of this section is amenable to being generalized into a reusable primitive, probably via Web IDL. See <a href="https://github.com/heycam/webidl/issues/580">heycam/webidl#580</a>.</p>
+   <p>Upon evaluating the <a data-link-type="dfn" href="#stdkv-storage" id="ref-for-stdkv-storage①"><code>std:kv-storage</code></a> module, let <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="the-storage-area-async-iterator-prototype-object">the storage area async iterator prototype object</dfn> be object obtained via the following steps executed in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm②">current realm</a>:</p>
+   <ol>
+    <li data-md>
+     <p>Let <var>proto</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate①">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object" id="ref-for-sec-%iteratorprototype%-object">%IteratorPrototype%</a></code>).</p>
+    <li data-md>
+     <p>Let <var>next</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(the steps of <a href="#storageareaasynciterator-next" id="ref-for-storageareaasynciterator-next">§4.2 next()</a>).</p>
+    <li data-md>
+     <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createmethodproperty" id="ref-for-sec-createmethodproperty">CreateMethodProperty</a>(<var>proto</var>, "<code>next</code>", <var>next</var>).</p>
+    <li data-md>
+     <p>Return <var>proto</var>.</p>
+   </ol>
+   <h3 class="heading settled" data-level="4.1" id="async-iterator-create"><span class="secno">4.1. </span><span class="content">Creation</span><a class="self-link" href="#async-iterator-create"></a></h3>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="create a storage area async iterator|creating a storage area async iterator" data-noexport id="create-a-storage-area-async-iterator">create a storage area async iterator</dfn>, given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①③">StorageArea</a></code> <var>area</var> and a string <var>mode</var> which is one of either "<code>keys</code>", "<code>values</code>", or "<code>entries</code>":</p>
+   <ol>
+    <li data-md>
+     <p>Let <var>iter</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate②">ObjectCreate</a>(<a data-link-type="dfn" href="#the-storage-area-async-iterator-prototype-object" id="ref-for-the-storage-area-async-iterator-prototype-object">the storage area async iterator prototype object</a>, « <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="area">[[Area]]</dfn>, <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="mode">[[Mode]]</dfn>, <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="lastkey">[[LastKey]]</dfn>, <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="ongoingpromise">[[OngoingPromise]]</dfn> »).</p>
+    <li data-md>
+     <p>Set <var>iter</var>.<a data-link-type="dfn" href="#area" id="ref-for-area">[[Area]]</a> to <var>area</var>.</p>
+    <li data-md>
+     <p>Set <var>iter</var>.<a data-link-type="dfn" href="#mode" id="ref-for-mode">[[Mode]]</a> to <var>mode</var>.</p>
+    <li data-md>
+     <p>Set <var>iter</var>.<a data-link-type="dfn" href="#lastkey" id="ref-for-lastkey">[[LastKey]]</a> to <a data-link-type="dfn" href="#not-yet-started" id="ref-for-not-yet-started">not yet started</a>.</p>
+    <li data-md>
+     <p>Set <var>iter</var>.<a data-link-type="dfn" href="#ongoingpromise" id="ref-for-ongoingpromise">[[OngoingPromise]]</a> to undefined.</p>
+    <li data-md>
+     <p>Return <var>iter</var>.</p>
+   </ol>
+   <p>The following is a non-normative summary of the internal slots that get added to objects created in such a way:</p>
+   <dl class="non-normative">
+    <dt><a data-link-type="dfn" href="#area" id="ref-for-area①">[[Area]]</a> 
+    <dd>A pointer back to the originating <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①④">StorageArea</a></code>, used so that the async iterator can <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation④">perform database operations</a>. 
+    <dt><a data-link-type="dfn" href="#mode" id="ref-for-mode①">[[Mode]]</a> 
+    <dd>One of "<code>keys</code>", "<code>values</code>", or "<code>entries</code>", indicating the types of values that iteration will retrieve from the storage area. 
+    <dt><a data-link-type="dfn" href="#lastkey" id="ref-for-lastkey①">[[LastKey]]</a> 
+    <dd>The key of the entry that was most recently iterated over, used to perform the next iteration. Or, if <code class="idl"><a data-link-type="idl" href="#storageareaasynciterator-next" id="ref-for-storageareaasynciterator-next②">next()</a></code> has not yet been called, it will be set to <a data-link-type="dfn" href="#not-yet-started" id="ref-for-not-yet-started①">not yet started</a>. 
+    <dt><a data-link-type="dfn" href="#ongoingpromise" id="ref-for-ongoingpromise①">[[OngoingPromise]]</a> 
+    <dd>A reference to the promise that was returned by the most recent call to <code class="idl"><a data-link-type="idl" href="#storageareaasynciterator-next" id="ref-for-storageareaasynciterator-next①">next()</a></code>, if that promise has not yet settled, or undefined if it has. Used to prevent concurrent executions of the main <a data-link-type="dfn" href="#get-the-next-iterresult" id="ref-for-get-the-next-iterresult">get the next IterResult</a> algorithm, which would be bad because that algorithm needs to complete in order for <a data-link-type="dfn" href="#lastkey" id="ref-for-lastkey②">[[LastKey]]</a> to be set correctly. 
+   </dl>
+   <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="the storage area async iterator prototype object" data-dfn-type="method" data-export data-level="4.2" data-lt="next()" id="storageareaasynciterator-next"><span class="secno">4.2. </span><span class="content">next()</span></h3>
+   <ol>
+    <li data-md>
+     <p>Let <var>iter</var> be this object.</p>
+    <li data-md>
+     <p>If <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values①">Type</a>(<var>iter</var>) is not Object, or <var>iter</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm①">relevant realm</a> is not equal to the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm③">current realm</a>, or <var>iter</var> does not have a [[Area]] internal slot, then return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑤">TypeError</a></code> exception.</p>
+    <li data-md>
+     <p>Let <var>currentOngoingPromise</var> be <var>iter</var>.<a data-link-type="dfn" href="#ongoingpromise" id="ref-for-ongoingpromise②">[[OngoingPromise]]</a>.</p>
+    <li data-md>
+     <p>Let <var>resultPromise</var> be undefined.</p>
+    <li data-md>
+     <p>If <var>currentOngoingPromise</var> is not undefined, then set <var>resultPromise</var> to the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by①">transforming</a> <var>currentOngoingPromise</var> by the result of <a data-link-type="dfn" href="#get-the-next-iterresult" id="ref-for-get-the-next-iterresult①">getting the next IterResult</a> given <var>iter</var>.</p>
+    <li data-md>
+     <p>Otherwise, set <var>resultPromise</var> to the result of <a data-link-type="dfn" href="#get-the-next-iterresult" id="ref-for-get-the-next-iterresult②">getting the next IterResult</a> given <var>iter</var>.</p>
+    <li data-md>
+     <p>Set <var>iter</var>.<a data-link-type="dfn" href="#ongoingpromise" id="ref-for-ongoingpromise③">[[OngoingPromise]]</a> to <var>resultPromise</var>.</p>
+    <li data-md>
+     <p>Return <var>resultPromise</var>.</p>
+   </ol>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="get the next IterResult|getting the next IterResult" data-noexport id="get-the-next-iterresult">get the next IterResult</dfn> given <var>iter</var>:</p>
+   <ol>
+    <li data-md>
+     <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑤">performing a database operation</a> given <var>iter</var>.<a data-link-type="dfn" href="#area" id="ref-for-area②">[[Area]]</a>, "<code>read</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
+     <ol>
+      <li data-md>
+       <p>Let <var>lastKey</var> be <var>iter</var>.<a data-link-type="dfn" href="#lastkey" id="ref-for-lastkey③">[[LastKey]]</a>.</p>
+      <li data-md>
+       <p>If <var>lastKey</var> is undefined, then return <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createiterresultobject" id="ref-for-sec-createiterresultobject">CreateIterResultObject</a>(undefined, true).</p>
+      <li data-md>
+       <p>Let <var>range</var> be the result of <a data-link-type="dfn" href="#get-the-range-for-a-key" id="ref-for-get-the-range-for-a-key">getting the range for</a> <var>lastKey</var>.</p>
+      <li data-md>
+       <p>Let <var>key</var> and <var>iterResultValue</var> be null.</p>
+      <li data-md>
+       <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a>.</p>
+      <li data-md>
+       <p>Switch on <var>iter</var>.<a data-link-type="dfn" href="#mode" id="ref-for-mode②">[[Mode]]</a>:</p>
+       <dl class="switch">
+        <dt>"<code>keys</code>"
+        <dd>
+         <ol>
+          <li data-md>
+           <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore④">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getkey" id="ref-for-dom-idbobjectstore-getkey">getKey()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that performs the following steps:</p>
+           <ol>
+            <li data-md>
+             <p>Set <var>key</var> to <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result①">result</a>.</p>
+            <li data-md>
+             <p>Set <var>iterResultValue</var> to <var>key</var>.</p>
+            <li data-md>
+             <p><a data-link-type="dfn" href="#finish-up" id="ref-for-finish-up">Finish up</a>.</p>
+           </ol>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑦">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error②">error</a>.</p>
+         </ol>
+        <dt>"<code>values</code>"
+        <dd>
+         <ol>
+          <li data-md>
+           <p>Let <var>keyRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑤">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getkey" id="ref-for-dom-idbobjectstore-getkey①">getKey()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
+          <li data-md>
+           <p>Let <var>valueRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑥">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get" id="ref-for-dom-idbobjectstore-get①">get()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①②">Add a simple event listener</a> to <var>valueRequest</var> for "<code>success</code>" that performs the following steps:</p>
+           <ol>
+            <li data-md>
+             <p>Set <var>key</var> to <var>keyRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result②">result</a>.</p>
+            <li data-md>
+             <p>Set <var>iterResultValue</var> to <var>valueRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result③">result</a>.</p>
+            <li data-md>
+             <p><a data-link-type="dfn" href="#finish-up" id="ref-for-finish-up①">Finish up</a>.</p>
+           </ol>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①③">Add a simple event listener</a> to <var>keyRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑧">rejects</a> <var>promise</var> with <var>keyRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error③">error</a>.</p>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①④">Add a simple event listener</a> to <var>valueRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise⑨">rejects</a> <var>promise</var> with <var>valueRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error④">error</a>.</p>
+         </ol>
+        <dt>"<code>entries</code>"
+        <dd>
+         <ol>
+          <li data-md>
+           <p>Let <var>keyRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑦">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getkey" id="ref-for-dom-idbobjectstore-getkey②">getKey()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
+          <li data-md>
+           <p>Let <var>valueRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑧">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get" id="ref-for-dom-idbobjectstore-get②">get()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>valueRequest</var> for "<code>success</code>" that performs the following steps:</p>
+           <ol>
+            <li data-md>
+             <p>Set <var>key</var> to <var>keyRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result④">result</a>.</p>
+            <li data-md>
+             <p>Let <var>value</var> be <var>valueRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result⑤">result</a>.</p>
+            <li data-md>
+             <p>Set <var>iterResultValue</var> to <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createarrayfromlist" id="ref-for-sec-createarrayfromlist">CreateArrayFromList</a>(« <var>key</var>, <var>value</var> »).</p>
+            <li data-md>
+             <p><a data-link-type="dfn" href="#finish-up" id="ref-for-finish-up②">Finish up</a>.</p>
+           </ol>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑥">Add a simple event listener</a> to <var>keyRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⓪">rejects</a> <var>promise</var> with <var>keyRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑤">error</a>.</p>
+          <li data-md>
+           <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>valueRequest</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">rejects</a> <var>promise</var> with <var>valueRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑥">error</a>.</p>
+         </ol>
+       </dl>
+       <p>When the above steps say to <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="finish-up">finish up</dfn>, which they will do after having set <var>key</var> and <var>iterResultValue</var> appropriately, perform the following steps:</p>
+       <ol>
+        <li data-md>
+         <p>Set <var>iter</var>.<a data-link-type="dfn" href="#lastkey" id="ref-for-lastkey④">[[LastKey]]</a> to <var>key</var>.</p>
+        <li data-md>
+         <p>Set <var>iter</var>.<a data-link-type="dfn" href="#ongoingpromise" id="ref-for-ongoingpromise④">[[OngoingPromise]]</a> to undefined.</p>
+        <li data-md>
+         <p>Let <var>done</var> be true if <var>key</var> is undefined, and false otherwise.</p>
+        <li data-md>
+         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise④">Resolve</a> <var>promise</var> with <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createiterresultobject" id="ref-for-sec-createiterresultobject①">CreateIterResultObject</a>(<var>iterResultValue</var>, <var>done</var>).</p>
+       </ol>
+      <li data-md>
+       <p>Return <var>promise</var>.</p>
+     </ol>
+   </ol>
+   <h2 class="heading settled" data-level="5" id="supporting"><span class="secno">5. </span><span class="content">Supporting operations and concepts</span><a class="self-link" href="#supporting"></a></h2>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="add-a-simple-event-listener">add a simple event listener</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> <var>target</var>, an event type string <var>type</var>, and a set of steps <var>steps</var>:</p>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>Let <var>jsCallback</var> be a new JavaScript function object, created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm②">current realm</a>, that performs the steps given by <var>steps</var>. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or [[Prototype]]) are unobservable, and can be chosen arbitrarily.</p>
+      <p>Let <var>jsCallback</var> be a new JavaScript function object, created in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm④">current realm</a>, that performs the steps given by <var>steps</var>. Other properties of the function (such as its <code>name</code> and <code>length</code> properties, or [[Prototype]]) are unobservable, and can be chosen arbitrarily.</p>
      <li data-md>
       <p>Let <var>idlCallback</var> be the result of <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value" id="ref-for-dfn-convert-ecmascript-to-idl-value">converting</a> <var>jsCallback</var> to an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#callbackdef-eventlistener" id="ref-for-callbackdef-eventlistener">EventListener</a></code>.</p>
      <li data-md>
@@ -2077,17 +2240,17 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
       <p>Return the result of performing the steps listed in the description of the getter for <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope①">WindowOrWorkerGlobalScope</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb" id="ref-for-dom-windoworworkerglobalscope-indexeddb">indexedDB</a></code> attribute on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object①">current global object</a>.</p>
     </ol>
    </div>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①②">StorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑧">IDBObjectStore</a></code> <var>store</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑤">StorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑨">IDBObjectStore</a></code> <var>store</var>:</p>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks③">brand check</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with④">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror②">TypeError</a></code> exception.</p>
+      <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks⑥">brand check</a>, return <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with⑤">a promise rejected with</a> a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑥">TypeError</a></code> exception.</p>
      <li data-md>
       <p class="assertion">Assert: <var>area</var>.<a data-link-type="dfn" href="#databasename" id="ref-for-databasename⑥">[[DatabaseName]]</a> is a string (and in particular is not null).</p>
      <li data-md>
       <p>If <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑤">[[DatabasePromise]]</a> is null, <a data-link-type="dfn" href="#initialize-the-database-promise" id="ref-for-initialize-the-database-promise">initialize the database promise</a> for <var>area</var>.</p>
      <li data-md>
-      <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by①">transforming</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑥">[[DatabasePromise]]</a> by a fulfillment handler that performs the following steps, given <var>database</var>:</p>
+      <p>Return the result of <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by" id="ref-for-transforming-by②">transforming</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑥">[[DatabasePromise]]</a> by a fulfillment handler that performs the following steps, given <var>database</var>:</p>
       <ol>
        <li data-md>
         <p>Let <var>transaction</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase①">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction" id="ref-for-dom-idbdatabase-transaction">transaction()</a></code> method on <var>database</var>, given the arguments "<code>store</code>" and <var>mode</var>.</p>
@@ -2098,42 +2261,42 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
       </ol>
     </ol>
    </div>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-the-database-promise">initialize the database promise</dfn> for a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①③">StorageArea</a></code> <var>area</var>:</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-the-database-promise">initialize the database promise</dfn> for a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑥">StorageArea</a></code> <var>area</var>:</p>
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>Set <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑦">[[DatabasePromise]]</a> to <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑦">a new promise</a>.</p>
+      <p>Set <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑦">[[DatabasePromise]]</a> to <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a>.</p>
      <li data-md>
-      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object②">current global object</a> does not <a data-link-type="dfn" href="https://heycam.github.io/webidl/#include" id="ref-for-include①">include</a> <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope②">WindowOrWorkerGlobalScope</a></code>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①①">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑧">[[DatabasePromise]]</a> with a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror③">TypeError</a></code>, and return.</p>
+      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object②">current global object</a> does not <a data-link-type="dfn" href="https://heycam.github.io/webidl/#include" id="ref-for-include①">include</a> <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope②">WindowOrWorkerGlobalScope</a></code>, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①②">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑧">[[DatabasePromise]]</a> with a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror⑦">TypeError</a></code>, and return.</p>
      <li data-md>
       <p>Let <var>request</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbfactory" id="ref-for-idbfactory②">IDBFactory</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open" id="ref-for-dom-idbfactory-open">open()</a></code> method on the <a data-link-type="dfn" href="#current-idbfactory" id="ref-for-current-idbfactory①">current <code>IDBFactory</code></a>, given the arguments <var>area</var>.<a data-link-type="dfn" href="#databasename" id="ref-for-databasename⑦">[[DatabaseName]]</a> and 1.</p>
      <li data-md>
-      <p>If those steps threw an exception, catch the exception, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①②">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑨">[[DatabasePromise]]</a> with it, and return.</p>
+      <p>If those steps threw an exception, catch the exception, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①③">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑨">[[DatabasePromise]]</a> with it, and return.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑦">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that performs the following steps:</p>
-      <ol>
-       <li data-md>
-        <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result⑤">result</a>.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①⓪">[[DatabasePromise]]</a> to null.</p>
-        <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑦">perform a database operation</a> will attempt to reopen it.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>database</var> for "<code>versionchange</code>" that performs the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>, and then sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①①">[[DatabasePromise]]</a> to null.</p>
-        <p class="note" role="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear()</a></code> method), to succeed. Without this, if two <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①④">StorageArea</a></code> instances were both open referencing the same underlying database, <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear②">clear()</a></code> would hang, as it only closes the connection maintained by the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑤">StorageArea</a></code> it is invoked on.</p>
-       <li data-md>
-        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑦">Resolve</a> <var>promise</var> with <var>database</var>.</p>
-      </ol>
-     <li data-md>
-      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①③">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑥">error</a>.</p>
-     <li data-md>
-      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑧">Add a simple event listener</a> to <var>request</var> for "<code>success</code>" that performs the following steps:</p>
       <ol>
        <li data-md>
         <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result⑥">result</a>.</p>
        <li data-md>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①⓪">[[DatabasePromise]]</a> to null.</p>
+        <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑥">perform a database operation</a> will attempt to reopen it.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>database</var> for "<code>versionchange</code>" that performs the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>, and then sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①①">[[DatabasePromise]]</a> to null.</p>
+        <p class="note" role="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear()</a></code> method), to succeed. Without this, if two <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑦">StorageArea</a></code> instances were both open referencing the same underlying database, <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear②">clear()</a></code> would hang, as it only closes the connection maintained by the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑧">StorageArea</a></code> it is invoked on.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑤">Resolve</a> <var>promise</var> with <var>database</var>.</p>
+      </ol>
+     <li data-md>
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑦">error</a>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②②">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result⑦">result</a>.</p>
+       <li data-md>
         <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase③">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
        <li data-md>
-        <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①②">[[DatabasePromise]]</a> with it.</p>
+        <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⑤">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①②">[[DatabasePromise]]</a> with it.</p>
       </ol>
     </ol>
    </div>
@@ -2141,7 +2304,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
    <div class="algorithm">
     <ol>
      <li data-md>
-      <p>If <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values①">Type</a>(<var>value</var>) is Number or String, return true.</p>
+      <p>If <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values②">Type</a>(<var>value</var>) is Number or String, return true.</p>
      <li data-md>
       <p>If <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-isarray" id="ref-for-sec-isarray">IsArray</a>(<var>value</var>) is true, return true.</p>
      <li data-md>
@@ -2158,27 +2321,20 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
      A value being <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key③">allowed as a key</a> means that it can at least plausibly be used as a key in the IndexedDB APIs. In particular, the values which are <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key④">allowed as a key</a> are a subset of those for which IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key">convert a value to a key</a> algorithm will succeed. 
     <p>Most notably, using the <a data-link-type="dfn" href="#allowed-as-a-key" id="ref-for-allowed-as-a-key⑤">allowed as a key</a> predicate ensures that <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange">IDBKeyRange</a></code> objects, or any other special object that is accepted as a query in future IndexedDB specification revisions, will be disallowed. Only straightforward key values are accepted by the KV storage API.</p>
    </div>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="zip">zip</dfn> two <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">lists</a> <var>a</var> and <var>b</var>:</p>
-   <ol>
-    <li data-md>
-     <p class="assertion">Assert: <var>a</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is equal to <var>b</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a>.</p>
-    <li data-md>
-     <p>Let <var>result</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a>.</p>
-    <li data-md>
-     <p>Let <var>i</var> be 0.</p>
-    <li data-md>
-     <p>While <var>i</var> is less than <var>a</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size②">size</a>:</p>
-     <ol>
-      <li data-md>
-       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> « <var>a</var>[<var>i</var>], <var>b</var>[<var>i</var>] » to <var>result</var>.</p>
-     </ol>
-    <li data-md>
-     <p>Return <var>result</var>.</p>
-   </ol>
-   <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="key round-trip" data-noexport id="key-round-trip">Key round-tripping</dfn> refers to the way in which JavaScript values are processed by first being passed through IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key①">convert a value to a key</a> operation, then converted back through its <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value" id="ref-for-convert-a-key-to-a-value">convert a key to a value</a> operation. Keys returned by the <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys③">keys()</a></code> or <code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries①">entries()</a></code> methods will have gone through this process.</p>
+   <p><dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="key round-trip" data-noexport id="key-round-trip">Key round-tripping</dfn> refers to the way in which JavaScript values are processed by first being passed through IndexedDB’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key" id="ref-for-convert-a-value-to-a-key①">convert a value to a key</a> operation, then converted back through its <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value" id="ref-for-convert-a-key-to-a-value">convert a key to a value</a> operation. Keys returned by the <code class="idl"><a data-link-type="idl" href="#storagearea-keys" id="ref-for-storagearea-keys④">keys()</a></code> or <code class="idl"><a data-link-type="idl" href="#storagearea-entries" id="ref-for-storagearea-entries①">entries()</a></code> methods will have gone through this process.</p>
    <p>Notably, any <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-typedarray-objects" id="ref-for-sec-typedarray-objects①">typed arrays</a> or <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DataView" id="ref-for-idl-DataView①">DataView</a></code>s will have been "unwrapped", and returned back as just <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-ArrayBuffer" id="ref-for-idl-ArrayBuffer①">ArrayBuffer</a></code>s containing the same bytes. Also, similar to the <a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage" id="ref-for-structuredserializeforstorage①">structured-serialization</a>/<a data-link-type="abstract-op" href="https://html.spec.whatwg.org/multipage/structured-data.html#structureddeserialize" id="ref-for-structureddeserialize③">deserialization</a> process, any "expando" properties or other modifications will not be preserved by <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip②">key round-tripping</a>.</p>
    <p class="note" role="note">For primitive string or number values, there’s no need to worry about <a data-link-type="dfn" href="#key-round-trip" id="ref-for-key-round-trip③">key round-tripping</a>; the values are indistinguishable.</p>
-   <h2 class="heading settled" data-level="4" id="perfect-polyfill"><span class="secno">4. </span><span class="content">Appendix: is this API perfectly layered?</span><a class="self-link" href="#perfect-polyfill"></a></h2>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="get the range for a key|getting the range for|getting the range for a key" data-noexport id="get-the-range-for-a-key">get the range for a key</dfn> <var>key</var>:</p>
+   <ol>
+    <li data-md>
+     <p>If <var>key</var> is <a data-link-type="dfn" href="#not-yet-started" id="ref-for-not-yet-started②">not yet started</a>, then return the result of performing the steps listed in the description of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound" id="ref-for-dom-idbkeyrange-lowerbound">IDBKeyRange.lowerBound()</a></code> static method, given the argument −Infinity.</p>
+     <p class="note" role="note">The intent here is to get an <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#unbounded-key-range" id="ref-for-unbounded-key-range">unbounded key range</a>, but this is the closest thing we can get that is representable as an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange①">IDBKeyRange</a></code> object. It works equivalently for our purposes, but will behave incorrectly if Indexed DB ever adds keys that sort below −Infinity. See <a href="https://github.com/WICG/kv-storage/issues/6#issuecomment-452054944">some discussion on potential future improvements</a>.</p>
+    <li data-md>
+     <p>Otherwise, return the result of performing the steps listed listed in the description of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound-lower-loweropen" id="ref-for-dom-idbkeyrange-lowerbound-lower-loweropen">IDBKeyRange.lowerBound()</a></code> static method, given the arguments <var>lastKey</var> and true.</p>
+   </ol>
+   <p>The special value <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="not-yet-started">not yet started</dfn> can be taken to be any JavaScript value that is not equal to any other program-accessible JavaScript value (but is equal to itself). It is used exclusively as an argument to the <a data-link-type="dfn" href="#get-the-range-for-a-key" id="ref-for-get-the-range-for-a-key①">get the range for a key</a> algorithm.</p>
+   <p class="example" id="example-not-yet-started"><a class="self-link" href="#example-not-yet-started"></a>A newly created object or symbol, e.g. <code class="highlight"><c- kr>const</c-> nys <c- o>=</c-> <c- p>{}</c-></code> or <code class="highlight"><c- kr>const</c-> nys <c- o>=</c-> Symbol<c- p>()</c-></code>, would satisfy this definition.</p>
+   <h2 class="heading settled" data-level="6" id="perfect-polyfill"><span class="secno">6. </span><span class="content">Appendix: is this API perfectly layered?</span><a class="self-link" href="#perfect-polyfill"></a></h2>
    <p>The APIs in this specification, being layered on top of Indexed DB as they are, are almost entirely well-layered, in the sense of building on low-level features in the way promoted by the <cite>Extensible Web Manifesto</cite>. (Indeed, the <a href="#class-definition-explanation">unusual class definition pattern</a> was motivated by a desire to further improve this layering.) However, it fails in two ways, both around ensuring the encapsulation of the implementation: <a data-link-type="biblio" href="#biblio-extensible">[EXTENSIBLE]</a></p>
    <ul>
     <li data-md>
@@ -2331,25 +2487,39 @@ for their contributions to this specification.</p>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#add-a-simple-event-listener">add a simple event listener</a><span>, in §3.10</span>
-   <li><a href="#allowed-as-a-key">allowed as a key</a><span>, in §3.10</span>
+   <li><a href="#add-a-simple-event-listener">add a simple event listener</a><span>, in §5</span>
+   <li><a href="#allowed-as-a-key">allowed as a key</a><span>, in §5</span>
+   <li><a href="#area">[[Area]]</a><span>, in §4.1</span>
    <li><a href="#storagearea-backingstore">backingStore</a><span>, in §3.8</span>
    <li><a href="#storagearea-brand-checks">brand checks</a><span>, in §3</span>
    <li><a href="#storagearea-clear">clear()</a><span>, in §3.4</span>
    <li><a href="#storagearea-constructor">constructor(name)</a><span>, in §3</span>
-   <li><a href="#current-idbfactory">current IDBFactory</a><span>, in §3.10</span>
+   <li><a href="#create-a-storage-area-async-iterator">create a storage area async iterator</a><span>, in §4.1</span>
+   <li><a href="#create-a-storage-area-async-iterator">creating a storage area async iterator</a><span>, in §4.1</span>
+   <li><a href="#current-idbfactory">current IDBFactory</a><span>, in §5</span>
    <li><a href="#databasename">[[DatabaseName]]</a><span>, in §3</span>
    <li><a href="#databasepromise">[[DatabasePromise]]</a><span>, in §3</span>
    <li><a href="#storagearea-delete">delete(key)</a><span>, in §3.3</span>
    <li><a href="#deleting-the-database">delete the database</a><span>, in §3.5</span>
    <li><a href="#deleting-the-database">deleting the database</a><span>, in §3.5</span>
    <li><a href="#storagearea-entries">entries()</a><span>, in §3.7</span>
+   <li><a href="#finish-up">finish up</a><span>, in §4.2</span>
    <li><a href="#storagearea-get">get(key)</a><span>, in §3.2</span>
-   <li><a href="#initialize-the-database-promise">initialize the database promise</a><span>, in §3.10</span>
-   <li><a href="#key-round-trip">key round-trip</a><span>, in §3.10</span>
+   <li><a href="#get-the-next-iterresult">get the next IterResult</a><span>, in §4.2</span>
+   <li><a href="#get-the-range-for-a-key">get the range for a key</a><span>, in §5</span>
+   <li><a href="#get-the-next-iterresult">getting the next IterResult</a><span>, in §4.2</span>
+   <li><a href="#get-the-range-for-a-key">getting the range for</a><span>, in §5</span>
+   <li><a href="#get-the-range-for-a-key">getting the range for a key</a><span>, in §5</span>
+   <li><a href="#initialize-the-database-promise">initialize the database promise</a><span>, in §5</span>
+   <li><a href="#key-round-trip">key round-trip</a><span>, in §5</span>
    <li><a href="#storagearea-keys">keys()</a><span>, in §3.5</span>
-   <li><a href="#performing-a-database-operation">perform a database operation</a><span>, in §3.10</span>
-   <li><a href="#performing-a-database-operation">performing a database operation</a><span>, in §3.10</span>
+   <li><a href="#lastkey">[[LastKey]]</a><span>, in §4.1</span>
+   <li><a href="#mode">[[Mode]]</a><span>, in §4.1</span>
+   <li><a href="#storageareaasynciterator-next">next()</a><span>, in §4.1</span>
+   <li><a href="#not-yet-started">not yet started</a><span>, in §5</span>
+   <li><a href="#ongoingpromise">[[OngoingPromise]]</a><span>, in §4.1</span>
+   <li><a href="#performing-a-database-operation">perform a database operation</a><span>, in §5</span>
+   <li><a href="#performing-a-database-operation">performing a database operation</a><span>, in §5</span>
    <li><a href="#storagearea-set">set(key, value)</a><span>, in §3.1</span>
    <li><a href="#stdkv-storage">std:kv-storage</a><span>, in §2</span>
    <li><a href="#stdkv-storage-storage">storage</a><span>, in §2</span>
@@ -2359,25 +2529,31 @@ for their contributions to this specification.</p>
      <li><a href="#storagearea">(interface)</a><span>, in §2</span>
      <li><a href="#stdkv-storage-storagearea">dfn for std:kv-storage</a><span>, in §2</span>
     </ul>
+   <li><a href="#the-storage-area-async-iterator-prototype-object">the storage area async iterator prototype object</a><span>, in §4</span>
    <li><a href="#storagearea-values">values()</a><span>, in §3.6</span>
-   <li><a href="#zip">zip</a><span>, in §3.10</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-callbackdef-eventlistener">
    <a href="https://dom.spec.whatwg.org/#callbackdef-eventlistener">https://dom.spec.whatwg.org/#callbackdef-eventlistener</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-callbackdef-eventlistener">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-callbackdef-eventlistener">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-eventtarget">
    <a href="https://dom.spec.whatwg.org/#eventtarget">https://dom.spec.whatwg.org/#eventtarget</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-eventtarget">3.10. Supporting operations and concepts</a> <a href="#ref-for-eventtarget①">(2)</a>
+    <li><a href="#ref-for-eventtarget">5. Supporting operations and concepts</a> <a href="#ref-for-eventtarget①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-eventtarget-addeventlistener">
    <a href="https://dom.spec.whatwg.org/#dom-eventtarget-addeventlistener">https://dom.spec.whatwg.org/#dom-eventtarget-addeventlistener</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-eventtarget-addeventlistener">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-eventtarget-addeventlistener">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-%iteratorprototype%-object">
+   <a href="https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object">https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-%25iteratorprototype%25-object">4. The storage area async iterator</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-object-prototype-object">
@@ -2386,16 +2562,46 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-sec-properties-of-the-object-prototype-object">3.9. get backingStore()</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-table-1">
+   <a href="https://tc39.github.io/ecma262/#table-1">https://tc39.github.io/ecma262/#table-1</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-table-1">3. The StorageArea class</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-sec-construct">
    <a href="https://tc39.github.io/ecma262/#sec-construct">https://tc39.github.io/ecma262/#sec-construct</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-construct">2. The std:kv-storage built-in module</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createarrayfromlist">
+   <a href="https://tc39.github.io/ecma262/#sec-createarrayfromlist">https://tc39.github.io/ecma262/#sec-createarrayfromlist</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createarrayfromlist">4.2. next()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createbuiltinfunction">
+   <a href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction">https://tc39.github.io/ecma262/#sec-createbuiltinfunction</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createbuiltinfunction">4. The storage area async iterator</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-sec-createdataproperty">
    <a href="https://tc39.github.io/ecma262/#sec-createdataproperty">https://tc39.github.io/ecma262/#sec-createdataproperty</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-createdataproperty">3.9. get backingStore()</a> <a href="#ref-for-sec-createdataproperty①">(2)</a> <a href="#ref-for-sec-createdataproperty②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createiterresultobject">
+   <a href="https://tc39.github.io/ecma262/#sec-createiterresultobject">https://tc39.github.io/ecma262/#sec-createiterresultobject</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createiterresultobject">4.2. next()</a> <a href="#ref-for-sec-createiterresultobject①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-createmethodproperty">
+   <a href="https://tc39.github.io/ecma262/#sec-createmethodproperty">https://tc39.github.io/ecma262/#sec-createmethodproperty</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-createmethodproperty">4. The storage area async iterator</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-date-objects">
@@ -2407,8 +2613,8 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="term-for-sec-isarray">
    <a href="https://tc39.github.io/ecma262/#sec-isarray">https://tc39.github.io/ecma262/#sec-isarray</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sec-isarray">3.10. Supporting operations and concepts</a>
-    <li><a href="#ref-for-sec-isarray①">4. Appendix: is this API perfectly layered?</a>
+    <li><a href="#ref-for-sec-isarray">5. Supporting operations and concepts</a>
+    <li><a href="#ref-for-sec-isarray①">6. Appendix: is this API perfectly layered?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-map-objects">
@@ -2421,6 +2627,8 @@ for their contributions to this specification.</p>
    <a href="https://tc39.github.io/ecma262/#sec-objectcreate">https://tc39.github.io/ecma262/#sec-objectcreate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-objectcreate">3.9. get backingStore()</a>
+    <li><a href="#ref-for-sec-objectcreate①">4. The storage area async iterator</a>
+    <li><a href="#ref-for-sec-objectcreate②">4.1. Creation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-tostring">
@@ -2433,7 +2641,8 @@ for their contributions to this specification.</p>
    <a href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values">https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-ecmascript-data-types-and-values">3. The StorageArea class</a>
-    <li><a href="#ref-for-sec-ecmascript-data-types-and-values①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-sec-ecmascript-data-types-and-values①">4.2. next()</a>
+    <li><a href="#ref-for-sec-ecmascript-data-types-and-values②">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-weakmap-objects">
@@ -2446,14 +2655,16 @@ for their contributions to this specification.</p>
    <a href="https://tc39.github.io/ecma262/#current-realm">https://tc39.github.io/ecma262/#current-realm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-realm">3. The StorageArea class</a> <a href="#ref-for-current-realm①">(2)</a>
-    <li><a href="#ref-for-current-realm②">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-current-realm②">4. The storage area async iterator</a>
+    <li><a href="#ref-for-current-realm③">4.2. next()</a>
+    <li><a href="#ref-for-current-realm④">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-typedarray-objects">
    <a href="https://tc39.github.io/ecma262/#sec-typedarray-objects">https://tc39.github.io/ecma262/#sec-typedarray-objects</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-sec-typedarray-objects">3.2. set(key, value)</a>
-    <li><a href="#ref-for-sec-typedarray-objects①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-sec-typedarray-objects①">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-headers">
@@ -2480,26 +2691,26 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-structureddeserialize">3.3. get(key)</a>
     <li><a href="#ref-for-structureddeserialize①">3.7. values()</a>
     <li><a href="#ref-for-structureddeserialize②">3.8. entries()</a>
-    <li><a href="#ref-for-structureddeserialize③">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-structureddeserialize③">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-structuredserializeforstorage">
    <a href="https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage">https://html.spec.whatwg.org/multipage/structured-data.html#structuredserializeforstorage</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-structuredserializeforstorage">3.2. set(key, value)</a>
-    <li><a href="#ref-for-structuredserializeforstorage①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-structuredserializeforstorage①">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-windoworworkerglobalscope">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope">https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-windoworworkerglobalscope">3.10. Supporting operations and concepts</a> <a href="#ref-for-windoworworkerglobalscope①">(2)</a> <a href="#ref-for-windoworworkerglobalscope②">(3)</a>
+    <li><a href="#ref-for-windoworworkerglobalscope">5. Supporting operations and concepts</a> <a href="#ref-for-windoworworkerglobalscope①">(2)</a> <a href="#ref-for-windoworworkerglobalscope②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-current-global-object">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-current-global-object">3.10. Supporting operations and concepts</a> <a href="#ref-for-current-global-object①">(2)</a> <a href="#ref-for-current-global-object②">(3)</a>
+    <li><a href="#ref-for-current-global-object">5. Supporting operations and concepts</a> <a href="#ref-for-current-global-object①">(2)</a> <a href="#ref-for-current-global-object②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-current-settings-object">
@@ -2519,26 +2730,27 @@ for their contributions to this specification.</p>
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm">https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-relevant-realm">3. The StorageArea class</a>
+    <li><a href="#ref-for-concept-relevant-realm①">4.2. next()</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idbdatabase">
    <a href="https://w3c.github.io/IndexedDB/#idbdatabase">https://w3c.github.io/IndexedDB/#idbdatabase</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idbdatabase">3. The StorageArea class</a>
-    <li><a href="#ref-for-idbdatabase①">3.10. Supporting operations and concepts</a> <a href="#ref-for-idbdatabase②">(2)</a> <a href="#ref-for-idbdatabase③">(3)</a>
+    <li><a href="#ref-for-idbdatabase①">5. Supporting operations and concepts</a> <a href="#ref-for-idbdatabase②">(2)</a> <a href="#ref-for-idbdatabase③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idbfactory">
    <a href="https://w3c.github.io/IndexedDB/#idbfactory">https://w3c.github.io/IndexedDB/#idbfactory</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idbfactory">3.5. clear()</a>
-    <li><a href="#ref-for-idbfactory①">3.10. Supporting operations and concepts</a> <a href="#ref-for-idbfactory②">(2)</a>
+    <li><a href="#ref-for-idbfactory①">5. Supporting operations and concepts</a> <a href="#ref-for-idbfactory②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idbkeyrange">
    <a href="https://w3c.github.io/IndexedDB/#idbkeyrange">https://w3c.github.io/IndexedDB/#idbkeyrange</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idbkeyrange">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-idbkeyrange">5. Supporting operations and concepts</a> <a href="#ref-for-idbkeyrange①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idbobjectstore">
@@ -2547,16 +2759,14 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-idbobjectstore">3.2. set(key, value)</a> <a href="#ref-for-idbobjectstore①">(2)</a>
     <li><a href="#ref-for-idbobjectstore②">3.3. get(key)</a>
     <li><a href="#ref-for-idbobjectstore③">3.4. delete(key)</a>
-    <li><a href="#ref-for-idbobjectstore④">3.6. keys()</a>
-    <li><a href="#ref-for-idbobjectstore⑤">3.7. values()</a>
-    <li><a href="#ref-for-idbobjectstore⑥">3.8. entries()</a> <a href="#ref-for-idbobjectstore⑦">(2)</a>
-    <li><a href="#ref-for-idbobjectstore⑧">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-idbobjectstore④">4.2. next()</a> <a href="#ref-for-idbobjectstore⑤">(2)</a> <a href="#ref-for-idbobjectstore⑥">(3)</a> <a href="#ref-for-idbobjectstore⑦">(4)</a> <a href="#ref-for-idbobjectstore⑧">(5)</a>
+    <li><a href="#ref-for-idbobjectstore⑨">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idbtransaction">
    <a href="https://w3c.github.io/IndexedDB/#idbtransaction">https://w3c.github.io/IndexedDB/#idbtransaction</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idbtransaction">3.10. Supporting operations and concepts</a> <a href="#ref-for-idbtransaction①">(2)</a>
+    <li><a href="#ref-for-idbtransaction">5. Supporting operations and concepts</a> <a href="#ref-for-idbtransaction①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-greater-than">
@@ -2568,31 +2778,31 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="term-for-close-a-database-connection">
    <a href="https://w3c.github.io/IndexedDB/#close-a-database-connection">https://w3c.github.io/IndexedDB/#close-a-database-connection</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-close-a-database-connection">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-close-a-database-connection">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbdatabase-close">
    <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close">https://w3c.github.io/IndexedDB/#dom-idbdatabase-close</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-idbdatabase-close">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-idbdatabase-close">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-convert-a-key-to-a-value">
    <a href="https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value">https://w3c.github.io/IndexedDB/#convert-a-key-to-a-value</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-convert-a-key-to-a-value">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-convert-a-key-to-a-value">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-convert-a-value-to-a-key">
    <a href="https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key">https://w3c.github.io/IndexedDB/#convert-a-value-to-a-key</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-convert-a-value-to-a-key">3.10. Supporting operations and concepts</a> <a href="#ref-for-convert-a-value-to-a-key①">(2)</a>
+    <li><a href="#ref-for-convert-a-value-to-a-key">5. Supporting operations and concepts</a> <a href="#ref-for-convert-a-value-to-a-key①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbdatabase-createobjectstore">
    <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore">https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-idbdatabase-createobjectstore">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-idbdatabase-createobjectstore">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-delete">
@@ -2619,38 +2829,43 @@ for their contributions to this specification.</p>
    <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-idbobjectstore-get">3.3. get(key)</a>
+    <li><a href="#ref-for-dom-idbobjectstore-get①">4.2. next()</a> <a href="#ref-for-dom-idbobjectstore-get②">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-getall">
-   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getall</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-getkey">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getkey">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getkey</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-idbobjectstore-getall">3.7. values()</a>
-    <li><a href="#ref-for-dom-idbobjectstore-getall①">3.8. entries()</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-getallkeys">
-   <a href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys">https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getallkeys</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-idbobjectstore-getallkeys">3.6. keys()</a>
-    <li><a href="#ref-for-dom-idbobjectstore-getallkeys①">3.8. entries()</a>
+    <li><a href="#ref-for-dom-idbobjectstore-getkey">4.2. next()</a> <a href="#ref-for-dom-idbobjectstore-getkey①">(2)</a> <a href="#ref-for-dom-idbobjectstore-getkey②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-windoworworkerglobalscope-indexeddb">
    <a href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb">https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-windoworworkerglobalscope-indexeddb">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-windoworworkerglobalscope-indexeddb">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbkeyrange-lowerbound">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound">https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbkeyrange-lowerbound">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-idbkeyrange-lowerbound-lower-loweropen">
+   <a href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound-lower-loweropen">https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound-lower-loweropen</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-idbkeyrange-lowerbound-lower-loweropen">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbtransaction-objectstore">
    <a href="https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore">https://w3c.github.io/IndexedDB/#dom-idbtransaction-objectstore</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-idbtransaction-objectstore">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-idbtransaction-objectstore">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbfactory-open">
    <a href="https://w3c.github.io/IndexedDB/#dom-idbfactory-open">https://w3c.github.io/IndexedDB/#dom-idbfactory-open</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-idbfactory-open">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-idbfactory-open">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbobjectstore-put">
@@ -2663,10 +2878,8 @@ for their contributions to this specification.</p>
    <a href="https://w3c.github.io/IndexedDB/#request-result">https://w3c.github.io/IndexedDB/#request-result</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-request-result">3.3. get(key)</a>
-    <li><a href="#ref-for-request-result①">3.6. keys()</a>
-    <li><a href="#ref-for-request-result②">3.7. values()</a>
-    <li><a href="#ref-for-request-result③">3.8. entries()</a> <a href="#ref-for-request-result④">(2)</a>
-    <li><a href="#ref-for-request-result⑤">3.10. Supporting operations and concepts</a> <a href="#ref-for-request-result⑥">(2)</a>
+    <li><a href="#ref-for-request-result①">4.2. next()</a> <a href="#ref-for-request-result②">(2)</a> <a href="#ref-for-request-result③">(3)</a> <a href="#ref-for-request-result④">(4)</a> <a href="#ref-for-request-result⑤">(5)</a>
+    <li><a href="#ref-for-request-result⑥">5. Supporting operations and concepts</a> <a href="#ref-for-request-result⑦">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-transaction-concept">
@@ -2678,25 +2891,13 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="term-for-dom-idbdatabase-transaction">
    <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction">https://w3c.github.io/IndexedDB/#dom-idbdatabase-transaction</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-idbdatabase-transaction">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dom-idbdatabase-transaction">5. Supporting operations and concepts</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-list-append">
-   <a href="https://infra.spec.whatwg.org/#list-append">https://infra.spec.whatwg.org/#list-append</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-unbounded-key-range">
+   <a href="https://w3c.github.io/IndexedDB/#unbounded-key-range">https://w3c.github.io/IndexedDB/#unbounded-key-range</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-append">3.10. Supporting operations and concepts</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-list">
-   <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list">3.10. Supporting operations and concepts</a> <a href="#ref-for-list①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-list-size">
-   <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-size">3.10. Supporting operations and concepts</a> <a href="#ref-for-list-size①">(2)</a> <a href="#ref-for-list-size②">(3)</a>
+    <li><a href="#ref-for-unbounded-key-range">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-a-new-promise">
@@ -2706,10 +2907,8 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-a-new-promise①">3.3. get(key)</a>
     <li><a href="#ref-for-a-new-promise②">3.4. delete(key)</a>
     <li><a href="#ref-for-a-new-promise③">3.5. clear()</a>
-    <li><a href="#ref-for-a-new-promise④">3.6. keys()</a>
-    <li><a href="#ref-for-a-new-promise⑤">3.7. values()</a>
-    <li><a href="#ref-for-a-new-promise⑥">3.8. entries()</a>
-    <li><a href="#ref-for-a-new-promise⑦">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-a-new-promise④">4.2. next()</a>
+    <li><a href="#ref-for-a-new-promise⑤">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-a-promise-rejected-with">
@@ -2719,7 +2918,8 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-a-promise-rejected-with①">3.3. get(key)</a>
     <li><a href="#ref-for-a-promise-rejected-with②">3.4. delete(key)</a>
     <li><a href="#ref-for-a-promise-rejected-with③">3.5. clear()</a>
-    <li><a href="#ref-for-a-promise-rejected-with④">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-a-promise-rejected-with④">4.2. next()</a>
+    <li><a href="#ref-for-a-promise-rejected-with⑤">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-reject-promise">
@@ -2729,10 +2929,8 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-reject-promise②">3.3. get(key)</a>
     <li><a href="#ref-for-reject-promise③">3.4. delete(key)</a> <a href="#ref-for-reject-promise④">(2)</a>
     <li><a href="#ref-for-reject-promise⑤">3.5. clear()</a> <a href="#ref-for-reject-promise⑥">(2)</a>
-    <li><a href="#ref-for-reject-promise⑦">3.6. keys()</a>
-    <li><a href="#ref-for-reject-promise⑧">3.7. values()</a>
-    <li><a href="#ref-for-reject-promise⑨">3.8. entries()</a> <a href="#ref-for-reject-promise①⓪">(2)</a>
-    <li><a href="#ref-for-reject-promise①①">3.10. Supporting operations and concepts</a> <a href="#ref-for-reject-promise①②">(2)</a> <a href="#ref-for-reject-promise①③">(3)</a> <a href="#ref-for-reject-promise①④">(4)</a>
+    <li><a href="#ref-for-reject-promise⑦">4.2. next()</a> <a href="#ref-for-reject-promise⑧">(2)</a> <a href="#ref-for-reject-promise⑨">(3)</a> <a href="#ref-for-reject-promise①⓪">(4)</a> <a href="#ref-for-reject-promise①①">(5)</a>
+    <li><a href="#ref-for-reject-promise①②">5. Supporting operations and concepts</a> <a href="#ref-for-reject-promise①③">(2)</a> <a href="#ref-for-reject-promise①④">(3)</a> <a href="#ref-for-reject-promise①⑤">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-resolve-promise">
@@ -2742,17 +2940,16 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-resolve-promise①">3.3. get(key)</a>
     <li><a href="#ref-for-resolve-promise②">3.4. delete(key)</a>
     <li><a href="#ref-for-resolve-promise③">3.5. clear()</a>
-    <li><a href="#ref-for-resolve-promise④">3.6. keys()</a>
-    <li><a href="#ref-for-resolve-promise⑤">3.7. values()</a>
-    <li><a href="#ref-for-resolve-promise⑥">3.8. entries()</a>
-    <li><a href="#ref-for-resolve-promise⑦">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-resolve-promise④">4.2. next()</a>
+    <li><a href="#ref-for-resolve-promise⑤">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-transforming-by">
    <a href="https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by">https://www.w3.org/2001/tag/doc/promises-guide/#transforming-by</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-transforming-by">3.5. clear()</a>
-    <li><a href="#ref-for-transforming-by①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-transforming-by①">4.2. next()</a>
+    <li><a href="#ref-for-transforming-by②">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-settings-object">
@@ -2777,7 +2974,7 @@ for their contributions to this specification.</p>
    <a href="https://heycam.github.io/webidl/#idl-ArrayBuffer">https://heycam.github.io/webidl/#idl-ArrayBuffer</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-ArrayBuffer">3.2. set(key, value)</a>
-    <li><a href="#ref-for-idl-ArrayBuffer①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-idl-ArrayBuffer①">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMException">
@@ -2807,7 +3004,7 @@ for their contributions to this specification.</p>
    <a href="https://heycam.github.io/webidl/#idl-DataView">https://heycam.github.io/webidl/#idl-DataView</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idl-DataView">3.2. set(key, value)</a>
-    <li><a href="#ref-for-idl-DataView①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-idl-DataView①">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-securityerror">
@@ -2820,20 +3017,24 @@ for their contributions to this specification.</p>
    <a href="https://heycam.github.io/webidl/#exceptiondef-typeerror">https://heycam.github.io/webidl/#exceptiondef-typeerror</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-exceptiondef-typeerror">3.5. clear()</a>
-    <li><a href="#ref-for-exceptiondef-typeerror①">3.9. get backingStore()</a>
-    <li><a href="#ref-for-exceptiondef-typeerror②">3.10. Supporting operations and concepts</a> <a href="#ref-for-exceptiondef-typeerror③">(2)</a>
+    <li><a href="#ref-for-exceptiondef-typeerror①">3.6. keys()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror②">3.7. values()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror③">3.8. entries()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror④">3.9. get backingStore()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror⑤">4.2. next()</a>
+    <li><a href="#ref-for-exceptiondef-typeerror⑥">5. Supporting operations and concepts</a> <a href="#ref-for-exceptiondef-typeerror⑦">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-convert-ecmascript-to-idl-value">
    <a href="https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value">https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-convert-ecmascript-to-idl-value">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-dfn-convert-ecmascript-to-idl-value">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-include">
    <a href="https://heycam.github.io/webidl/#include">https://heycam.github.io/webidl/#include</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-include">3.10. Supporting operations and concepts</a> <a href="#ref-for-include①">(2)</a>
+    <li><a href="#ref-for-include">5. Supporting operations and concepts</a> <a href="#ref-for-include①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-named-properties">
@@ -2854,9 +3055,15 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[ECMA-262]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-sec-%iteratorprototype%-object" style="color:initial">%IteratorPrototype%</span>
      <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-object-prototype-object" style="color:initial">%ObjectPrototype%</span>
+     <li><span class="dfn-paneled" id="term-for-table-1" style="color:initial">@@asynciterator</span>
      <li><span class="dfn-paneled" id="term-for-sec-construct" style="color:initial">Construct</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createarrayfromlist" style="color:initial">CreateArrayFromList</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createbuiltinfunction" style="color:initial">CreateBuiltinFunction</span>
      <li><span class="dfn-paneled" id="term-for-sec-createdataproperty" style="color:initial">CreateDataProperty</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createiterresultobject" style="color:initial">CreateIterResultObject</span>
+     <li><span class="dfn-paneled" id="term-for-sec-createmethodproperty" style="color:initial">CreateMethodProperty</span>
      <li><span class="dfn-paneled" id="term-for-sec-date-objects" style="color:initial">Date</span>
      <li><span class="dfn-paneled" id="term-for-sec-isarray" style="color:initial">IsArray</span>
      <li><span class="dfn-paneled" id="term-for-sec-map-objects" style="color:initial">Map</span>
@@ -2907,22 +3114,17 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-dom-idbfactory-deletedatabase" style="color:initial">deleteDatabase(name)</span>
      <li><span class="dfn-paneled" id="term-for-transaction-error" style="color:initial">error <small>(for transaction)</small></span>
      <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-get" style="color:initial">get(query)</span>
-     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-getall" style="color:initial">getAll()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-getallkeys" style="color:initial">getAllKeys()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-getkey" style="color:initial">getKey(query)</span>
      <li><span class="dfn-paneled" id="term-for-dom-windoworworkerglobalscope-indexeddb" style="color:initial">indexedDB</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbkeyrange-lowerbound" style="color:initial">lowerBound(lower)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idbkeyrange-lowerbound-lower-loweropen" style="color:initial">lowerBound(lower, lowerOpen)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbtransaction-objectstore" style="color:initial">objectStore(name)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbfactory-open" style="color:initial">open(name)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-put" style="color:initial">put(value)</span>
      <li><span class="dfn-paneled" id="term-for-request-result" style="color:initial">result</span>
      <li><span class="dfn-paneled" id="term-for-transaction-concept" style="color:initial">transaction</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-transaction" style="color:initial">transaction(storeNames)</span>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[INFRA]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-list-append" style="color:initial">append</span>
-     <li><span class="dfn-paneled" id="term-for-list" style="color:initial">list</span>
-     <li><span class="dfn-paneled" id="term-for-list-size" style="color:initial">size</span>
+     <li><span class="dfn-paneled" id="term-for-unbounded-key-range" style="color:initial">unbounded key range</span>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
@@ -2996,6 +3198,7 @@ for their contributions to this specification.</p>
    <b><a href="#stdkv-storage">#stdkv-storage</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-stdkv-storage">3. The StorageArea class</a>
+    <li><a href="#ref-for-stdkv-storage①">4. The storage area async iterator</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="stdkv-storage-storage">
@@ -3016,9 +3219,10 @@ for their contributions to this specification.</p>
    <b><a href="#storagearea">#storagearea</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-storagearea">2. The std:kv-storage built-in module</a> <a href="#ref-for-storagearea①">(2)</a> <a href="#ref-for-storagearea②">(3)</a> <a href="#ref-for-storagearea③">(4)</a> <a href="#ref-for-storagearea④">(5)</a>
-    <li><a href="#ref-for-storagearea⑤">3. The StorageArea class</a> <a href="#ref-for-storagearea⑥">(2)</a> <a href="#ref-for-storagearea⑦">(3)</a> <a href="#ref-for-storagearea⑧">(4)</a> <a href="#ref-for-storagearea⑨">(5)</a>
-    <li><a href="#ref-for-storagearea①⓪">3.1. constructor(name)</a> <a href="#ref-for-storagearea①①">(2)</a>
-    <li><a href="#ref-for-storagearea①②">3.10. Supporting operations and concepts</a> <a href="#ref-for-storagearea①③">(2)</a> <a href="#ref-for-storagearea①④">(3)</a> <a href="#ref-for-storagearea①⑤">(4)</a>
+    <li><a href="#ref-for-storagearea⑤">3. The StorageArea class</a> <a href="#ref-for-storagearea⑥">(2)</a> <a href="#ref-for-storagearea⑦">(3)</a> <a href="#ref-for-storagearea⑧">(4)</a> <a href="#ref-for-storagearea⑨">(5)</a> <a href="#ref-for-storagearea①⓪">(6)</a>
+    <li><a href="#ref-for-storagearea①①">3.1. constructor(name)</a> <a href="#ref-for-storagearea①②">(2)</a>
+    <li><a href="#ref-for-storagearea①③">4.1. Creation</a> <a href="#ref-for-storagearea①④">(2)</a>
+    <li><a href="#ref-for-storagearea①⑤">5. Supporting operations and concepts</a> <a href="#ref-for-storagearea①⑥">(2)</a> <a href="#ref-for-storagearea①⑦">(3)</a> <a href="#ref-for-storagearea①⑧">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="databasename">
@@ -3028,7 +3232,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-databasename②">3.1. constructor(name)</a>
     <li><a href="#ref-for-databasename③">3.5. clear()</a> <a href="#ref-for-databasename④">(2)</a>
     <li><a href="#ref-for-databasename⑤">3.9. get backingStore()</a>
-    <li><a href="#ref-for-databasename⑥">3.10. Supporting operations and concepts</a> <a href="#ref-for-databasename⑦">(2)</a>
+    <li><a href="#ref-for-databasename⑥">5. Supporting operations and concepts</a> <a href="#ref-for-databasename⑦">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="databasepromise">
@@ -3037,7 +3241,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-databasepromise">3. The StorageArea class</a>
     <li><a href="#ref-for-databasepromise①">3.1. constructor(name)</a>
     <li><a href="#ref-for-databasepromise②">3.5. clear()</a> <a href="#ref-for-databasepromise③">(2)</a> <a href="#ref-for-databasepromise④">(3)</a>
-    <li><a href="#ref-for-databasepromise⑤">3.10. Supporting operations and concepts</a> <a href="#ref-for-databasepromise⑥">(2)</a> <a href="#ref-for-databasepromise⑦">(3)</a> <a href="#ref-for-databasepromise⑧">(4)</a> <a href="#ref-for-databasepromise⑨">(5)</a> <a href="#ref-for-databasepromise①⓪">(6)</a> <a href="#ref-for-databasepromise①①">(7)</a> <a href="#ref-for-databasepromise①②">(8)</a>
+    <li><a href="#ref-for-databasepromise⑤">5. Supporting operations and concepts</a> <a href="#ref-for-databasepromise⑥">(2)</a> <a href="#ref-for-databasepromise⑦">(3)</a> <a href="#ref-for-databasepromise⑧">(4)</a> <a href="#ref-for-databasepromise⑨">(5)</a> <a href="#ref-for-databasepromise①⓪">(6)</a> <a href="#ref-for-databasepromise①①">(7)</a> <a href="#ref-for-databasepromise①②">(8)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-brand-checks">
@@ -3045,8 +3249,11 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-brand-checks">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-brand-checks①">3.5. clear()</a>
-    <li><a href="#ref-for-storagearea-brand-checks②">3.9. get backingStore()</a>
-    <li><a href="#ref-for-storagearea-brand-checks③">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-storagearea-brand-checks②">3.6. keys()</a>
+    <li><a href="#ref-for-storagearea-brand-checks③">3.7. values()</a>
+    <li><a href="#ref-for-storagearea-brand-checks④">3.8. entries()</a>
+    <li><a href="#ref-for-storagearea-brand-checks⑤">3.9. get backingStore()</a>
+    <li><a href="#ref-for-storagearea-brand-checks⑥">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-constructor">
@@ -3083,7 +3290,7 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-clear">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-clear">3.5. clear()</a>
-    <li><a href="#ref-for-storagearea-clear①">3.10. Supporting operations and concepts</a> <a href="#ref-for-storagearea-clear②">(2)</a>
+    <li><a href="#ref-for-storagearea-clear①">5. Supporting operations and concepts</a> <a href="#ref-for-storagearea-clear②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="deleting-the-database">
@@ -3096,10 +3303,10 @@ for their contributions to this specification.</p>
    <b><a href="#storagearea-keys">#storagearea-keys</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-storagearea-keys">3. The StorageArea class</a>
-    <li><a href="#ref-for-storagearea-keys">3.6. keys()</a>
-    <li><a href="#ref-for-storagearea-keys①">3.7. values()</a>
-    <li><a href="#ref-for-storagearea-keys②">3.8. entries()</a>
-    <li><a href="#ref-for-storagearea-keys③">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-storagearea-keys">3.6. keys()</a> <a href="#ref-for-storagearea-keys①">(2)</a>
+    <li><a href="#ref-for-storagearea-keys②">3.7. values()</a>
+    <li><a href="#ref-for-storagearea-keys③">3.8. entries()</a>
+    <li><a href="#ref-for-storagearea-keys④">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-values">
@@ -3114,7 +3321,7 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-storagearea-entries">3. The StorageArea class</a>
     <li><a href="#ref-for-storagearea-entries">3.8. entries()</a>
-    <li><a href="#ref-for-storagearea-entries①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-storagearea-entries①">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="storagearea-backingstore">
@@ -3124,6 +3331,68 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-storagearea-backingstore">3.9. get backingStore()</a> <a href="#ref-for-storagearea-backingstore①">(2)</a> <a href="#ref-for-storagearea-backingstore②">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="the-storage-area-async-iterator-prototype-object">
+   <b><a href="#the-storage-area-async-iterator-prototype-object">#the-storage-area-async-iterator-prototype-object</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-the-storage-area-async-iterator-prototype-object">4.1. Creation</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="create-a-storage-area-async-iterator">
+   <b><a href="#create-a-storage-area-async-iterator">#create-a-storage-area-async-iterator</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-create-a-storage-area-async-iterator">3.6. keys()</a>
+    <li><a href="#ref-for-create-a-storage-area-async-iterator①">3.7. values()</a>
+    <li><a href="#ref-for-create-a-storage-area-async-iterator②">3.8. entries()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="area">
+   <b><a href="#area">#area</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-area">4.1. Creation</a> <a href="#ref-for-area①">(2)</a>
+    <li><a href="#ref-for-area②">4.2. next()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="mode">
+   <b><a href="#mode">#mode</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-mode">4.1. Creation</a> <a href="#ref-for-mode①">(2)</a>
+    <li><a href="#ref-for-mode②">4.2. next()</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="lastkey">
+   <b><a href="#lastkey">#lastkey</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-lastkey">4.1. Creation</a> <a href="#ref-for-lastkey①">(2)</a> <a href="#ref-for-lastkey②">(3)</a>
+    <li><a href="#ref-for-lastkey③">4.2. next()</a> <a href="#ref-for-lastkey④">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="ongoingpromise">
+   <b><a href="#ongoingpromise">#ongoingpromise</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ongoingpromise">4.1. Creation</a> <a href="#ref-for-ongoingpromise①">(2)</a>
+    <li><a href="#ref-for-ongoingpromise②">4.2. next()</a> <a href="#ref-for-ongoingpromise③">(2)</a> <a href="#ref-for-ongoingpromise④">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="storageareaasynciterator-next">
+   <b><a href="#storageareaasynciterator-next">#storageareaasynciterator-next</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-storageareaasynciterator-next">4. The storage area async iterator</a>
+    <li><a href="#ref-for-storageareaasynciterator-next">4.1. Creation</a> <a href="#ref-for-storageareaasynciterator-next①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="get-the-next-iterresult">
+   <b><a href="#get-the-next-iterresult">#get-the-next-iterresult</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-get-the-next-iterresult">4.1. Creation</a>
+    <li><a href="#ref-for-get-the-next-iterresult①">4.2. next()</a> <a href="#ref-for-get-the-next-iterresult②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="finish-up">
+   <b><a href="#finish-up">#finish-up</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-finish-up">4.2. next()</a> <a href="#ref-for-finish-up①">(2)</a> <a href="#ref-for-finish-up②">(3)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="add-a-simple-event-listener">
    <b><a href="#add-a-simple-event-listener">#add-a-simple-event-listener</a></b><b>Referenced in:</b>
    <ul>
@@ -3131,17 +3400,15 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-add-a-simple-event-listener③">3.3. get(key)</a> <a href="#ref-for-add-a-simple-event-listener④">(2)</a>
     <li><a href="#ref-for-add-a-simple-event-listener⑤">3.4. delete(key)</a> <a href="#ref-for-add-a-simple-event-listener⑥">(2)</a> <a href="#ref-for-add-a-simple-event-listener⑦">(3)</a>
     <li><a href="#ref-for-add-a-simple-event-listener⑧">3.5. clear()</a> <a href="#ref-for-add-a-simple-event-listener⑨">(2)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⓪">3.6. keys()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①②">3.7. values()</a> <a href="#ref-for-add-a-simple-event-listener①③">(2)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①④">3.8. entries()</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(3)</a>
-    <li><a href="#ref-for-add-a-simple-event-listener①⑦">3.10. Supporting operations and concepts</a> <a href="#ref-for-add-a-simple-event-listener①⑧">(2)</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(3)</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(4)</a> <a href="#ref-for-add-a-simple-event-listener②①">(5)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⓪">4.2. next()</a> <a href="#ref-for-add-a-simple-event-listener①①">(2)</a> <a href="#ref-for-add-a-simple-event-listener①②">(3)</a> <a href="#ref-for-add-a-simple-event-listener①③">(4)</a> <a href="#ref-for-add-a-simple-event-listener①④">(5)</a> <a href="#ref-for-add-a-simple-event-listener①⑤">(6)</a> <a href="#ref-for-add-a-simple-event-listener①⑥">(7)</a> <a href="#ref-for-add-a-simple-event-listener①⑦">(8)</a>
+    <li><a href="#ref-for-add-a-simple-event-listener①⑧">5. Supporting operations and concepts</a> <a href="#ref-for-add-a-simple-event-listener①⑨">(2)</a> <a href="#ref-for-add-a-simple-event-listener②⓪">(3)</a> <a href="#ref-for-add-a-simple-event-listener②①">(4)</a> <a href="#ref-for-add-a-simple-event-listener②②">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="current-idbfactory">
    <b><a href="#current-idbfactory">#current-idbfactory</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-idbfactory">3.5. clear()</a>
-    <li><a href="#ref-for-current-idbfactory①">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-current-idbfactory①">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="performing-a-database-operation">
@@ -3151,16 +3418,15 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-performing-a-database-operation①">3.2. set(key, value)</a>
     <li><a href="#ref-for-performing-a-database-operation②">3.3. get(key)</a>
     <li><a href="#ref-for-performing-a-database-operation③">3.4. delete(key)</a>
-    <li><a href="#ref-for-performing-a-database-operation④">3.6. keys()</a>
-    <li><a href="#ref-for-performing-a-database-operation⑤">3.7. values()</a>
-    <li><a href="#ref-for-performing-a-database-operation⑥">3.8. entries()</a>
-    <li><a href="#ref-for-performing-a-database-operation⑦">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-performing-a-database-operation④">4.1. Creation</a>
+    <li><a href="#ref-for-performing-a-database-operation⑤">4.2. next()</a>
+    <li><a href="#ref-for-performing-a-database-operation⑥">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="initialize-the-database-promise">
    <b><a href="#initialize-the-database-promise">#initialize-the-database-promise</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-initialize-the-database-promise">3.10. Supporting operations and concepts</a>
+    <li><a href="#ref-for-initialize-the-database-promise">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="allowed-as-a-key">
@@ -3169,14 +3435,8 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-allowed-as-a-key">3.2. set(key, value)</a>
     <li><a href="#ref-for-allowed-as-a-key①">3.3. get(key)</a>
     <li><a href="#ref-for-allowed-as-a-key②">3.4. delete(key)</a>
-    <li><a href="#ref-for-allowed-as-a-key③">3.10. Supporting operations and concepts</a> <a href="#ref-for-allowed-as-a-key④">(2)</a> <a href="#ref-for-allowed-as-a-key⑤">(3)</a>
-    <li><a href="#ref-for-allowed-as-a-key⑥">4. Appendix: is this API perfectly layered?</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="zip">
-   <b><a href="#zip">#zip</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-zip">3.8. entries()</a>
+    <li><a href="#ref-for-allowed-as-a-key③">5. Supporting operations and concepts</a> <a href="#ref-for-allowed-as-a-key④">(2)</a> <a href="#ref-for-allowed-as-a-key⑤">(3)</a>
+    <li><a href="#ref-for-allowed-as-a-key⑥">6. Appendix: is this API perfectly layered?</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="key-round-trip">
@@ -3184,7 +3444,21 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-key-round-trip">3.6. keys()</a>
     <li><a href="#ref-for-key-round-trip①">3.8. entries()</a>
-    <li><a href="#ref-for-key-round-trip②">3.10. Supporting operations and concepts</a> <a href="#ref-for-key-round-trip③">(2)</a>
+    <li><a href="#ref-for-key-round-trip②">5. Supporting operations and concepts</a> <a href="#ref-for-key-round-trip③">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="get-the-range-for-a-key">
+   <b><a href="#get-the-range-for-a-key">#get-the-range-for-a-key</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-get-the-range-for-a-key">4.2. next()</a>
+    <li><a href="#ref-for-get-the-range-for-a-key①">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="not-yet-started">
+   <b><a href="#not-yet-started">#not-yet-started</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-not-yet-started">4.1. Creation</a> <a href="#ref-for-not-yet-started①">(2)</a>
+    <li><a href="#ref-for-not-yet-started②">5. Supporting operations and concepts</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
