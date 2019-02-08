@@ -271,13 +271,15 @@ The <code>prototype</code> property of {{StorageArea}} must additionally have a 
   </details>
 </div>
 
-Each {{StorageArea}} instance must also contain the <dfn>\[[DatabaseName]]</dfn> and <dfn>\[[DatabasePromise]]</dfn> internal slots. The following is a non-normative summary of their meaning:
+Each {{StorageArea}} instance must also contain the <dfn>\[[DatabaseName]]</dfn>, <dfn>\[[DatabasePromise]]</dfn>, and <dfn>\[[BackingStoreObject]]</dfn> internal slots. The following is a non-normative summary of their meaning:
 
 <dl class="non-normative">
   <dt>[=[[DatabaseName]]=]
   <dd>A string containing the name of the backing IndexedDB database.
   <dt>[=[[DatabasePromise]]=]
   <dd>A promise for an {{IDBDatabase}} object, lazily initialized when [=perform a database operation|performing any database operation=].
+  <dt>[=[[BackingStoreObject]]=]</dt>
+  <dd>The object returned by the {{StorageArea/backingStore}} getter, cached to ensure identity across gets.</dd>
 </dl>
 
 A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{StorageArea}} if [$Type$](|val|) is Object, |val| has a [=[[DatabaseName]]=] internal slot, and |val|'s [=relevant realm=] is equal to the [=current realm=].
@@ -299,6 +301,7 @@ A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{Storag
   1. Let |nameString| be <a abstract-op>ToString</a>(|name|).
   1. Set |area|.[=[[DatabaseName]]=] to the concatenation of "<code>kv-storage:</code>" and |nameString|.
   1. Set |area|.[=[[DatabasePromise]]=] to null.
+  1. Set |area|.[=[[BackingStoreObject]]=] to null.
 </div>
 
 <h3 id="storagearea-set" method for="StorageArea">set(|key|, |value|)</h3>
@@ -553,11 +556,13 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 <div class="algorithm">
   1. Let |area| be this object.
   1. If |area| does not [=StorageArea/brand check=], throw a {{TypeError}} exception.
-  1. Let |info| be <a abstract-op>ObjectCreate</a>({{%ObjectPrototype%}}).
-  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>database</code>", |area|.[=[[DatabaseName]]=]).
-  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>store</code>", "<code>store</code>").
-  1. Perform <a abstract-op>CreateDataProperty</a>(|info|, "<code>version</code>", 1).
-  1. Return |info|.
+  1. If |area|.[=[[BackingStoreObject]]=] is null, then:
+    1. Let |backingStoreObject| be <a abstract-op>ObjectCreate</a>({{%ObjectPrototype%}}).
+    1. Perform <a abstract-op>CreateDataProperty</a>(|backingStoreObject|, "<code>database</code>", |area|.[=[[DatabaseName]]=]).
+    1. Perform <a abstract-op>CreateDataProperty</a>(|backingStoreObject|, "<code>store</code>", "<code>store</code>").
+    1. Perform <a abstract-op>CreateDataProperty</a>(|backingStoreObject|, "<code>version</code>", 1).
+    1. Set |area|.[=[[BackingStoreObject]]=] to |backingStoreObject|.
+  1. Return |area|.[=[[BackingStoreObject]]=].
 </div>
 
 <div class="example" id="example-backingstore">
