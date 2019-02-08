@@ -465,7 +465,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
     await storage.set(30, "value 30");
 
     const keysSeen = [];
-    for (const key of storage.keys()) {
+    for await (const key of storage.keys()) {
       if (key === 20) {
         await storage.set(15, "value 15");
         await storage.delete(20);
