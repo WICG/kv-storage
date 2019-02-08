@@ -1212,7 +1212,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 9c6ae748322940994300e90a77c34437364b40a6" name="generator">
+  <meta content="Bikeshed version d76ab51ece93be5af3a1621c820b89fd4f9cc432" name="generator">
   <link href="https://wicg.github.io/kv-storage/" rel="canonical">
 <style>
 .selected-text-file-an-issue {
@@ -1505,7 +1505,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">KV Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-01-18">18 January 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-02-08">8 February 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1929,7 +1929,7 @@ await storage<c- p>.</c->set<c- p>(</c-><c- mi>20</c-><c- p>,</c-> <c- u>"value 
 await storage<c- p>.</c->set<c- p>(</c-><c- mi>30</c-><c- p>,</c-> <c- u>"value 30"</c-><c- p>);</c->
 
 <c- kr>const</c-> keysSeen <c- o>=</c-> <c- p>[];</c->
-<c- k>for</c-> <c- p>(</c-><c- kr>const</c-> key <c- k>of</c-> storage<c- p>.</c->keys<c- p>())</c-> <c- p>{</c->
+<c- k>for</c-> await <c- p>(</c-><c- kr>const</c-> key <c- k>of</c-> storage<c- p>.</c->keys<c- p>())</c-> <c- p>{</c->
   <c- k>if</c-> <c- p>(</c->key <c- o>===</c-> <c- mi>20</c-><c- p>)</c-> <c- p>{</c->
     await storage<c- p>.</c->set<c- p>(</c-><c- mi>15</c-><c- p>,</c-> <c- u>"value 15"</c-><c- p>);</c->
     await storage<c- p>.</c-><c- k>delete</c-><c- p>(</c-><c- mi>20</c-><c- p>);</c->
