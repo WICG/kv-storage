@@ -1505,7 +1505,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">KV Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-02-08">8 February 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Editor’s Draft, <time class="dt-updated" datetime="2019-02-12">12 February 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1700,12 +1700,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>None of these mismatches are fatal. We could switch this specification to Web IDL, with appropriate extensions for solving the first two problems, if that ends up being desired. We recognize that the goals for built-in modules are still under active discussion, and the above might not end up being important in the end. But for now, we’re experimenting with this different—and more aligned-with-JavaScript-modules—mechanism of specifying a class definition.</p>
     </details>
    </div>
-   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑧">StorageArea</a></code> instance must also contain the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasename">[[DatabaseName]]</dfn> and <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasepromise">[[DatabasePromise]]</dfn> internal slots. The following is a non-normative summary of their meaning:</p>
+   <p>Each <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑧">StorageArea</a></code> instance must also contain the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasename">[[DatabaseName]]</dfn>, <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="databasepromise">[[DatabasePromise]]</dfn>, and <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="backingstoreobject">[[BackingStoreObject]]</dfn> internal slots. The following is a non-normative summary of their meaning:</p>
    <dl class="non-normative">
     <dt><a data-link-type="dfn" href="#databasename" id="ref-for-databasename">[[DatabaseName]]</a> 
     <dd>A string containing the name of the backing IndexedDB database. 
     <dt><a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise">[[DatabasePromise]]</a> 
     <dd>A promise for an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase">IDBDatabase</a></code> object, lazily initialized when <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation">performing any database operation</a>. 
+    <dt><a data-link-type="dfn" href="#backingstoreobject" id="ref-for-backingstoreobject">[[BackingStoreObject]]</a>
+    <dd>The object returned by the <code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore④">backingStore</a></code> getter, cached to ensure identity across gets.
    </dl>
    <p>A JavaScript value <var>val</var> <dfn class="dfn-paneled" data-dfn-for="StorageArea" data-dfn-type="dfn" data-noexport id="storagearea-brand-checks">brand checks</dfn> as a <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea⑨">StorageArea</a></code> if <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>val</var>) is Object, <var>val</var> has a <a data-link-type="dfn" href="#databasename" id="ref-for-databasename①">[[DatabaseName]]</a> internal slot, and <var>val</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> is equal to the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>.</p>
    <p class="note" role="note">The realm check here gives us semantics identical to using JavaScript’s <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-weakmap-objects" id="ref-for-sec-weakmap-objects">WeakMap</a></code> or the proposed private class fields. This ensures <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⓪">StorageArea</a></code> does not use any magic, like the platform’s usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. <a data-link-type="biblio" href="#biblio-ecma-262">[ECMA-262]</a> <a data-link-type="biblio" href="#biblio-class-fields">[CLASS-FIELDS]</a> </p>
@@ -1726,6 +1728,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>Set <var>area</var>.<a data-link-type="dfn" href="#databasename" id="ref-for-databasename②">[[DatabaseName]]</a> to the concatenation of "<code>kv-storage:</code>" and <var>nameString</var>.</p>
      <li data-md>
       <p>Set <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①">[[DatabasePromise]]</a> to null.</p>
+     <li data-md>
+      <p>Set <var>area</var>.<a data-link-type="dfn" href="#backingstoreobject" id="ref-for-backingstoreobject①">[[BackingStoreObject]]</a> to null.</p>
     </ol>
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="method" data-export data-level="3.2" data-lt="set(key, value)" id="storagearea-set"><span class="secno">3.2. </span><span class="content">set(<var>key</var>, <var>value</var>)</span></h3>
@@ -1997,7 +2001,7 @@ fetch<c- p>(</c-><c- u>"/storage-receiver"</c-><c- p>,</c-> <c- p>{</c->
    </div>
    <h3 class="heading settled dfn-paneled idl-code" data-dfn-for="StorageArea" data-dfn-type="attribute" data-export data-level="3.9" data-lt="backingStore" id="storagearea-backingstore"><span class="secno">3.9. </span><span class="content">get backingStore()</span></h3>
    <dl class="domintro non-normative">
-    <dt><code>{ <var>database</var>, <var>store</var>, <var>version</var> } = <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore③">backingStore</a></code></code> 
+    <dt><code>{ <var>database</var>, <var>store</var>, <var>version</var> } = <var>storage</var>.<code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore①">backingStore</a></code></code> 
     <dd>
      <p>Asynchronously retrieves an an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area: </p>
      <ul>
@@ -2008,7 +2012,7 @@ fetch<c- p>(</c-><c- u>"/storage-receiver"</c-><c- p>,</c-> <c- p>{</c->
       <li data-md>
        <p><var>version</var> will be the number 1.</p>
      </ul>
-     <p>It is good practice to use the <code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore①">backingStore</a></code> property to retrieve this information, instead of memorizing the above factoids. </p>
+     <p>It is good practice to use the <code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore②">backingStore</a></code> property to retrieve this information, instead of memorizing the above factoids. </p>
    </dl>
    <div class="algorithm">
     <ol>
@@ -2017,15 +2021,23 @@ fetch<c- p>(</c-><c- u>"/storage-receiver"</c-><c- p>,</c-> <c- p>{</c->
      <li data-md>
       <p>If <var>area</var> does not <a data-link-type="dfn" href="#storagearea-brand-checks" id="ref-for-storagearea-brand-checks⑤">brand check</a>, throw a <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror④">TypeError</a></code> exception.</p>
      <li data-md>
-      <p>Let <var>info</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object" id="ref-for-sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a></code>).</p>
+      <p>If <var>area</var>.<a data-link-type="dfn" href="#backingstoreobject" id="ref-for-backingstoreobject②">[[BackingStoreObject]]</a> is null, then:</p>
+      <ol>
+       <li data-md>
+        <p>Let <var>backingStoreObject</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-properties-of-the-object-prototype-object" id="ref-for-sec-properties-of-the-object-prototype-object">%ObjectPrototype%</a></code>).</p>
+       <li data-md>
+        <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createdataproperty" id="ref-for-sec-createdataproperty">CreateDataProperty</a>(<var>backingStoreObject</var>, "<code>database</code>", <var>area</var>.<a data-link-type="dfn" href="#databasename" id="ref-for-databasename⑤">[[DatabaseName]]</a>).</p>
+       <li data-md>
+        <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createdataproperty" id="ref-for-sec-createdataproperty①">CreateDataProperty</a>(<var>backingStoreObject</var>, "<code>store</code>", "<code>store</code>").</p>
+       <li data-md>
+        <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createdataproperty" id="ref-for-sec-createdataproperty②">CreateDataProperty</a>(<var>backingStoreObject</var>, "<code>version</code>", 1).</p>
+       <li data-md>
+        <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-setintegritylevel" id="ref-for-sec-setintegritylevel">SetIntegrityLevel</a>(<var>backingStoreObject</var>, "<code>frozen</code>").</p>
+       <li data-md>
+        <p>Set <var>area</var>.<a data-link-type="dfn" href="#backingstoreobject" id="ref-for-backingstoreobject③">[[BackingStoreObject]]</a> to <var>backingStoreObject</var>.</p>
+      </ol>
      <li data-md>
-      <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createdataproperty" id="ref-for-sec-createdataproperty">CreateDataProperty</a>(<var>info</var>, "<code>database</code>", <var>area</var>.<a data-link-type="dfn" href="#databasename" id="ref-for-databasename⑤">[[DatabaseName]]</a>).</p>
-     <li data-md>
-      <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createdataproperty" id="ref-for-sec-createdataproperty①">CreateDataProperty</a>(<var>info</var>, "<code>store</code>", "<code>store</code>").</p>
-     <li data-md>
-      <p>Perform <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createdataproperty" id="ref-for-sec-createdataproperty②">CreateDataProperty</a>(<var>info</var>, "<code>version</code>", 1).</p>
-     <li data-md>
-      <p>Return <var>info</var>.</p>
+      <p>Return <var>area</var>.<a data-link-type="dfn" href="#backingstoreobject" id="ref-for-backingstoreobject④">[[BackingStoreObject]]</a>.</p>
     </ol>
    </div>
    <div class="example" id="example-backingstore">
@@ -2043,7 +2055,7 @@ venusaur<c- p>.</c->onchange <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> storage<c-
 <c- p>};</c->
 </pre>
     <p>However, our developer starts getting bug reports from their users: if the users happen to open up the checklist app in a second tab while they’re evolving in the first tab, the second tab will sometimes see that their Bulbasaur has disappeared, without ever turning into an Ivysaur! A Pokémon has gone missing!</p>
-    <p>The solution here is to step beyond the comfort zone of KV storage, and start using the full power of IndexedDB: in particular, its <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#transaction-concept" id="ref-for-transaction-concept">transactions</a> feature. The <code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore②">backingStore</a></code> getter is the gateway to this world:</p>
+    <p>The solution here is to step beyond the comfort zone of KV storage, and start using the full power of IndexedDB: in particular, its <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#transaction-concept" id="ref-for-transaction-concept">transactions</a> feature. The <code class="idl"><a data-link-type="idl" href="#storagearea-backingstore" id="ref-for-storagearea-backingstore③">backingStore</a></code> getter is the gateway to this world:</p>
 <pre class="highlight"><c- kr>const</c-> <c- p>{</c-> database<c- p>,</c-> store<c- p>,</c-> version <c- p>}</c-> <c- o>=</c-> storage<c- p>.</c->backingStore<c- p>;</c->
 <c- kr>const</c-> request <c- o>=</c-> indexedDB<c- p>.</c->open<c- p>(</c->database<c- p>,</c-> version<c- p>);</c->
 request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c->
@@ -2491,6 +2503,7 @@ for their contributions to this specification.</p>
    <li><a href="#allowed-as-a-key">allowed as a key</a><span>, in §5</span>
    <li><a href="#area">[[Area]]</a><span>, in §4.1</span>
    <li><a href="#storagearea-backingstore">backingStore</a><span>, in §3.8</span>
+   <li><a href="#backingstoreobject">[[BackingStoreObject]]</a><span>, in §3</span>
    <li><a href="#storagearea-brand-checks">brand checks</a><span>, in §3</span>
    <li><a href="#storagearea-clear">clear()</a><span>, in §3.4</span>
    <li><a href="#storagearea-constructor">constructor(name)</a><span>, in §3</span>
@@ -2629,6 +2642,12 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-sec-objectcreate">3.9. get backingStore()</a>
     <li><a href="#ref-for-sec-objectcreate①">4. The storage area async iterator</a>
     <li><a href="#ref-for-sec-objectcreate②">4.1. Creation</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-sec-setintegritylevel">
+   <a href="https://tc39.github.io/ecma262/#sec-setintegritylevel">https://tc39.github.io/ecma262/#sec-setintegritylevel</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-sec-setintegritylevel">3.9. get backingStore()</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-tostring">
@@ -3068,6 +3087,7 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-sec-isarray" style="color:initial">IsArray</span>
      <li><span class="dfn-paneled" id="term-for-sec-map-objects" style="color:initial">Map</span>
      <li><span class="dfn-paneled" id="term-for-sec-objectcreate" style="color:initial">ObjectCreate</span>
+     <li><span class="dfn-paneled" id="term-for-sec-setintegritylevel" style="color:initial">SetIntegrityLevel</span>
      <li><span class="dfn-paneled" id="term-for-sec-tostring" style="color:initial">ToString</span>
      <li><span class="dfn-paneled" id="term-for-sec-ecmascript-data-types-and-values" style="color:initial">Type</span>
      <li><span class="dfn-paneled" id="term-for-sec-weakmap-objects" style="color:initial">WeakMap</span>
@@ -3244,6 +3264,14 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-databasepromise⑤">5. Supporting operations and concepts</a> <a href="#ref-for-databasepromise⑥">(2)</a> <a href="#ref-for-databasepromise⑦">(3)</a> <a href="#ref-for-databasepromise⑧">(4)</a> <a href="#ref-for-databasepromise⑨">(5)</a> <a href="#ref-for-databasepromise①⓪">(6)</a> <a href="#ref-for-databasepromise①①">(7)</a> <a href="#ref-for-databasepromise①②">(8)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="backingstoreobject">
+   <b><a href="#backingstoreobject">#backingstoreobject</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-backingstoreobject">3. The StorageArea class</a>
+    <li><a href="#ref-for-backingstoreobject①">3.1. constructor(name)</a>
+    <li><a href="#ref-for-backingstoreobject②">3.9. get backingStore()</a> <a href="#ref-for-backingstoreobject③">(2)</a> <a href="#ref-for-backingstoreobject④">(3)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="storagearea-brand-checks">
    <b><a href="#storagearea-brand-checks">#storagearea-brand-checks</a></b><b>Referenced in:</b>
    <ul>
@@ -3327,8 +3355,8 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="storagearea-backingstore">
    <b><a href="#storagearea-backingstore">#storagearea-backingstore</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-storagearea-backingstore">3. The StorageArea class</a>
-    <li><a href="#ref-for-storagearea-backingstore">3.9. get backingStore()</a> <a href="#ref-for-storagearea-backingstore①">(2)</a> <a href="#ref-for-storagearea-backingstore②">(3)</a>
+    <li><a href="#ref-for-storagearea-backingstore">3. The StorageArea class</a> <a href="#ref-for-storagearea-backingstore">(2)</a>
+    <li><a href="#ref-for-storagearea-backingstore①">3.9. get backingStore()</a> <a href="#ref-for-storagearea-backingstore②">(2)</a> <a href="#ref-for-storagearea-backingstore③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="the-storage-area-async-iterator-prototype-object">
