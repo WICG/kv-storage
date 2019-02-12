@@ -52,11 +52,22 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
   text: convert a key to a value
   text: close a database connection
   text: unbounded key range
-  text: result; for: request; url: #request-result
-  text: error; for: request; url: #request-error
-  text: error; for: transaction; url: #transaction-error
   text: transaction; url: #transaction-concept
-  text: ascending; for: key; url: #greater-than
+  text: connection; for: database; url: #connection
+  text: index; url: #index-concept
+  for: request
+    text: result; url: #request-result
+    text: error; url: #request-error
+  for: transaction
+    text: error; url: #transaction-error
+  for: connection
+    text: object store set; url: #connection-object-store-set
+  for: key
+    text: ascending; url: #greater-than
+  for: object store
+    text: key generator; url: #key-generator
+    text: key path; url: #object-store-key-path
+    text: name; url: #object-store-name
 </pre>
 
 <pre class="link-defaults">
@@ -751,6 +762,7 @@ To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
   1. If those steps threw an exception, catch the exception, [=reject=] |area|.[=[[DatabasePromise]]=] with it, and return.
   1. [=Add a simple event listener=] to |request| for "<code>success</code>" that performs the following steps:
     1. Let |database| be |request|'s [=request/result=].
+    1. [=Check the database schema=] for |database|. If the result is false, [=reject=] |area|.[=[[DatabasePromise]]=] with an "{{InvalidStateError}}" {{DOMException}} and abort these steps.
     1. [=Add a simple event listener=] to |database| for "<code>close</code>" that sets |area|.[=[[DatabasePromise]]=] to null.
       <p class="note">This means that if the database is [=close a database connection|closed abnormally=], future invocations of [=perform a database operation=] will attempt to reopen it.</p>
     1. [=Add a simple event listener=] to |database| for "<code>versionchange</code>" that performs the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/close()}} method on |database|, and then sets |area|.[=[[DatabasePromise]]=] to null.
@@ -762,6 +774,21 @@ To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
     1. Perform the steps listed in the description of {{IDBDatabase}}'s {{IDBDatabase/createObjectStore()}} method on |database|, given the arguments "<code>store</code>".
     1. If these steps throw an exception, catch the exception and [=reject=] |area|.[=[[DatabasePromise]]=] with it.
 </div>
+
+To <dfn>check the database schema</dfn> for an {{IDBDatabase}} |database|:
+
+<div class="algorithm">
+  1. Let |objectStores| be |database|'s [=database/connection=]'s [=connection/object store set=].
+  1. If |objectStores|'s [=set/size=] is not 1, return false.
+  1. Let |store| be |objectStores|[0].
+  1. If |store|'s [=object store/name=] is not "<code>store</code>", return false.
+  1. If |store| has a [=object store/key generator=], return false.
+  1. If |store| has a [=object store/key path=], return false.
+  1. If any [=indexes=] reference |store|, return false.
+  1. Return true.
+</div>
+
+<p class="note">[=Check the database schema=] only needs to be called in the initial setup algorithm, [=initialize the database promise=], since once the database connection has been opened, the schema cannot change.</p>
 
 A value |value| is <dfn>allowed as a key</dfn> if the following steps return true:
 
