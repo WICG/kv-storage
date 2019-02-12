@@ -2290,16 +2290,18 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
        <li data-md>
         <p>Let <var>database</var> be <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result⑥">result</a>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①⓪">[[DatabasePromise]]</a> to null.</p>
+        <p><a data-link-type="dfn" href="#check-the-database-schema" id="ref-for-check-the-database-schema">Check the database schema</a> for <var>database</var>. If the result is false, <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①⓪">[[DatabasePromise]]</a> with an "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#invalidstateerror" id="ref-for-invalidstateerror">InvalidStateError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException⑦">DOMException</a></code> and abort these steps.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑨">Add a simple event listener</a> to <var>database</var> for "<code>close</code>" that sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①①">[[DatabasePromise]]</a> to null.</p>
         <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑥">perform a database operation</a> will attempt to reopen it.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>database</var> for "<code>versionchange</code>" that performs the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>, and then sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①①">[[DatabasePromise]]</a> to null.</p>
+        <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②⓪">Add a simple event listener</a> to <var>database</var> for "<code>versionchange</code>" that performs the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>, and then sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①②">[[DatabasePromise]]</a> to null.</p>
         <p class="note" role="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear①">clear()</a></code> method), to succeed. Without this, if two <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑦">StorageArea</a></code> instances were both open referencing the same underlying database, <code class="idl"><a data-link-type="idl" href="#storagearea-clear" id="ref-for-storagearea-clear②">clear()</a></code> would hang, as it only closes the connection maintained by the <code class="idl"><a data-link-type="idl" href="#storagearea" id="ref-for-storagearea①⑧">StorageArea</a></code> it is invoked on.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise" id="ref-for-resolve-promise⑤">Resolve</a> <var>promise</var> with <var>database</var>.</p>
       </ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①④">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑦">error</a>.</p>
+      <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②①">Add a simple event listener</a> to <var>request</var> for "<code>error</code>" that <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⑤">rejects</a> <var>promise</var> with <var>request</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-error" id="ref-for-request-error⑦">error</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener②②">Add a simple event listener</a> to <var>request</var> for "<code>upgradeneeded</code>" that performs the following steps:</p>
       <ol>
@@ -2308,10 +2310,32 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
        <li data-md>
         <p>Perform the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase③">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-createobjectstore" id="ref-for-dom-idbdatabase-createobjectstore">createObjectStore()</a></code> method on <var>database</var>, given the arguments "<code>store</code>".</p>
        <li data-md>
-        <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⑤">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①②">[[DatabasePromise]]</a> with it.</p>
+        <p>If these steps throw an exception, catch the exception and <a data-link-type="dfn" href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise" id="ref-for-reject-promise①⑥">reject</a> <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①③">[[DatabasePromise]]</a> with it.</p>
       </ol>
     </ol>
    </div>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="check-the-database-schema">check the database schema</dfn> for an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase④">IDBDatabase</a></code> <var>database</var>:</p>
+   <div class="algorithm">
+    <ol>
+     <li data-md>
+      <p>Let <var>objectStores</var> be <var>database</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#connection" id="ref-for-connection">connection</a>'s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#connection-object-store-set" id="ref-for-connection-object-store-set">object store set</a>.</p>
+     <li data-md>
+      <p>If <var>objectStores</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is not 1, return false.</p>
+     <li data-md>
+      <p>Let <var>store</var> be <var>objectStores</var>[0].</p>
+     <li data-md>
+      <p>If <var>store</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store-name" id="ref-for-object-store-name">name</a> is not "<code>store</code>", return false.</p>
+     <li data-md>
+      <p>If <var>store</var> has a <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#key-generator" id="ref-for-key-generator">key generator</a>, return false.</p>
+     <li data-md>
+      <p>If <var>store</var> has a <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#object-store-key-path" id="ref-for-object-store-key-path">key path</a>, return false.</p>
+     <li data-md>
+      <p>If any <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#index-concept" id="ref-for-index-concept">indexes</a> reference <var>store</var>, return false.</p>
+     <li data-md>
+      <p>Return true.</p>
+    </ol>
+   </div>
+   <p class="note" role="note"><a data-link-type="dfn" href="#check-the-database-schema" id="ref-for-check-the-database-schema①">Check the database schema</a> only needs to be called in the initial setup algorithm, <a data-link-type="dfn" href="#initialize-the-database-promise" id="ref-for-initialize-the-database-promise①">initialize the database promise</a>, since once the database connection has been opened, the schema cannot change.</p>
    <p>A value <var>value</var> is <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="allowed-as-a-key">allowed as a key</dfn> if the following steps return true:</p>
    <div class="algorithm">
     <ol>
@@ -2505,6 +2529,7 @@ for their contributions to this specification.</p>
    <li><a href="#storagearea-backingstore">backingStore</a><span>, in §3.8</span>
    <li><a href="#backingstoreobject">[[BackingStoreObject]]</a><span>, in §3</span>
    <li><a href="#storagearea-brand-checks">brand checks</a><span>, in §3</span>
+   <li><a href="#check-the-database-schema">check the database schema</a><span>, in §5</span>
    <li><a href="#storagearea-clear">clear()</a><span>, in §3.4</span>
    <li><a href="#storagearea-constructor">constructor(name)</a><span>, in §3</span>
    <li><a href="#create-a-storage-area-async-iterator">create a storage area async iterator</a><span>, in §4.1</span>
@@ -2756,7 +2781,7 @@ for their contributions to this specification.</p>
    <a href="https://w3c.github.io/IndexedDB/#idbdatabase">https://w3c.github.io/IndexedDB/#idbdatabase</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-idbdatabase">3. The StorageArea class</a>
-    <li><a href="#ref-for-idbdatabase①">5. Supporting operations and concepts</a> <a href="#ref-for-idbdatabase②">(2)</a> <a href="#ref-for-idbdatabase③">(3)</a>
+    <li><a href="#ref-for-idbdatabase①">5. Supporting operations and concepts</a> <a href="#ref-for-idbdatabase②">(2)</a> <a href="#ref-for-idbdatabase③">(3)</a> <a href="#ref-for-idbdatabase④">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idbfactory">
@@ -2804,6 +2829,12 @@ for their contributions to this specification.</p>
    <a href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close">https://w3c.github.io/IndexedDB/#dom-idbdatabase-close</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-idbdatabase-close">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-connection">
+   <a href="https://w3c.github.io/IndexedDB/#connection">https://w3c.github.io/IndexedDB/#connection</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-connection">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-convert-a-key-to-a-value">
@@ -2857,10 +2888,28 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-dom-idbobjectstore-getkey">4.2. next()</a> <a href="#ref-for-dom-idbobjectstore-getkey①">(2)</a> <a href="#ref-for-dom-idbobjectstore-getkey②">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-index-concept">
+   <a href="https://w3c.github.io/IndexedDB/#index-concept">https://w3c.github.io/IndexedDB/#index-concept</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-index-concept">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-windoworworkerglobalscope-indexeddb">
    <a href="https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb">https://w3c.github.io/IndexedDB/#dom-windoworworkerglobalscope-indexeddb</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-windoworworkerglobalscope-indexeddb">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-key-generator">
+   <a href="https://w3c.github.io/IndexedDB/#key-generator">https://w3c.github.io/IndexedDB/#key-generator</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-key-generator">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-object-store-key-path">
+   <a href="https://w3c.github.io/IndexedDB/#object-store-key-path">https://w3c.github.io/IndexedDB/#object-store-key-path</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-object-store-key-path">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbkeyrange-lowerbound">
@@ -2873,6 +2922,18 @@ for their contributions to this specification.</p>
    <a href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound-lower-loweropen">https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound-lower-loweropen</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-idbkeyrange-lowerbound-lower-loweropen">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-object-store-name">
+   <a href="https://w3c.github.io/IndexedDB/#object-store-name">https://w3c.github.io/IndexedDB/#object-store-name</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-object-store-name">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-connection-object-store-set">
+   <a href="https://w3c.github.io/IndexedDB/#connection-object-store-set">https://w3c.github.io/IndexedDB/#connection-object-store-set</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-connection-object-store-set">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-idbtransaction-objectstore">
@@ -2919,6 +2980,12 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-unbounded-key-range">5. Supporting operations and concepts</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-list-size">
+   <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-size">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-a-new-promise">
    <a href="https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise">https://www.w3.org/2001/tag/doc/promises-guide/#a-new-promise</a><b>Referenced in:</b>
    <ul>
@@ -2949,7 +3016,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-reject-promise③">3.4. delete(key)</a> <a href="#ref-for-reject-promise④">(2)</a>
     <li><a href="#ref-for-reject-promise⑤">3.5. clear()</a> <a href="#ref-for-reject-promise⑥">(2)</a>
     <li><a href="#ref-for-reject-promise⑦">4.2. next()</a> <a href="#ref-for-reject-promise⑧">(2)</a> <a href="#ref-for-reject-promise⑨">(3)</a> <a href="#ref-for-reject-promise①⓪">(4)</a> <a href="#ref-for-reject-promise①①">(5)</a>
-    <li><a href="#ref-for-reject-promise①②">5. Supporting operations and concepts</a> <a href="#ref-for-reject-promise①③">(2)</a> <a href="#ref-for-reject-promise①④">(3)</a> <a href="#ref-for-reject-promise①⑤">(4)</a>
+    <li><a href="#ref-for-reject-promise①②">5. Supporting operations and concepts</a> <a href="#ref-for-reject-promise①③">(2)</a> <a href="#ref-for-reject-promise①④">(3)</a> <a href="#ref-for-reject-promise①⑤">(4)</a> <a href="#ref-for-reject-promise①⑥">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-resolve-promise">
@@ -3003,6 +3070,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-idl-DOMException②">3.2. set(key, value)</a> <a href="#ref-for-idl-DOMException③">(2)</a> <a href="#ref-for-idl-DOMException④">(3)</a>
     <li><a href="#ref-for-idl-DOMException⑤">3.3. get(key)</a>
     <li><a href="#ref-for-idl-DOMException⑥">3.4. delete(key)</a>
+    <li><a href="#ref-for-idl-DOMException⑦">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-datacloneerror">
@@ -3024,6 +3092,12 @@ for their contributions to this specification.</p>
    <ul>
     <li><a href="#ref-for-idl-DataView">3.2. set(key, value)</a>
     <li><a href="#ref-for-idl-DataView①">5. Supporting operations and concepts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-invalidstateerror">
+   <a href="https://heycam.github.io/webidl/#invalidstateerror">https://heycam.github.io/webidl/#invalidstateerror</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-invalidstateerror">5. Supporting operations and concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-securityerror">
@@ -3127,6 +3201,7 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-greater-than" style="color:initial">ascending</span>
      <li><span class="dfn-paneled" id="term-for-close-a-database-connection" style="color:initial">close a database connection</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-close" style="color:initial">close()</span>
+     <li><span class="dfn-paneled" id="term-for-connection" style="color:initial">connection</span>
      <li><span class="dfn-paneled" id="term-for-convert-a-key-to-a-value" style="color:initial">convert a key to a value</span>
      <li><span class="dfn-paneled" id="term-for-convert-a-value-to-a-key" style="color:initial">convert a value to a key</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-createobjectstore" style="color:initial">createObjectStore(name)</span>
@@ -3135,9 +3210,14 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-transaction-error" style="color:initial">error <small>(for transaction)</small></span>
      <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-get" style="color:initial">get(query)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-getkey" style="color:initial">getKey(query)</span>
+     <li><span class="dfn-paneled" id="term-for-index-concept" style="color:initial">index</span>
      <li><span class="dfn-paneled" id="term-for-dom-windoworworkerglobalscope-indexeddb" style="color:initial">indexedDB</span>
+     <li><span class="dfn-paneled" id="term-for-key-generator" style="color:initial">key generator</span>
+     <li><span class="dfn-paneled" id="term-for-object-store-key-path" style="color:initial">key path</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbkeyrange-lowerbound" style="color:initial">lowerBound(lower)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbkeyrange-lowerbound-lower-loweropen" style="color:initial">lowerBound(lower, lowerOpen)</span>
+     <li><span class="dfn-paneled" id="term-for-object-store-name" style="color:initial">name</span>
+     <li><span class="dfn-paneled" id="term-for-connection-object-store-set" style="color:initial">object store set</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbtransaction-objectstore" style="color:initial">objectStore(name)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbfactory-open" style="color:initial">open(name)</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbobjectstore-put" style="color:initial">put(value)</span>
@@ -3145,6 +3225,11 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-transaction-concept" style="color:initial">transaction</span>
      <li><span class="dfn-paneled" id="term-for-dom-idbdatabase-transaction" style="color:initial">transaction(storeNames)</span>
      <li><span class="dfn-paneled" id="term-for-unbounded-key-range" style="color:initial">unbounded key range</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[INFRA]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-list-size" style="color:initial">size</span>
     </ul>
    <li>
     <a data-link-type="biblio">[promises-guide]</a> defines the following terms:
@@ -3174,6 +3259,7 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-datacloneerror" style="color:initial">DataCloneError</span>
      <li><span class="dfn-paneled" id="term-for-dataerror" style="color:initial">DataError</span>
      <li><span class="dfn-paneled" id="term-for-idl-DataView" style="color:initial">DataView</span>
+     <li><span class="dfn-paneled" id="term-for-invalidstateerror" style="color:initial">InvalidStateError</span>
      <li><span class="dfn-paneled" id="term-for-securityerror" style="color:initial">SecurityError</span>
      <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror" style="color:initial">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-dfn-convert-ecmascript-to-idl-value" style="color:initial">converted to an idl value</span>
@@ -3261,7 +3347,7 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-databasepromise">3. The StorageArea class</a>
     <li><a href="#ref-for-databasepromise①">3.1. constructor(name)</a>
     <li><a href="#ref-for-databasepromise②">3.5. clear()</a> <a href="#ref-for-databasepromise③">(2)</a> <a href="#ref-for-databasepromise④">(3)</a>
-    <li><a href="#ref-for-databasepromise⑤">5. Supporting operations and concepts</a> <a href="#ref-for-databasepromise⑥">(2)</a> <a href="#ref-for-databasepromise⑦">(3)</a> <a href="#ref-for-databasepromise⑧">(4)</a> <a href="#ref-for-databasepromise⑨">(5)</a> <a href="#ref-for-databasepromise①⓪">(6)</a> <a href="#ref-for-databasepromise①①">(7)</a> <a href="#ref-for-databasepromise①②">(8)</a>
+    <li><a href="#ref-for-databasepromise⑤">5. Supporting operations and concepts</a> <a href="#ref-for-databasepromise⑥">(2)</a> <a href="#ref-for-databasepromise⑦">(3)</a> <a href="#ref-for-databasepromise⑧">(4)</a> <a href="#ref-for-databasepromise⑨">(5)</a> <a href="#ref-for-databasepromise①⓪">(6)</a> <a href="#ref-for-databasepromise①①">(7)</a> <a href="#ref-for-databasepromise①②">(8)</a> <a href="#ref-for-databasepromise①③">(9)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="backingstoreobject">
@@ -3454,7 +3540,13 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="initialize-the-database-promise">
    <b><a href="#initialize-the-database-promise">#initialize-the-database-promise</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-initialize-the-database-promise">5. Supporting operations and concepts</a>
+    <li><a href="#ref-for-initialize-the-database-promise">5. Supporting operations and concepts</a> <a href="#ref-for-initialize-the-database-promise①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="check-the-database-schema">
+   <b><a href="#check-the-database-schema">#check-the-database-schema</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-check-the-database-schema">5. Supporting operations and concepts</a> <a href="#ref-for-check-the-database-schema①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="allowed-as-a-key">
