@@ -205,7 +205,7 @@ This specification defines a new built-in module. Tentatively, depending on furt
 Its exports are the following:
 
 : <dfn for="std:kv-storage"><code>storage</code></dfn>
-:: An instance of the {{StorageArea}} class, created as if by <a abstract-op>Construct</a>({{StorageArea}}, « "<code>default</code>" »).
+:: An instance of the {{StorageArea}} class, created as if by [$Construct$]({{StorageArea}}, « "<code>default</code>" »).
 : <dfn for="std:kv-storage"><code>StorageArea</code></dfn>
 :: The {{StorageArea}} class
 
@@ -228,7 +228,7 @@ Upon evaluating the <a><code>std:kv-storage</code></a> module, the {{StorageArea
 
 <ul>
   <li><p>The constructor, method, and getter bodies must behave as specified below instead of being the no-ops shown in this code block.</p></li>
-  <li id="fn-tostring-censorship"><p><a abstract-op>HostHasSourceTextAvailable</a> must return false for all function objects (i.e. the constructor, methods, and getter) created.</p></li>
+  <li id="fn-tostring-censorship"><p>[$HostHasSourceTextAvailable$] must return false for all function objects (i.e. the constructor, methods, and getter) created.</p></li>
 </ul>
 
 <pre highlight="js">
@@ -299,7 +299,7 @@ A JavaScript value |val| <dfn for="StorageArea">brand checks</dfn> as a {{Storag
 
 <div class="algorithm">
   1. Let |area| be this {{StorageArea}} object.
-  1. Let |nameString| be <a abstract-op>ToString</a>(|name|).
+  1. Let |nameString| be [$ToString$](|name|).
   1. Set |area|.[=[[DatabaseName]]=] to the concatenation of "<code>kv-storage:</code>" and |nameString|.
   1. Set |area|.[=[[DatabasePromise]]=] to null.
   1. Set |area|.[=[[BackingStoreObject]]=] to null.
@@ -766,8 +766,8 @@ To <dfn>initialize the database promise</dfn> for a {{StorageArea}} |area|:
 A value |value| is <dfn>allowed as a key</dfn> if the following steps return true:
 
 <div class="algorithm">
-  1. If <a abstract-op>Type</a>(|value|) is Number or String, return true.
-  1. If <a abstract-op>IsArray</a>(|value|) is true, return true.
+  1. If [$Type$](|value|) is Number or String, return true.
+  1. If [$IsArray$](|value|) is true, return true.
   1. If |value| has a \[[DateValue]] internal slot, return true.
   1. If |value| has a \[[ViewedArrayBuffer]] internal slot, return true.
   1. If |value| has an \[[ArrayBufferByteLength]] internal slot, return true.
@@ -802,7 +802,7 @@ The APIs in this specification, being layered on top of Indexed DB as they are, 
 
 * By <a href="#fn-tostring-censorship">requiring censorship</a> of the output of <code>Function.prototype.toString()</code> for the functions produced. See <a href="https://github.com/drufball/layered-apis/issues/7">drufball/layered-apis#7</a>.
 
-* By directly invoking the algorithms of various IDL operations and attributes, instead of going through the global, potentially-overridable JavaScript APIs. (E.g., in various algorithm steps that say "performing the steps listed in the description of", or the [=allowed as a key=] algorithm which uses <a abstract-op>IsArray</a> directly instead of going through <code>Array.isArray()</code>.) See <a href="https://github.com/drufball/layered-apis/issues/6">drufball/layered-apis#6</a>.
+* By directly invoking the algorithms of various IDL operations and attributes, instead of going through the global, potentially-overridable JavaScript APIs. (E.g., in various algorithm steps that say "performing the steps listed in the description of", or the [=allowed as a key=] algorithm which uses [$IsArray$] directly instead of going through <code>Array.isArray()</code>.) See <a href="https://github.com/drufball/layered-apis/issues/6">drufball/layered-apis#6</a>.
 
 Eventually we hope to introduce the ability for web authors to write code that gets these same benefits, instead of locking them up so that only web platform APIs like KV storage can achieve this level of encapsulation. That's a separate effort, however, which is best followed in the above-linked issue threads.
 
