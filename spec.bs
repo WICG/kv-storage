@@ -18,7 +18,11 @@ Default Biblio Status: current
 </pre>
 
 <pre class="anchors">
-url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
+urlPrefix: https://html.spec.whatwg.org/multipage/; spec: HTML
+  url: webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window;
+  url: webappapis.html#module-map; type: dfn; text: module map
+  url: webappapis.html#relevant-settings-object; type: dfn; text: relevant settings object
+  url: webappapis.html#global-object; type: dfn; text: global object
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
@@ -197,7 +201,7 @@ This specification proposes a new API, called KV storage, which is intended to p
   <dd>
     <p>Imports the KV storage API's namespace object as the variable |kvs|.
 
-    <p>If the module is not imported in a [=secure context=], the <code>import</code> statement will cause a "{{SecurityError}}" {{DOMException}}, as persistent storage is a powerful feature.
+    <p>If the module is not imported in a [=secure context=], the <code>import</code> statement will cause a {{TypeError}} exception, as persistent storage is a powerful feature.
   </dd>
 
   <dt><code>|kvs|.[=std:kv-storage/storage=]</code>
@@ -228,9 +232,7 @@ Its exports are the following:
   </xmp>
 </div>
 
-In addition to establishing its exports, evaluating the module must perform the following steps:
-
-1. If the [=current settings object=] is not [$Is an environment settings object contextually secure?|contextually secure$], throw a "{{SecurityError}}" {{DOMException}}.
+<code>std:kv-storage</code> is only present in the [=module map=] associated with a [=global object=] if its [=relevant settings object=] is [$Is an environment settings object contextually secure?|contextually secure$].
 
 
 <h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
