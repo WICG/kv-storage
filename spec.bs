@@ -18,11 +18,7 @@ Default Biblio Status: current
 </pre>
 
 <pre class="anchors">
-urlPrefix: https://html.spec.whatwg.org/multipage/; spec: HTML
-  url: webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window;
-  url: webappapis.html#module-map; type: dfn; text: module map
-  url: webappapis.html#relevant-settings-object; type: dfn; text: relevant settings object
-  url: webappapis.html#global-object; type: dfn; text: global object
+url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
 
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
