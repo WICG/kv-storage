@@ -232,7 +232,7 @@ Its exports are the following:
   </xmp>
 </div>
 
-<code>std:kv-storage</code> is only present in the [=module map=] associated with a [=global object=] if its [=relevant settings object=] is [$Is an environment settings object contextually secure?|contextually secure$].
+<code>std:kv-storage</code> is only present in the [=environment settings object/module map=] of [=environment settings objects=] that are [$Is an environment settings object contextually secure?|contextually secure$].
 
 
 <h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
