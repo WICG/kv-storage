@@ -17,8 +17,10 @@ import { storage } from "std:kv-storage"; // specifier prefix not final
   await storage.set("mycat", "Tom");
   console.assert(await storage.get("mycat") === "Tom");
 
-  console.log(await storage.entries());
-  // Logs [["mycat", "Tom"]]
+  for await (const [key, value] of storage.entries()) {
+    console.log(key, value);
+  }
+  // Logs "mycat", "Tom"
 
   await storage.delete("mycat");
   console.assert(await storage.get("mycat") === undefined);
@@ -63,15 +65,15 @@ Clears all entries. Returns a promise for `undefined`.
 
 #### `keys()`
 
-Returns a promise for an array containing all the stored keys.
+Returns an async iterator for all the stored keys, sorted in the underlying IndexedDB key order.
 
 #### `values()`
 
-Returns a promise for an array containing all the stored values.
+Returns an async iterator for all the stored values, sorted to correspond with `keys()`.
 
 #### `entries()`
 
-Returns a promise for an array containing all the stored key/value pairs, each as a two-element array.
+Returns an async iterator of `[key, value]` pairs, sorted to correspond with `keys()`.
 
 ### `new StorageArea()`: separate storage areas
 
@@ -85,7 +87,7 @@ import { storage, StorageArea } from "std:kv-storage";
   console.assert(await storage.get("mycat") === "Tom");
 
   const otherStorage = new StorageArea("unique string");
-  console.assert((await otherStorage.keys()).length === 0);
+  console.assert(await otherStorage.get("mycat") === undefined);
   await otherStorage.set("mycat", "Jerry");
   console.assert(await otherStorage.get("mycat") === "Jerry");
 })();
@@ -119,13 +121,7 @@ import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-
 })();
 ```
 
-### Open issues and questions
-
-Please see [the issue tracker](https://github.com/domenic/kv-storage/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc+label%3Aapi) for open issues on the API surface detailed above.
-
 ## Impact
-
-This feature would be low-effort, medium-reward.
 
 - Developers would be steered away from the perils of `localStorage`, toward this modern, attractive alternative.
 - Applications would no longer need to ship complex IndexedDB logic, or the 9.5 KB localForage library.
