@@ -8,6 +8,8 @@ This feature would be implemented as a [built-in module](https://github.com/tc39
 
 A [full specification](https://domenic.github.io/kv-storage/) is also available.
 
+At [TPAC 2018](https://www.w3.org/2018/10/TPAC/Overview.html), the Web Platform Working Group and the [IndexedDB](https://w3c.github.io/IndexedDB/) specification editors [agreed](https://www.w3.org/2018/10/22-WebPlat-minutes.html#item05) that after incubation in the WICG, KV storage should graduate to be part of the W3C IndexedDB specification.
+
 ## Sample code
 
 ```js
