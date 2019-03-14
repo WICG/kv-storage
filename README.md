@@ -128,10 +128,10 @@ import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-
 - Developers would be steered away from the perils of `localStorage`, toward this modern, attractive alternative.
 - Applications would no longer need to ship complex IndexedDB logic, or the 9.5 KB localForage library.
 
-localForage is downloaded [~134K times per week](https://www.npmjs.com/package/localforage) via npm.
+localForage is downloaded [~227K times per week](https://www.npmjs.com/package/localforage) via npm.
 
-Another notable library in this vein is [idb-keyval](https://www.npmjs.com/package/idb-keyval), which is downloaded ~11K times per week via npm.
+Another notable library in this vein is [idb-keyval](https://www.npmjs.com/package/idb-keyval), which is downloaded ~119K times per week via npm.
 
-For comparison, Angular is downloaded [~313K times per week](https://www.npmjs.com/package/angular), React [~2.807 million times per week](https://www.npmjs.com/package/react), and Vue [~436K times per week](https://www.npmjs.com/package/vue).
+For comparison, Angular is downloaded [~2.314 million times per week](https://www.npmjs.com/package/@angular/core), React [~6.312 million times per week](https://www.npmjs.com/package/react), and Vue [~995K times per week](https://www.npmjs.com/package/vue).
 
-(All of the above statistics are as of 2018-10-10.)
+(All of the above statistics are as of 2019-03-14.)
