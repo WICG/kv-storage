@@ -4,7 +4,7 @@ Shortname: kv-storage
 Repository: WICG/kv-storage
 Inline Github Issues: true
 Group: WICG
-Status: ED
+Status: CG-DRAFT
 Level: 1
 URL: https://wicg.github.io/kv-storage/
 Boilerplate: omit conformance, omit feedback-header
