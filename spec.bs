@@ -556,7 +556,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 <dl class="domintro non-normative">
   <dt><code>{ |database|, |store|, |version| } = |storage|.{{StorageArea/backingStore}}</code>
   <dd>
-    <p>Asynchronously retrieves an an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area:
+    <p>Returns an object containing all of the information necessary to manually interface with the IndexedDB backing store that underlies this storage area:
 
     * |database| will be a string equal to "<code>kv-storage:</code>" concatenated with the database name passed to the constructor. (For the default storage area, it will be "<code>kv-storage:default</code>".)
     * |store| will be the string "<code>store</code>".
@@ -840,7 +840,9 @@ Andrew Sutherland,
 Kenneth Rohde Christiansen,
 Jake Archibald,
 Jan Varga,
-Joshua Bell, and
+Joshua Bell,
+Ms2ger,
+and
 Victor Costan
 for their contributions to this specification.
 
