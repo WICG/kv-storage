@@ -1506,7 +1506,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">KV Storage</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-04-29">29 April 2019</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2019-05-01">1 May 2019</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2080,7 +2080,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
    <p>Upon evaluating the <a data-link-type="dfn" href="#stdkv-storage" id="ref-for-stdkv-storage①"><code>std:kv-storage</code></a> module, let <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="the-storage-area-async-iterator-prototype-object">the storage area async iterator prototype object</dfn> be object obtained via the following steps executed in the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#current-realm" id="ref-for-current-realm②">current realm</a>:</p>
    <ol>
     <li data-md>
-     <p>Let <var>proto</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate①">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object" id="ref-for-sec-%iteratorprototype%-object">%IteratorPrototype%</a></code>).</p>
+     <p>Let <var>proto</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-objectcreate" id="ref-for-sec-objectcreate①">ObjectCreate</a>(<code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-asynciteratorprototype" id="ref-for-sec-asynciteratorprototype">%AsyncIteratorPrototype%</a></code>).</p>
     <li data-md>
      <p>Let <var>next</var> be <a data-link-type="abstract-op" href="https://tc39.github.io/ecma262/#sec-createbuiltinfunction" id="ref-for-sec-createbuiltinfunction">CreateBuiltinFunction</a>(the steps of <a href="#storageareaasynciterator-next" id="ref-for-storageareaasynciterator-next">§4.2 next()</a>).</p>
     <li data-md>
@@ -2591,10 +2591,10 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-dom-eventtarget-addeventlistener">5. Supporting operations and concepts</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-sec-%iteratorprototype%-object">
-   <a href="https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object">https://tc39.github.io/ecma262/#sec-%iteratorprototype%-object</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-sec-asynciteratorprototype">
+   <a href="https://tc39.github.io/ecma262/#sec-asynciteratorprototype">https://tc39.github.io/ecma262/#sec-asynciteratorprototype</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sec-%25iteratorprototype%25-object">4. The storage area async iterator</a>
+    <li><a href="#ref-for-sec-asynciteratorprototype">4. The storage area async iterator</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sec-properties-of-the-object-prototype-object">
@@ -3151,7 +3151,7 @@ for their contributions to this specification.</p>
    <li>
     <a data-link-type="biblio">[ECMA-262]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-sec-%iteratorprototype%-object" style="color:initial">%IteratorPrototype%</span>
+     <li><span class="dfn-paneled" id="term-for-sec-asynciteratorprototype" style="color:initial">%AsyncIteratorPrototype%</span>
      <li><span class="dfn-paneled" id="term-for-sec-properties-of-the-object-prototype-object" style="color:initial">%ObjectPrototype%</span>
      <li><span class="dfn-paneled" id="term-for-table-1" style="color:initial">@@asynciterator</span>
      <li><span class="dfn-paneled" id="term-for-sec-construct" style="color:initial">Construct</span>
