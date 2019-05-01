@@ -25,7 +25,7 @@ urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: WeakMap; url: sec-weakmap-objects; type: interface
   text: Date; url: sec-date-objects; type: interface
   text: ToString; url: sec-tostring; type: abstract-op
-  text: %IteratorPrototype%; url: sec-%iteratorprototype%-object; type: interface
+  text: %AsyncIteratorPrototype%; url: sec-asynciteratorprototype; type: interface
   text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object; type: interface
   text: CreateDataProperty; url: sec-createdataproperty; type: abstract-op
   text: CreateBuiltinFunction; url: sec-createbuiltinfunction; type: abstract-op
@@ -630,7 +630,7 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 Upon evaluating the <a><code>std:kv-storage</code></a> module, let <dfn>the storage area async iterator prototype object</dfn> be object obtained via the following steps executed in the [=current realm=]:
 
-1. Let |proto| be [$ObjectCreate$]({{%IteratorPrototype%}}).
+1. Let |proto| be [$ObjectCreate$]({{%AsyncIteratorPrototype%}}).
 1. Let |next| be [$CreateBuiltinFunction$](the steps of [[#storageareaasynciterator-next]]).
 1. Perform [$CreateMethodProperty$](|proto|, "<code>next</code>", |next|).
 1. Return |proto|.
