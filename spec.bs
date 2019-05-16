@@ -421,27 +421,28 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 The {{StorageArea}} interface supports asynchronous iteration. The iteration methods are found below.
 
-To <dfn for=StorageArea>get the next iteration result</dfn>:
+To <dfn for=StorageArea>iterate</dfn> over a {{StorageArea}} object:
 
-1. If <b>this</b>'s [=relevant realm=] is not equal to the [=current realm=], then return [=a promise rejected with=] a {{TypeError}} exception.
+1. If <b>this</b>'s [=relevant realm=] is not equal to the [=current realm=], then throw a {{TypeError}} exception.
 
     Issue: This should be handled by WebIDL once the various features involved land.
-1. Return the result of [=performing a database operation=] given <b>this</b>, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
-  1. Let |lastKey| be <b>current state</b>.
-  1. Let |range| be the result of [=getting the range for=] |lastKey|.
-  1. Let |keyRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getKey()}} method on |store|, given the argument |range|.
-  1. Let |valueRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |range|.
-  1. Let |promise| be [=a new promise=].
-  1. [=Add a simple event listener=] to |valueRequest| for "<code>success</code>" that performs the following steps:
-    1. Let |key| be |keyRequest|'s [=request/result=].
-    1. If |key| is undefined, then:
-      1. [=Resolve=] |promise| with undefined.
-    1. Otherwise:
-      1. Let |value| be |valueRequest|'s [=request/result=].
-      1. [=Resolve=] |promise| with (|key|, |value|, |key|).
-  1. [=Add a simple event listener=] to |keyRequest| for "<code>error</code>" that [=rejects=] |promise| with |keyRequest|'s [=request/error=].
-  1. [=Add a simple event listener=] to |valueRequest| for "<code>error</code>" that [=rejects=] |promise| with |valueRequest|'s [=request/error=].
-  1. Return |promise|.
+1. Let |lastKey| be [=not yet started=].
+1. While true:
+  1. [=Perform a database operation=] given <b>this</b>, "<code>readonly</code>", and the following steps operating on |transaction| and |store|:
+    1. Let |range| be the result of [=getting the range for=] |lastKey|.
+    1. Let |keyRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getKey()}} method on |store|, given the argument |range|.
+    1. Let |valueRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |range|.
+    1. Let |promise| be [=a new promise=].
+    1. [=Add a simple event listener=] to |valueRequest| for "<code>success</code>" that performs the following steps:
+      1. Let |key| be |keyRequest|'s [=request/result=].
+      1. Set |lastKey| to |key|.
+      1. If |key| is undefined, then:
+        1. Yield undefined.
+      1. Otherwise:
+        1. Let |value| be |valueRequest|'s [=request/result=].
+        1. Yield (|key|, |value|).
+    1. [=Add a simple event listener=] to |keyRequest| for "<code>error</code>" that throws |keyRequest|'s [=request/error=].
+    1. [=Add a simple event listener=] to |valueRequest| for "<code>error</code>" that throws |valueRequest|'s [=request/error=].
 
 
 <h4 id="storagearea-keys" method for="StorageArea">keys()</h4>
