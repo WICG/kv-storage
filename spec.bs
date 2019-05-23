@@ -193,7 +193,7 @@ This specification proposes a new API, called KV storage, which is intended to p
 <h2 id="module">The <code>std:kv-storage</code> built-in module</h2>
 
 <pre language ="idl">
-[SecureContext]
+[SecureContext,Exposed=(Window,Worker)]
 module kv-storage {
   [Constructor(DOMString name), SameRealmBrandCheck, UnenumerableMethods]
   interface StorageArea {
@@ -431,6 +431,8 @@ To <dfn for=StorageArea>get the next iteration result</dfn>:
   1. Let |range| be the result of [=getting the range for=] |lastKey|.
   1. Let |keyRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getKey()}} method on |store|, given the argument |range|.
   1. Let |valueRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |range|.
+
+      Note: The iterator returned from {{StorageArea/keys()}} discards the value. Implementations could avoid constructing |valueRequest| in that case.
   1. Let |promise| be [=a new promise=].
   1. [=Add a simple event listener=] to |valueRequest| for "<code>success</code>" that performs the following steps:
     1. Let |key| be |keyRequest|'s [=request/result=].
