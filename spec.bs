@@ -22,6 +22,8 @@ url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; ty
 
 url: https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/720.html#dfn-get-the-next-iteration-result; type: dfn; text: get the next iteration result; spec: WEBIDL
 
+url: https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/718.html#SameRealmBrandCheck; type: extended-attribute; text: [SameRealmBrandCheck]; spec: WEBIDL
+
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
   text: WeakMap; url: sec-weakmap-objects; type: interface
@@ -260,7 +262,7 @@ Each {{StorageArea}} instance must also contain the <dfn>\[[DatabaseName]]</dfn>
   <dd>The object returned by the {{StorageArea/backingStore}} getter, cached to ensure identity across gets.</dd>
 </dl>
 
-<p class="note">The [SameRealmBrandCheck] [=extended attribute=] used in the IDL gives us semantics identical to using JavaScript's {{WeakMap}} or the proposed private class fields. This ensures {{StorageArea}} does not use any magic, like the platform's usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. [[ECMA-262]] [[CLASS-FIELDS]]
+<p class="note">The {{[SameRealmBrandCheck]}} [=extended attribute=] used in the IDL gives us semantics identical to using JavaScript's {{WeakMap}} or the proposed private class fields. This ensures {{StorageArea}} does not use any magic, like the platform's usual cross-realm brand checks, which go beyond what can be implemented in JavaScript. [[ECMA-262]] [[CLASS-FIELDS]]
 
 <h3 id="storagearea-constructor" constructor for="StorageArea" lt="constructor(name)">constructor(|name|)</h3>
 
