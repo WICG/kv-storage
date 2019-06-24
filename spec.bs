@@ -199,7 +199,6 @@ This specification proposes a new API, called KV storage, which is intended to p
 
   * <a href="https://github.com/heycam/webidl/pull/675"><code>module { }</code></a>
   * <a href="https://github.com/heycam/webidl/pull/720"><code>async_iterable&lt;K, V></code></a>
-  * <a href="https://github.com/heycam/webidl/pull/719"><code>[UnenumerableMethods]</code></a>
   * <a href="https://github.com/heycam/webidl/pull/718"><code>[SameRealmBrandCheck]</code></a>
 
   Note that until at least the first two of these are merged and the associated tooling is updated, syntax highlighting and cross-linking will not work for the below IDL block. Sorry about that.
@@ -209,7 +208,7 @@ This specification proposes a new API, called KV storage, which is intended to p
 <xmp>
 [SecureContext,Exposed=(Window,Worker)]
 module kv-storage {
-  [Constructor(DOMString name), SameRealmBrandCheck, UnenumerableMethods]
+  [Constructor(DOMString name), SameRealmBrandCheck]
   interface StorageArea {
     Promise<void> set(any key, any value);
     Promise<any> get(any key);
