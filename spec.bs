@@ -24,6 +24,10 @@ url: https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/720.html#dfn-get-the
 
 url: https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/718.html#SameRealmBrandCheck; type: extended-attribute; text: [SameRealmBrandCheck]; spec: WEBIDL
 
+urlPrefix: https://pr-preview.s3.amazonaws.com/littledan/webidl/pull/675.html#; type: dfn; spec: WEBIDL
+  text: evaluation steps; for: module; url: module-evaluation-steps
+  text: set the module attribute; url: set-a-module-attribute
+
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
   text: WeakMap; url: sec-weakmap-objects; type: interface
@@ -75,6 +79,7 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
 <pre class="link-defaults">
   spec: promises-guide; type: dfn; text: resolve
   spec: infra; type: dfn; text: list
+  spec: webidl; type: dfn; text: new
 </pre>
 
 <pre class="biblio">
@@ -246,6 +251,14 @@ This specification defines a new built-in module, "<dfn export><code>std:kv-stor
 :: An instance of the {{StorageArea}} class, backed by a database named "<code>kv-storage:default</code>".
 : <dfn for="std:kv-storage"><code>StorageArea</code></dfn>
 :: The {{StorageArea}} class
+
+The [=module/evaluation steps=] for the <code>[=std:kv-storage=]</code> module in |realm| are:
+
+1. Let |defaultStorageArea| be a [=new=] {{StorageArea}} in |realm|.
+1. Set |defaultStorageArea|.[=[[DatabaseName]]=] to "<code>kv-storage:default</code>".
+1. Set |defaultStorageArea|.[=[[DatabasePromise]]=] to null.
+1. Set |defaultStorageArea|.[=[[BackingStoreObject]]=] to null.
+1. [=Set the module attribute=] <code>[=std:kv-storage/storage=]</code> of this module to |defaultStorageArea|.
 
 
 <h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
@@ -494,7 +507,7 @@ To [=get the next iteration result=]:
 </div>
 
 <div class="example" id="example-entries-to-server">
-  Assuming you knew that that you only stored JSON-compatible types in <code>[=storage=]</code>, you could use the following code to send all locally-stored entries to a server:
+  Assuming you knew that that you only stored JSON-compatible types in the {{StorageArea}} |storage|, you could use the following code to send all locally-stored entries to a server:
 
   <xmp highlight="js">
     const entries = [];
@@ -538,7 +551,7 @@ To [=get the next iteration result=]:
 </div>
 
 <div class="example" id="example-backingstore">
-  Consider a checklist application, which tracks the Pokémon a user has collected. It might use <code>[=std:kv-storage/storage=]</code> like so:
+  Consider a checklist application, which tracks the Pokémon a user has collected. It might use a {{StorageArea}} |storage| like so:
 
   <xmp highlight="js">
     bulbasaur.onchange = () => storage.set("bulbasaur", bulbasaur.checked);
