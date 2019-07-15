@@ -419,7 +419,31 @@ To <dfn lt="deleting the database|delete the database">delete the database</dfn>
 
 <h3 id="storagearea-iteration">Iteration</h3>
 
-The {{StorageArea}} interface supports asynchronous iteration. The iteration methods are found below.
+The {{StorageArea}} interface supports asynchronous iteration.
+
+<div class="domintro non-normative">
+  <dl>
+    <dt><code>for await (const |key| of |storage|.<dfn method for="StorageArea">keys()</dfn>) { ... }</code>
+    <dd>
+      <p>Retrieves an async iterator containing the keys of all entries in this storage area.
+
+      <p>Keys will be yielded in [=key/ascending=] order; roughly, segregated by type, and then sorted within each type. They will be [=key round-tripped=] from their original form.
+
+    <dt><code>for await (const |value| of |storage|.<dfn method for="StorageArea">values()</dfn>) { ... }</code>
+    <dd>
+      <p>Asynchronously retrieves an array containing the values of all entries in this storage area.
+
+      <p>Values will be ordered as corresponding to their keys. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
+
+    <dt><code>for await (const [|key|, |value|] of |storage|.<dfn method for="StorageArea">entries()</dfn>) { ... }</code>
+    <dt><code>for await (const [|key|, |value|] of |storage|) { ... }</code>
+    <dd>
+      <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
+
+      <p>Entries will be ordered as corresponding to their keys. Each key and value will be [=key round-tripped=] and [$StructuredDeserialize|structured-deserialized$] from its original form, respectively.
+  </dl>
+  <p>All of these iterators provide live views onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration.
+</div>
 
 To [=get the next iteration result=]:
 
@@ -445,21 +469,8 @@ To [=get the next iteration result=]:
   1. [=Add a simple event listener=] to |valueRequest| for "<code>error</code>" that [=rejects=] |promise| with |valueRequest|'s [=request/error=].
   1. Return |promise|.
 
-
-<h4 id="storagearea-keys" method for="StorageArea">keys()</h4>
-
-<dl class="domintro non-normative">
-  <dt><code>for await (const |key| of |storage|.{{StorageArea/keys()|keys}}()) { ... }</code>
-  <dd>
-    <p>Retrieves an async iterator containing the keys of all entries in this storage area.
-
-    <p>Keys will be yielded in [=key/ascending=] order; roughly, segregated by type, and then sorted within each type. They will be [=key round-tripped=] from their original form.
-
-    <p>The iterator provides a live view onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration.
-</dl>
-
 <div class="example" id="example-live-async-iterator">
-  To illustrate the live nature of the async iterator, consider the following:
+  To illustrate the live nature of the async iterators, consider the following:
 
   <xmp highlight="js">
     await storage.set(10, "value 10");
@@ -482,31 +493,6 @@ To [=get the next iteration result=]:
   That is, calling {{StorageArea/keys()}} does not create a snapshot as of the time it was called; it returns a live asynchronous iterator, that lazily retrieves the next key after the last-seen one.
 </div>
 
-<h4 id="storagearea-values" method for="StorageArea">values()</h4>
-
-<dl class="domintro non-normative">
-  <dt><code>for await (const |value| of |storage|.{{StorageArea/values()|values}}()) { ... }</code>
-  <dd>
-    <p>Asynchronously retrieves an array containing the values of all entries in this storage area.
-
-    <p>Values will be ordered as corresponding to their keys; see {{StorageArea/keys()}}. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
-
-    <p>The iterator provides a live view onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration.
-</dl>
-
-<h4 id="storagearea-entries" method for="StorageArea">entries()</h4>
-
-<dl class="domintro non-normative">
-  <dt><code>for await (const [|key|, |value|] of |storage|.{{StorageArea/entries()|entries}}()) { ... }</code>
-  <dt><code>for await (const [|key|, |value|] of |storage|) { ... }</code>
-  <dd>
-    <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
-
-    <p>Entries will be ordered as corresponding to their keys; see {{StorageArea/keys()}}. Each key and value will be [=key round-tripped=] and [$StructuredDeserialize|structured-deserialized$] from its original form, respectively.
-
-    <p>The iterator provides a live view onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration.
-</dl>
-
 <div class="example" id="example-entries-to-server">
   Assuming you knew that that you only stored JSON-compatible types in <code>[=storage=]</code>, you could use the following code to send all locally-stored entries to a server:
 
@@ -526,7 +512,7 @@ To [=get the next iteration result=]:
   </xmp>
 </div>
 
-<h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">get backingStore()</h3>
+<h3 id="storagearea-backingstore" attribute for="StorageArea" lt="backingStore">backingStore</h3>
 
 <dl class="domintro non-normative">
   <dt><code>{ |database|, |store|, |version| } = |storage|.{{StorageArea/backingStore}}</code>
