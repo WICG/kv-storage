@@ -709,6 +709,7 @@ Eventually we hope to introduce the ability for web authors to write code that g
 The editor would like to thank
 Andrew Sutherland,
 Kenneth Rohde Christiansen,
+Jacob Rask,
 Jake Archibald,
 Jan Varga,
 Joshua Bell,
