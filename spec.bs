@@ -176,7 +176,7 @@ This specification proposes a new API, called KV storage, which is intended to p
       time(s).
     </p>
     <script type="module">
-      import { storage } from "std:kv-storage";
+      import storage from "std:kv-storage";
 
       (async () => {
         let pageLoadCount = await storage.get("pageLoadCount") || 0;
@@ -225,13 +225,13 @@ module kv-storage {
     [SameObject] readonly attribute object backingStore;
   };
 
-  readonly attribute kv-storage.StorageArea storage;
+  readonly attribute kv-storage.StorageArea default;
 };
 </xmp>
 
 <div class="domintro non-normative" id="module-domintro">
   <dl>
-    <dt><code>import { [=std:kv-storage/storage=] } from "std:kv-storage"</code>
+    <dt><code>import [=std:kv-storage/default|storage=] from "std:kv-storage"</code>
     <dd>
       <p>Returns the default storage area. It is a pre-constructed instance of the {{StorageArea}} class, meant to be a convenience similar to {{Window/localStorage}}.
     </dd>
@@ -247,7 +247,7 @@ module kv-storage {
 
 This specification defines a new built-in module, "<dfn export><code>std:kv-storage</code></dfn>". Its exports are:
 
-: <dfn for="std:kv-storage"><code>storage</code></dfn>
+: <dfn for="std:kv-storage"><code>default</code></dfn>
 :: An instance of the {{StorageArea}} class, backed by a database named "<code>kv-storage:default</code>".
 : <dfn for="std:kv-storage"><code>StorageArea</code></dfn>
 :: The {{StorageArea}} class
@@ -258,7 +258,7 @@ The [=module/evaluation steps=] for the <code>[=std:kv-storage=]</code> module i
 1. Set |defaultStorageArea|.[=[[DatabaseName]]=] to "<code>kv-storage:default</code>".
 1. Set |defaultStorageArea|.[=[[DatabasePromise]]=] to null.
 1. Set |defaultStorageArea|.[=[[BackingStoreObject]]=] to null.
-1. [=Set the module attribute=] <code>[=std:kv-storage/storage=]</code> of this module to |defaultStorageArea|.
+1. [=Set the module attribute=] <code>[=std:kv-storage/default=]</code> of this module to |defaultStorageArea|.
 
 
 <h2 id="storagearea" interface lt="StorageArea">The <code>StorageArea</code> class</h2>
@@ -709,6 +709,7 @@ Eventually we hope to introduce the ability for web authors to write code that g
 The editor would like to thank
 Andrew Sutherland,
 Kenneth Rohde Christiansen,
+Jacob Rask,
 Jake Archibald,
 Jan Varga,
 Joshua Bell,
