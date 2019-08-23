@@ -13,7 +13,7 @@ At [TPAC 2018](https://www.w3.org/2018/10/TPAC/Overview.html), the Web Platform 
 ## Sample code
 
 ```js
-import { storage } from "std:kv-storage"; // specifier prefix not final
+import storage from "std:kv-storage"; // specifier prefix not final
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -82,7 +82,7 @@ Returns an async iterator of `[key, value]` pairs, sorted to correspond with `ke
 We additionally expose a `StorageArea` constructor, which allows you to create an "isolated" storage area that is less likely to collide than using the default one:
 
 ```js
-import { storage, StorageArea } from "std:kv-storage";
+import storage, { StorageArea } from "std:kv-storage";
 
 (async () => {
   await storage.set("mycat", "Tom");
@@ -106,7 +106,7 @@ One of the great things about layering KV storage on top of IndexedDB is that, i
 To facilitate this, we include an API that allows you to get a `{ database, store, version }` object identifying the IndexedDB database and store within that database where a given `StorageArea`'s data is being stored:
 
 ```js
-import { storage } from "std:kv-storage";
+import storage from "std:kv-storage";
 import { open as idbOpen } from "https://www.npmjs.com/package/idb/pretend-this-was-a-native-JS-module";
 
 (async () => {
