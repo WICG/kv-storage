@@ -1,0 +1,19 @@
+# KV Storage Origin Trial Feedback
+
+KV Storage ran as an [origin trial](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md), in tandem with [import maps](https://github.com/WICG/import-maps), from Chrome 74−76. During that time, we did not receive much feedback directly through the origin trial renewal mechanism; many developers chose to use the polyfill instead. However, we received the following feedback from (non-Google) users of the API during the origin trial period:
+
+* In [#20](https://github.com/WICG/kv-storage/issues/20), several previously-unknown IndexedDB-backed "async local storage" libraries chimed in to express their interest in the project.
+
+* In [#55](https://github.com/WICG/kv-storage/issues/55), @jacobrask suggested an API surface tweak, of exposing the default storage area via the module's default export, instead of under the name "storage". This was done in [#71](https://github.com/WICG/kv-storage/pull/71).
+
+* In [#56](https://github.com/WICG/kv-storage/issues/56), @wmhilton suggested an additional capability, of an atomic read-modify-write operation. Both Mozilla and Google storage team engineers indicated willingness to explore the idea, but also a desire to wait and see stronger developer demand before proceeding. This is a potential future area of expansion, which developers could "prolyfill" on top of the `backingStore` getter to help inform the standards process.
+
+* In [#57](https://github.com/WICG/kv-storage/issues/57) and [#63](https://github.com/WICG/kv-storage/issues/63), @tophf indicated a desire for a bulk read/write API, out of concern about performance with large numbers of operations. In #57, @esphren also indicated such concerns, in his case focused specifically on the async iterator design for the `keys()`/`values()`/`entries()`. (Note that the latter design was arrived at after Mozilla and Google implementer feedback in [#6](https://github.com/WICG/kv-storage/issues/6), plus W3C TAG feedback in [w3ctag/design-reviews#278](https://github.com/w3ctag/design-reviews/issues/278).)
+
+   The discussions there were wide-ranging, including some options which implementers disfavored (e.g. making KV Storage or IndexedDB have synchronous variants; exposing `localStorage` to workers), and others which they were open to (e.g. extending KV Storage with `allKeys()`/`allValues()`/`allEntries()` bulk-read operations). We even explored the idea of a memory-backed, periodically-synced-to-disk variant of KV Storage for high-churn applications.
+
+   In the end, the conclusion of these discussions was that there are potential future areas of expansion for future revisions of KV Storage, or improvements to be made to IndexedDB itself that would trickle through. Such additions may expand KV Storage's user base beyond the existing audience (those using IDB wrappers or basic `localStorage`), to encompass new use cases. This could include folks like @tophf, using the Chrome extensions APIs to perform thousands of reads and writes per second, or those like @espren, using `localStorage` to avoid the event-loop contention that occurs with async APIs during app startup. Alternately, there may be other ways of tackling these problems, e.g. the main thread scheduling API could help with the event-loop contention.
+
+   For new APIs (e.g. batch reads/writes), the next steps would be for web developers to prolyfill such additions on top of KV Storage's `backingStore` getter, and test the wins at scale in real web applications.
+
+   For under-the-hood improvements, both Mozilla and Google storage teams expressed a desire to optimize their IndexedDB implementations to make KV Storage, and patterns like it, fast and competitive. Currently the Chromium storage team is looking in to the priority of the IndexedDB task runner as one avenue for near-term improvement.
