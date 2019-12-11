@@ -400,16 +400,16 @@ The {{KVStorageArea}} interface supports asynchronous iteration.
 
     <dt><code>for await (const |value| of |storage|.<dfn method for="KVStorageArea">values()</dfn>) { ... }</code>
     <dd>
-      <p>Asynchronously retrieves an array containing the values of all entries in this storage area.
+      <p>Retrieves an async iterator containing the values of all entries in this storage area.
 
-      <p>Values will be ordered as corresponding to their keys. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
+      <p>Values will be yielded in the same order as for {{KVStorageArea/keys()}}. They will be [$StructuredDeserialize|structured-deserialized$] from their original form.
 
     <dt><code>for await (const [|key|, |value|] of |storage|.<dfn method for="KVStorageArea">entries()</dfn>) { ... }</code>
     <dt><code>for await (const [|key|, |value|] of |storage|) { ... }</code>
     <dd>
-      <p>Asynchronously retrieves an array of two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
+      <p>Retrieves an async iterator containing two-element <code>[key, value]</code> arrays, each of which corresponds to an entry in this storage area.
 
-      <p>Entries will be ordered as corresponding to their keys. Each key and value will be [=key round-tripped=] and [$StructuredDeserialize|structured-deserialized$] from its original form, respectively.
+      <p>Entries will be yielded in the same order as for {{KVStorageArea/keys()}}. Each key and value will be [=key round-tripped=] and [$StructuredDeserialize|structured-deserialized$] from its original form, respectively.
   </dl>
   <p>All of these iterators provide live views onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration.
 </div>
