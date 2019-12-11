@@ -14,6 +14,10 @@ KV Storage ran as an [origin trial](https://github.com/GoogleChrome/OriginTrials
 
 Previous revisions of this specification and explainer positioned KV storage as a built-in module. Due to a [variety of concerns](https://github.com/w3ctag/design-reviews/issues/421#issuecomment-561705979) we have moved away from that approach, toward using traditional globals.
 
+## Status
+
+Work on this specification is currently suspended, as no browser teams (including the Chromium project, which originated the proposal) are currently indicating interest in implementing it.
+
 ## Sample code
 
 ```js

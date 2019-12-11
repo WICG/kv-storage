@@ -131,6 +131,11 @@ summary {
 
 <script src="https://resources.whatwg.org/file-issue.js" async></script>
 
+<details class="annoying-warning" open>
+  <summary>Not an active specification</summary>
+  <p>Work on this specification is currently suspended, as no browser teams (including the Chromium project, which originated the proposal) are currently indicating interest in implementing it.</p>
+</details>
+
 
 <h2 id="intro">Introduction</h2>
 
