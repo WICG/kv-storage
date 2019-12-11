@@ -245,7 +245,7 @@ Each {{KVStorageArea}} instance must also contain the <dfn>\[[DatabaseName]]</df
 </dl>
 
 <div algorithm="KVStorageArea constructor">
-  1. Set <b>this</b>.[=[[DatabaseName]]=] to the concatenation of "<code>kv-storage:</code>" and <var ignore name</var>>.
+  1. Set <b>this</b>.[=[[DatabaseName]]=] to the concatenation of "<code>kv-storage:</code>" and <var ignore> name</var>.
   1. Set <b>this</b>.[=[[DatabasePromise]]=] to null.
   1. Set <b>this</b>.[=[[BackingStoreObject]]=] to null.
 </div>
