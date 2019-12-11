@@ -1876,23 +1876,28 @@ openRequest<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>
     </dl>
     <p>All of these iterators provide live views onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration. </p>
    </div>
-   <div class="algorithm" data-algorithm="get the next iteration result">
-     To <a data-link-type="dfn" href="https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/720.html#dfn-get-the-next-iteration-result" id="ref-for-dfn-get-the-next-iteration-result">get the next iteration result</a>: 
+   <div class="algorithm" data-algorithm="asynchronous iterator initialization steps">
+     The <a data-link-type="dfn" href="https://heycam.github.io/webidl/#asynchronous-iterator-initialization-steps" id="ref-for-asynchronous-iterator-initialization-steps">asynchronous iterator initialization steps</a> for <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea⑦">KVStorageArea</a></code>, given <var>storageArea</var> and <var>asyncIterator</var>, are: 
     <ol>
      <li data-md>
-      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation④">performing a database operation</a> given <b>this</b>, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
+      <p>Set <var>asyncIterator</var>’s <dfn class="dfn-paneled" data-dfn-for="KVStorageAreaAsyncIterator" data-dfn-type="dfn" data-noexport id="kvstorageareaasynciterator-last-key">last key</dfn> to <a data-link-type="dfn" href="#not-yet-started" id="ref-for-not-yet-started">not yet started</a>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="get the next iteration result">
+     To <a data-link-type="dfn" href="https://heycam.github.io/webidl/#dfn-get-the-next-iteration-result" id="ref-for-dfn-get-the-next-iteration-result">get the next iteration result</a>, given the <var>storageArea</var> and <var>asyncIterator</var>: 
+    <ol>
+     <li data-md>
+      <p>Return the result of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation④">performing a database operation</a> given <var>storageArea</var>, "<code>readonly</code>", and the following steps operating on <var>transaction</var> and <var>store</var>:</p>
       <ol>
        <li data-md>
-        <p>Let <var>lastKey</var> be <b>current state</b>.</p>
-       <li data-md>
-        <p>Let <var>range</var> be the result of <a data-link-type="dfn" href="#get-the-range-for-a-key" id="ref-for-get-the-range-for-a-key">getting the range for</a> <var>lastKey</var>.</p>
+        <p>Let <var>range</var> be the result of <a data-link-type="dfn" href="#get-the-range-for-a-key" id="ref-for-get-the-range-for-a-key">getting the range for</a> <var>asyncIterator</var>’s <a data-link-type="dfn" href="#kvstorageareaasynciterator-last-key" id="ref-for-kvstorageareaasynciterator-last-key">last key</a>.</p>
        <li data-md>
         <p>Let <var>keyRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore④">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-getkey" id="ref-for-dom-idbobjectstore-getkey">getKey()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
        <li data-md>
         <p>Let <var>valueRequest</var> be the result of performing the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑤">IDBObjectStore</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbobjectstore-get" id="ref-for-dom-idbobjectstore-get①">get()</a></code> method on <var>store</var>, given the argument <var>range</var>.</p>
         <p class="note" role="note"><span>Note:</span> The iterator returned from <code class="idl"><a data-link-type="idl" href="#dom-kvstoragearea-keys" id="ref-for-dom-kvstoragearea-keys②">keys()</a></code> discards the value. Implementations could avoid constructing <var>valueRequest</var> in that case.</p>
        <li data-md>
-        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a> in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm④">relevant Realm</a> of <b>this</b>.</p>
+        <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise④">a new promise</a> in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm④">relevant Realm</a> of <var>asyncIterator</var>.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⓪">Add a simple event listener</a> to <var>valueRequest</var> for "<code>success</code>" that performs the following steps:</p>
         <ol>
@@ -1911,6 +1916,8 @@ openRequest<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>
             <p>Let <var>value</var> be <var>valueRequest</var>’s <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#request-result" id="ref-for-request-result②">result</a>.</p>
            <li data-md>
             <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve⑤">Resolve</a> <var>promise</var> with (<var>key</var>, <var>value</var>, <var>key</var>).</p>
+           <li data-md>
+            <p>Set <var>asyncIterator</var>’s <a data-link-type="dfn" href="#kvstorageareaasynciterator-last-key" id="ref-for-kvstorageareaasynciterator-last-key①">last key</a> to <var>key</var>.</p>
           </ol>
         </ol>
        <li data-md>
@@ -1943,7 +1950,7 @@ console<c- p>.</c->log<c- p>(</c->keysSeen<c- p>);</c->   <c- c1>// logs 10, 20,
     <p>That is, calling <code class="idl"><a data-link-type="idl" href="#dom-kvstoragearea-keys" id="ref-for-dom-kvstoragearea-keys③">keys()</a></code> does not create a snapshot as of the time it was called; it returns a live asynchronous iterator, that lazily retrieves the next key after the last-seen one.</p>
    </div>
    <div class="example" id="example-entries-to-server">
-    <a class="self-link" href="#example-entries-to-server"></a> Assuming you knew that that you only stored JSON-compatible types in the <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea⑦">KVStorageArea</a></code> <var>storage</var>, you could use the following code to send all locally-stored entries to a server: 
+    <a class="self-link" href="#example-entries-to-server"></a> Assuming you knew that that you only stored JSON-compatible types in the <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea⑧">KVStorageArea</a></code> <var>storage</var>, you could use the following code to send all locally-stored entries to a server: 
 <pre class="highlight"><c- kr>const</c-> entries <c- o>=</c-> <c- p>[];</c->
 <c- k>for</c-> await <c- p>(</c-><c- kr>const</c-> entry <c- k>of</c-> kvStorage<c- p>.</c->entries<c- p>())</c-> <c- p>{</c->
   entries<c- p>.</c->push<c- p>(</c->entry<c- p>);</c->
@@ -1996,7 +2003,7 @@ fetch<c- p>(</c-><c- u>"/storage-receiver"</c-><c- p>,</c-> <c- p>{</c->
     </ol>
    </div>
    <div class="example" id="example-backingstore">
-    <a class="self-link" href="#example-backingstore"></a> Consider a checklist application, which tracks the Pokémon a user has collected. It might use a <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea⑧">KVStorageArea</a></code> <var>storage</var> like so: 
+    <a class="self-link" href="#example-backingstore"></a> Consider a checklist application, which tracks the Pokémon a user has collected. It might use a <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea⑨">KVStorageArea</a></code> <var>storage</var> like so: 
 <pre class="highlight">bulbasaur<c- p>.</c->onchange <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> kvStorage<c- p>.</c->set<c- p>(</c-><c- u>"bulbasaur"</c-><c- p>,</c-> bulbasaur<c- p>.</c->checked<c- p>);</c->
 ivysaur<c- p>.</c->onchange <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> kvStorage<c- p>.</c->set<c- p>(</c-><c- u>"ivysaur"</c-><c- p>,</c-> ivysaur<c- p>.</c->checked<c- p>);</c->
 venusaur<c- p>.</c->onchange <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> kvStorage<c- p>.</c->set<c- p>(</c-><c- u>"venusaur"</c-><c- p>,</c-> venusaur<c- p>.</c->checked<c- p>);</c->
@@ -2051,7 +2058,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
     </ol>
    </div>
    <div class="algorithm" data-algorithm="performing a database operation">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea⑨">KVStorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑥">IDBObjectStore</a></code> <var>store</var>: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="performing a database operation|perform a database operation" data-noexport id="performing-a-database-operation">perform a database operation</dfn> given a <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①⓪">KVStorageArea</a></code> <var>area</var>, a mode string <var>mode</var>, and a set of steps <var>steps</var> that operate on an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbtransaction" id="ref-for-idbtransaction">IDBTransaction</a></code> <var>transaction</var> and an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbobjectstore" id="ref-for-idbobjectstore⑥">IDBObjectStore</a></code> <var>store</var>: 
     <ol>
      <li data-md>
       <p class="assertion">Assert: <var>area</var>.<a data-link-type="dfn" href="#databasename" id="ref-for-databasename⑥">[[DatabaseName]]</a> is a string (and in particular is not null).</p>
@@ -2070,7 +2077,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
     </ol>
    </div>
    <div class="algorithm" data-algorithm="initialize the database promise">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-the-database-promise">initialize the database promise</dfn> for a <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①⓪">KVStorageArea</a></code> <var>area</var>: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="initialize-the-database-promise">initialize the database promise</dfn> for a <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①①">KVStorageArea</a></code> <var>area</var>: 
     <ol>
      <li data-md>
       <p>Set <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise⑧">[[DatabasePromise]]</a> to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-new-promise" id="ref-for-a-new-promise⑤">a new promise</a> in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm⑤">relevant Realm</a> of <var>area</var>.</p>
@@ -2092,7 +2099,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
         <p class="note" role="note">This means that if the database is <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#close-a-database-connection" id="ref-for-close-a-database-connection">closed abnormally</a>, future invocations of <a data-link-type="dfn" href="#performing-a-database-operation" id="ref-for-performing-a-database-operation⑤">perform a database operation</a> will attempt to reopen it.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="#add-a-simple-event-listener" id="ref-for-add-a-simple-event-listener①⑤">Add a simple event listener</a> to <var>database</var> for "<code>versionchange</code>" that performs the steps listed in the description of <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbdatabase" id="ref-for-idbdatabase②">IDBDatabase</a></code>'s <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbdatabase-close" id="ref-for-dom-idbdatabase-close">close()</a></code> method on <var>database</var>, and then sets <var>area</var>.<a data-link-type="dfn" href="#databasepromise" id="ref-for-databasepromise①③">[[DatabasePromise]]</a> to null.</p>
-        <p class="note" role="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the <code class="idl"><a data-link-type="idl" href="#KVStorageArea-clear" id="ref-for-KVStorageArea-clear②">clear()</a></code> method), to succeed. Without this, if two <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①①">KVStorageArea</a></code> instances were both open referencing the same underlying database, <code class="idl"><a data-link-type="idl" href="#KVStorageArea-clear" id="ref-for-KVStorageArea-clear③">clear()</a></code> would hang, as it only closes the connection maintained by the <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①②">KVStorageArea</a></code> it is invoked on.</p>
+        <p class="note" role="note">This allows attempts to upgrade the underlying database, or to delete it (e.g. via the <code class="idl"><a data-link-type="idl" href="#KVStorageArea-clear" id="ref-for-KVStorageArea-clear②">clear()</a></code> method), to succeed. Without this, if two <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①②">KVStorageArea</a></code> instances were both open referencing the same underlying database, <code class="idl"><a data-link-type="idl" href="#KVStorageArea-clear" id="ref-for-KVStorageArea-clear③">clear()</a></code> would hang, as it only closes the connection maintained by the <code class="idl"><a data-link-type="idl" href="#KVStorageArea" id="ref-for-KVStorageArea①③">KVStorageArea</a></code> it is invoked on.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://heycam.github.io/webidl/#resolve" id="ref-for-resolve⑥">Resolve</a> <var>promise</var> with <var>database</var>.</p>
       </ol>
@@ -2160,7 +2167,7 @@ request<c- p>.</c->onsuccess <c- o>=</c-> <c- p>()</c-> <c- p>=></c-> <c- p>{</c
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="get the range for a key|getting the range for|getting the range for a key" data-noexport id="get-the-range-for-a-key">get the range for a key</dfn> <var>key</var>: 
     <ol>
      <li data-md>
-      <p>If <var>key</var> is <a data-link-type="dfn" href="#not-yet-started" id="ref-for-not-yet-started">not yet started</a>, then return the result of performing the steps listed in the description of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound" id="ref-for-dom-idbkeyrange-lowerbound">IDBKeyRange.lowerBound()</a></code> static method, given the argument −Infinity.</p>
+      <p>If <var>key</var> is <a data-link-type="dfn" href="#not-yet-started" id="ref-for-not-yet-started①">not yet started</a>, then return the result of performing the steps listed in the description of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound" id="ref-for-dom-idbkeyrange-lowerbound">IDBKeyRange.lowerBound()</a></code> static method, given the argument −Infinity.</p>
       <p class="note" role="note">The intent here is to get an <a data-link-type="dfn" href="https://w3c.github.io/IndexedDB/#unbounded-key-range" id="ref-for-unbounded-key-range">unbounded key range</a>, but this is the closest thing we can get that is representable as an <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#idbkeyrange" id="ref-for-idbkeyrange①">IDBKeyRange</a></code> object. It works equivalently for our purposes, but will behave incorrectly if Indexed DB ever adds keys that sort below −Infinity. See <a href="https://github.com/WICG/kv-storage/issues/6#issuecomment-452054944">some discussion on potential future improvements</a>.</p>
      <li data-md>
       <p>Otherwise, return the result of performing the steps listed listed in the description of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/IndexedDB/#dom-idbkeyrange-lowerbound" id="ref-for-dom-idbkeyrange-lowerbound①">IDBKeyRange.lowerBound()</a></code> static method, given the arguments <var>key</var> and true.</p>
@@ -2340,6 +2347,7 @@ for their contributions to this specification.</p>
    <li><a href="#dom-windoworworkerglobalscope-kvstorage">kvStorage</a><span>, in §2</span>
    <li><a href="#KVStorageArea">KVStorageArea</a><span>, in §2</span>
    <li><a href="#KVStorageArea-constructor">KVStorageArea(name)</a><span>, in §3</span>
+   <li><a href="#kvstorageareaasynciterator-last-key">last key</a><span>, in §3.6</span>
    <li><a href="#not-yet-started">not yet started</a><span>, in §4</span>
    <li><a href="#performing-a-database-operation">perform a database operation</a><span>, in §4</span>
    <li><a href="#performing-a-database-operation">performing a database operation</a><span>, in §4</span>
@@ -2803,6 +2811,12 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-a-promise-rejected-with②">3.4. delete(key)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-asynchronous-iterator-initialization-steps">
+   <a href="https://heycam.github.io/webidl/#asynchronous-iterator-initialization-steps">https://heycam.github.io/webidl/#asynchronous-iterator-initialization-steps</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-asynchronous-iterator-initialization-steps">3.6. Iteration</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-convert-ecmascript-to-idl-value">
    <a href="https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value">https://heycam.github.io/webidl/#dfn-convert-ecmascript-to-idl-value</a><b>Referenced in:</b>
    <ul>
@@ -2810,7 +2824,7 @@ for their contributions to this specification.</p>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-get-the-next-iteration-result">
-   <a href="https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/720.html#dfn-get-the-next-iteration-result">https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/720.html#dfn-get-the-next-iteration-result</a><b>Referenced in:</b>
+   <a href="https://heycam.github.io/webidl/#dfn-get-the-next-iteration-result">https://heycam.github.io/webidl/#dfn-get-the-next-iteration-result</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-get-the-next-iteration-result">3.6. Iteration</a>
    </ul>
@@ -2975,6 +2989,7 @@ for their contributions to this specification.</p>
      <li><span class="dfn-paneled" id="term-for-exceptiondef-typeerror" style="color:initial">TypeError</span>
      <li><span class="dfn-paneled" id="term-for-a-new-promise" style="color:initial">a new promise</span>
      <li><span class="dfn-paneled" id="term-for-a-promise-rejected-with" style="color:initial">a promise rejected with</span>
+     <li><span class="dfn-paneled" id="term-for-asynchronous-iterator-initialization-steps" style="color:initial">asynchronous iterator initialization steps</span>
      <li><span class="dfn-paneled" id="term-for-dfn-convert-ecmascript-to-idl-value" style="color:initial">converted to an idl value</span>
      <li><span class="dfn-paneled" id="term-for-dfn-get-the-next-iteration-result" style="color:initial">get the next iteration result</span>
      <li><span class="dfn-paneled" id="term-for-include" style="color:initial">include</span>
@@ -3013,7 +3028,7 @@ for their contributions to this specification.</p>
   </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#windoworworkerglobalscope" id="ref-for-windoworworkerglobalscope⑤"><c- g>WindowOrWorkerGlobalScope</c-></a> {
-  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext②"><c- g>SecureContext</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#KVStorageArea" id="ref-for-KVStorageArea①③"><c- n>KVStorageArea</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="KVStorageArea" href="#dom-windoworworkerglobalscope-kvstorage" id="ref-for-dom-windoworworkerglobalscope-kvstorage①①"><c- g>kvStorage</c-></a>;
+  [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext②"><c- g>SecureContext</c-></a>] <c- b>readonly</c-> <c- b>attribute</c-> <a class="n" data-link-type="idl-name" href="#KVStorageArea" id="ref-for-KVStorageArea①④"><c- n>KVStorageArea</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="KVStorageArea" href="#dom-windoworworkerglobalscope-kvstorage" id="ref-for-dom-windoworworkerglobalscope-kvstorage①①"><c- g>kvStorage</c-></a>;
 };
 
 [<a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#SecureContext" id="ref-for-SecureContext①①"><c- g>SecureContext</c-></a>, <a class="idl-code" data-link-type="extended-attribute" href="https://heycam.github.io/webidl/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -3049,9 +3064,9 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-KVStorageArea">2. The kvStorage global</a> <a href="#ref-for-KVStorageArea①">(2)</a> <a href="#ref-for-KVStorageArea②">(3)</a>
     <li><a href="#ref-for-KVStorageArea③">3. The KVStorageArea class</a> <a href="#ref-for-KVStorageArea④">(2)</a>
     <li><a href="#ref-for-KVStorageArea⑤">3.1. constructor(name)</a>
-    <li><a href="#ref-for-KVStorageArea⑥">3.6. Iteration</a> <a href="#ref-for-KVStorageArea⑦">(2)</a>
-    <li><a href="#ref-for-KVStorageArea⑧">3.7. backingStore</a>
-    <li><a href="#ref-for-KVStorageArea⑨">4. Supporting operations and concepts</a> <a href="#ref-for-KVStorageArea①⓪">(2)</a> <a href="#ref-for-KVStorageArea①①">(3)</a> <a href="#ref-for-KVStorageArea①②">(4)</a>
+    <li><a href="#ref-for-KVStorageArea⑥">3.6. Iteration</a> <a href="#ref-for-KVStorageArea⑦">(2)</a> <a href="#ref-for-KVStorageArea⑧">(3)</a>
+    <li><a href="#ref-for-KVStorageArea⑨">3.7. backingStore</a>
+    <li><a href="#ref-for-KVStorageArea①⓪">4. Supporting operations and concepts</a> <a href="#ref-for-KVStorageArea①①">(2)</a> <a href="#ref-for-KVStorageArea①②">(3)</a> <a href="#ref-for-KVStorageArea①③">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="databasename">
@@ -3140,6 +3155,12 @@ for their contributions to this specification.</p>
     <li><a href="#ref-for-dom-kvstoragearea-entries">4. Supporting operations and concepts</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="kvstorageareaasynciterator-last-key">
+   <b><a href="#kvstorageareaasynciterator-last-key">#kvstorageareaasynciterator-last-key</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-kvstorageareaasynciterator-last-key">3.6. Iteration</a> <a href="#ref-for-kvstorageareaasynciterator-last-key①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="KVStorageArea-backingstore">
    <b><a href="#KVStorageArea-backingstore">#KVStorageArea-backingstore</a></b><b>Referenced in:</b>
    <ul>
@@ -3214,7 +3235,8 @@ for their contributions to this specification.</p>
   <aside class="dfn-panel" data-for="not-yet-started">
    <b><a href="#not-yet-started">#not-yet-started</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-not-yet-started">4. Supporting operations and concepts</a>
+    <li><a href="#ref-for-not-yet-started">3.6. Iteration</a>
+    <li><a href="#ref-for-not-yet-started①">4. Supporting operations and concepts</a>
    </ul>
   </aside>
 <script>/* script-var-click-highlighting */
