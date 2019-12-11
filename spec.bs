@@ -20,38 +20,18 @@ Default Biblio Status: current
 <pre class="anchors">
 url: https://html.spec.whatwg.org/multipage/webstorage.html#dom-localstorage; type: attribute; text: localStorage; for: Window; spec: HTML
 
-url: https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/720.html#dfn-get-the-next-iteration-result; type: dfn; text: get the next iteration result; spec: WEBIDL
-
-url: https://pr-preview.s3.amazonaws.com/heycam/webidl/pull/718.html#SameRealmBrandCheck; type: extended-attribute; text: [SameRealmBrandCheck]; spec: WEBIDL
-
-urlPrefix: https://pr-preview.s3.amazonaws.com/littledan/webidl/pull/675.html#; type: dfn; spec: WEBIDL
-  text: evaluation steps; for: module; url: module-evaluation-steps
-  text: set the module attribute; url: set-a-module-attribute
-
 urlPrefix: https://tc39.github.io/ecma262/#; spec: ECMASCRIPT
   text: Map; url: sec-map-objects; type: interface
-  text: WeakMap; url: sec-weakmap-objects; type: interface
   text: Date; url: sec-date-objects; type: interface
-  text: ToString; url: sec-tostring; type: abstract-op
-  text: %AsyncIteratorPrototype%; url: sec-asynciteratorprototype; type: interface
   text: %ObjectPrototype%; url: sec-properties-of-the-object-prototype-object; type: interface
   text: CreateDataProperty; url: sec-createdataproperty; type: abstract-op
-  text: CreateBuiltinFunction; url: sec-createbuiltinfunction; type: abstract-op
-  text: CreateMethodProperty; url: sec-createmethodproperty; type: abstract-op
-  text: CreateArrayFromList; url: sec-createarrayfromlist; type: abstract-op
-  text: CreateIterResultObject; url: sec-createiterresultobject; type: abstract-op
-  text: HostHasSourceTextAvailable; url: sec-hosthassourcetextavailable; type: abstract-op
-  text: NormalCompletion; url: sec-normalcompletion; type: abstract-op
   text: ObjectCreate; url: sec-objectcreate; type: abstract-op
-  text: ThrowCompletion; url: sec-throwcompletion; type: abstract-op
   text: Construct; url: sec-construct; type: abstract-op
   text: Type; url: sec-ecmascript-data-types-and-values; type: abstract-op
   text: IsArray; url: sec-isarray; type: abstract-op
   text: SetIntegrityLevel; url: sec-setintegritylevel; type: abstract-op
   text: current Realm; url: current-realm; type: dfn
   text: typed array; url: sec-typedarray-objects; type: dfn
-  text: Completion Record; url: sec-completion-record-specification-type; type: dfn
-  text: @@asyncIterator; url: table-1; type: dfn
   text: Realm; url: realm-record; type: dfn
 
 urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
@@ -78,9 +58,9 @@ urlPrefix: https://w3c.github.io/IndexedDB/; spec: INDEXEDDB-2; type: dfn
 </pre>
 
 <pre class="link-defaults">
-  spec: webidl; type: dfn; text: resolve
-  spec: infra; type: dfn; text: list
-  spec: webidl; type: dfn; text: new
+spec: webidl; type: dfn; text: resolve
+spec: infra; type: dfn; text: list
+spec: webidl; type: dfn; text: new
 </pre>
 
 <style>
@@ -414,17 +394,22 @@ The {{KVStorageArea}} interface supports asynchronous iteration.
   <p>All of these iterators provide live views onto the storage area: modifications made to entries sorted after the last-returned one will be reflected in the iteration.
 </div>
 
-<div algorithm="get the next iteration result">
-  To [=get the next iteration result=]:
+<div algorithm="asynchronous iterator initialization steps">
+  The [=asynchronous iterator initialization steps=] for {{KVStorageArea}}, given <var ignore>storageArea</var> and |asyncIterator|, are:
 
-  1. Return the result of [=performing a database operation=] given <b>this</b>, "<code>readonly</code>", and the following steps operating on <var ignore>transaction</var> and |store|:
-    1. Let |lastKey| be <b>current state</b>.
-    1. Let |range| be the result of [=getting the range for=] |lastKey|.
+  1. Set |asyncIterator|'s <dfn for="KVStorageAreaAsyncIterator">last key</dfn> to [=not yet started=].
+</div>
+
+<div algorithm="get the next iteration result">
+  To [=get the next iteration result=], given the |storageArea| and |asyncIterator|:
+
+  1. Return the result of [=performing a database operation=] given |storageArea|, "<code>readonly</code>", and the following steps operating on <var ignore>transaction</var> and |store|:
+    1. Let |range| be the result of [=getting the range for=] |asyncIterator|'s [=KVStorageAreaAsyncIterator/last key=].
     1. Let |keyRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/getKey()}} method on |store|, given the argument |range|.
     1. Let |valueRequest| be the result of performing the steps listed in the description of {{IDBObjectStore}}'s {{IDBObjectStore/get()}} method on |store|, given the argument |range|.
 
         Note: The iterator returned from {{KVStorageArea/keys()}} discards the value. Implementations could avoid constructing |valueRequest| in that case.
-    1. Let |promise| be [=a new promise=] in the [=relevant Realm=] of <b>this</b>.
+    1. Let |promise| be [=a new promise=] in the [=relevant Realm=] of |asyncIterator|.
     1. [=Add a simple event listener=] to |valueRequest| for "<code>success</code>" that performs the following steps:
       1. Let |key| be |keyRequest|'s [=request/result=].
       1. If |key| is undefined, then:
@@ -432,6 +417,7 @@ The {{KVStorageArea}} interface supports asynchronous iteration.
       1. Otherwise:
         1. Let |value| be |valueRequest|'s [=request/result=].
         1. [=Resolve=] |promise| with (|key|, |value|, |key|).
+        1. Set |asyncIterator|'s [=KVStorageAreaAsyncIterator/last key=] to |key|.
     1. [=Add a simple event listener=] to |keyRequest| for "<code>error</code>" that [=rejects=] |promise| with |keyRequest|'s [=request/error=].
     1. [=Add a simple event listener=] to |valueRequest| for "<code>error</code>" that [=rejects=] |promise| with |valueRequest|'s [=request/error=].
     1. Return |promise|.
